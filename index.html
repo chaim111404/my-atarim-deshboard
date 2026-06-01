@@ -261,7 +261,7 @@ tr:hover td{background:#f8faff}
       <!-- היסטוריה -->
       <div class="panel" id="p-history">
         <div class="card"><div class="ch"><span class="ct">היסטוריית כניסות</span></div>
-        <div class="tw"><table><thead><tr><th>שם</th><th>טלפון</th><th>תאריך ושעה</th><th>סוג</th></tr></thead><tbody id="history-tbody"></tbody></table></div></div>
+        <div class="tw"><table><thead><tr><th>שם</th><th>טלפון</th><th>תאריך ושעה</th><th>IP</th><th>מיקום</th><th>סוג</th></tr></thead><tbody id="history-tbody"></tbody></table></div></div>
       </div>
 
       <!-- הודעות -->
@@ -486,7 +486,14 @@ function renderClientsTable() {
     let dl = "—";
     if (c.deadline) { const d = Math.ceil((new Date(c.deadline) - new Date()) / 864e5); dl = d < 0 ? `<span style="color:var(--err);font-size:12px;font-weight:700">איחור ${Math.abs(d)}י'</span>` : d === 0 ? `<span style="color:var(--warn);font-size:12px;font-weight:700">היום!</span>` : `<span style="font-size:12px;color:var(--muted)">${d}י'</span>`; }
     return `<tr>
-      <td class="cn">${c.name || "—"}${c.note ? `<span title="${c.note}" style="cursor:help;margin-right:4px">📌</span>` : ""}</td>
+      <td class="cn">
+        <div style="display:flex;align-items:center;gap:8px">
+          ${c.avatar
+            ? `<img src="${c.avatar}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;flex-shrink:0" onerror="this.style.display='none'" />`
+            : `<div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#0ea5e9,#0284c7);display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:700;flex-shrink:0">${(c.name||"?")[0]}</div>`}
+          ${c.name || "—"}${c.note ? `<span title="${c.note}" style="cursor:help">📌</span>` : ""}
+        </div>
+      </td>
       <td class="cp">${fmtPhone(phone)}</td>
       <td>${sites.length}</td>
       <td>${sites.length ? `<div style="display:flex;align-items:center;gap:5px"><div class="pm"><div class="pmf" style="width:${avg}%;background:${pc}"></div></div><span style="font-size:12px;font-weight:700;color:${pc}">${avg}%</span></div>` : "—"}</td>
@@ -625,7 +632,22 @@ function openViewModal(phone) {
     ${c.note ? `<div class="vs"><div class="vl">תזכורת פנימית</div><div class="vv">${c.note}</div></div>` : ""}
     <div class="vs"><div class="vl">ניסיונות כושלים</div><div class="vv" style="color:${(c.failedAttempts || 0) > 0 ? "var(--err)" : "var(--ok)"}">${c.failedAttempts || 0}</div></div>
     ${sites.length ? `<div class="vs"><div class="vl">אתרים</div>${sites.map(s => { const p = parseInt(s.progress || 0); const pc = p >= 100 ? "#22c55e" : p >= 75 ? "#8b5cf6" : p >= 50 ? "#3b82f6" : p >= 25 ? "#f59e0b" : "#ef4444"; return `<div class="vsc"><div style="display:flex;justify-content:space-between"><strong>${s.name || "ללא שם"}</strong><span class="tag ${s.status === "active" ? "a" : s.status === "building" ? "bu" : "pa"}">${s.status === "active" ? "פעיל" : s.status === "building" ? "בבנייה" : "מושהה"}</span></div>${s.url ? `<div style="font-size:12px;color:var(--muted);margin-top:3px;direction:ltr">${s.url}</div>` : ""}<div class="vp"><div class="vpf" style="width:0%;background:${pc}" data-t="${p}"></div></div><div style="font-size:12px;font-weight:700;color:${pc};margin-top:3px">${p}%</div></div>`; }).join("")}</div>` : ""}
-    ${msgs.length ? `<div class="vs"><div class="vl">הודעות (${msgs.length})</div><button class="bsm m" onclick="openMsgsModal('${phone}')">צפייה בהודעות</button></div>` : ""}`;
+    ${msgs.length ? `<div class="vs"><div class="vl">הודעות (${msgs.length})</div><button class="bsm m" onclick="openMsgsModal('${phone}')">צפייה בהודעות</button></div>` : ""}
+    ${(() => {
+      const logins = c.loginHistory ? Object.values(c.loginHistory).sort((a,b)=>b.at-a.at).slice(0,3) : [];
+      if (!logins.length) return "";
+      return `<div class="vs"><div class="vl">כניסות אחרונות</div>${logins.map(h => {
+        const flag = countryFlag(h.country||"");
+        return `<div style="font-size:13px;padding:6px 0;border-bottom:1px solid var(--bdr);display:flex;gap:8px;align-items:center">
+          <span style="font-size:18px">${flag}</span>
+          <div>
+            <div style="font-weight:600">${fmtDate(h.at)}</div>
+            <div style="color:var(--muted);font-size:12px;direction:ltr">${h.ip||""} ${h.city ? "· "+h.city : ""}</div>
+          </div>
+        </div>`;
+      }).join("")}</div>`;
+    })()}
+    `;
   openMo("mo-view");
   setTimeout(() => document.querySelectorAll(".vpf").forEach(el => { el.style.width = el.getAttribute("data-t") + "%"; }), 100);
 }
@@ -821,7 +843,24 @@ function closeMo(id) { document.getElementById(id).classList.remove("show"); }
 function showSP(t)   { document.getElementById("sp-txt").textContent = t || "טוען..."; document.getElementById("spinner").classList.add("show"); }
 function hideSP()    { document.getElementById("spinner").classList.remove("show"); }
 function toast(msg, type = "s") { const el = document.createElement("div"); el.className = `toast ${type}`; const ic = type === "s" ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>` : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`; el.innerHTML = ic + msg; document.getElementById("tc").appendChild(el); setTimeout(() => { el.style.animation = "tin .3s ease reverse"; setTimeout(() => el.remove(), 300); }, 3000); }
-function fmtPhone(p) { const s = String(p).replace(/\D/g, ""); return s.length === 10 ? s.slice(0, 3) + "-" + s.slice(3) : s; }
+/* מחיקת שיחה מהשרת */
+  function confirmDeleteChat(phone) {
+    const name = clients[phone]?.name || phone;
+    showConfirm("d",
+      `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>`,
+      "מחיקת שיחה",
+      "האם למחוק את כל השיחה עם <strong>" + name + "</strong>?<br/>ההודעות יימחקו לצמיתות.",
+      async () => {
+        showSP("מוחק שיחה...");
+        try {
+          await remove(ref(db, "clients/" + phone + "/messages"));
+          toast("השיחה נמחקה", "s");
+        } catch(e) { toast("שגיאה", "e"); } finally { hideSP(); }
+      }
+    );
+  }
+
+  function fmtPhone(p) { const s = String(p).replace(/\D/g, ""); return s.length === 10 ? s.slice(0, 3) + "-" + s.slice(3) : s; }
 function fmtDate(ts) { if (!ts) return "—"; const d = new Date(ts); return d.toLocaleDateString("he-IL") + " " + d.toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit" }); }
 function fmtTime(ts) { return new Date(ts).toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit" }); }
 function getLL(hist) { if (!hist) return "—"; const t = Object.values(hist).map(h => h.at).filter(Boolean); return t.length ? fmtDate(Math.max(...t)) : "—"; }

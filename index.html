@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="theme-color" content="#0f172a"/>
+<link rel="icon" href="https://i.postimg.cc/43kbjD5D/IMG-0695.png"/>
+<link rel="apple-touch-icon" href="https://i.postimg.cc/43kbjD5D/IMG-0695.png"/>
+<meta property="og:image" content="https://i.postimg.cc/43kbjD5D/IMG-0695.png"/>
 <title>WebDesk Pro — ניהול</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
@@ -10,68 +14,78 @@
 :root{--p:#0ea5e9;--pd:#0284c7;--pdd:#075985;--deep:#0c1a2e;--acc:#38bdf8;--ok:#22c55e;--err:#ef4444;--warn:#f59e0b;--pur:#8b5cf6;--sw:260px;--bg:#f0f7ff;--card:#fff;--txt:#0c1a2e;--muted:#64748b;--bdr:#e0eefa;--r:14px;--rs:9px;--sh:0 2px 16px rgba(14,165,233,.08)}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
-/* login */
 #login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,var(--deep),#0a2540);padding:24px}
 .lc{background:#fff;border-radius:22px;padding:44px 36px;width:100%;max-width:400px;text-align:center;box-shadow:0 24px 64px rgba(12,26,46,.45);animation:fu .5s ease both}
 @keyframes fu{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-.ll{width:58px;height:58px;background:linear-gradient(135deg,var(--p),var(--pdd));border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
-.lt{font-size:22px;font-weight:800;margin-bottom:4px}.ls{font-size:14px;color:var(--muted);margin-bottom:32px}
+.ll{width:58px;height:58px;border-radius:16px;overflow:hidden;margin:0 auto 20px}
+.ll img{width:100%;height:100%;object-fit:cover}
+.lt{font-size:22px;font-weight:800;margin-bottom:4px}
+.ls{font-size:14px;color:var(--muted);margin-bottom:32px}
 .fg{margin-bottom:16px;text-align:right}
 .fl{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px;display:block}
 .fi{width:100%;border:1.5px solid var(--bdr);border-radius:var(--rs);font-family:'Heebo',sans-serif;font-size:15px;padding:12px 14px;outline:none;transition:border-color .2s;color:var(--txt);background:#f8faff}
 .fi:focus{border-color:var(--p);background:#fff}
-.bp{width:100%;background:linear-gradient(135deg,var(--p),var(--pd));border:none;border-radius:var(--rs);color:#fff;font-family:'Heebo',sans-serif;font-size:16px;font-weight:700;padding:14px;cursor:pointer;margin-top:8px;transition:all .2s}
-.bp:active{transform:scale(.98)}.bp:disabled{opacity:.5;cursor:not-allowed}
+.bp{width:100%;background:linear-gradient(135deg,var(--p),var(--pd));border:none;border-radius:var(--rs);color:#fff;font-family:'Heebo',sans-serif;font-size:16px;font-weight:700;padding:14px;cursor:pointer;margin-top:8px}
 .aerr{background:#fef2f2;border:1px solid #fca5a5;border-radius:var(--rs);color:#dc2626;font-size:13px;padding:10px 14px;margin-top:12px;display:none;text-align:center}
 .aerr.show{display:block}
-/* dashboard */
+.offline-banner{display:none;position:fixed;top:0;left:0;right:0;background:var(--warn);color:#fff;font-family:'Heebo',sans-serif;font-size:13px;font-weight:600;padding:8px 16px;text-align:center;z-index:9999}
+.offline-banner.show{display:block}
+.load-overlay{display:none;position:fixed;inset:0;background:rgba(12,26,46,.6);backdrop-filter:blur(6px);z-index:800;align-items:center;justify-content:center;flex-direction:column;gap:20px}
+.load-overlay.show{display:flex}
+.load-ring{position:absolute;inset:0;border-radius:50%;border:3px solid transparent;animation:spin .9s linear infinite}
+.load-ring:nth-child(1){border-top-color:var(--p)}
+.load-ring:nth-child(2){inset:8px;border-right-color:rgba(56,189,248,.5);animation-duration:.7s;animation-direction:reverse}
+.load-ring:nth-child(3){inset:16px;border-bottom-color:rgba(125,211,248,.3);animation-duration:1.2s}
+@keyframes spin{to{transform:rotate(360deg)}}
+.load-text{color:#fff;font-size:15px;font-weight:600}
 #dash{display:none;min-height:100vh}
 #dash.show{display:flex}
 .sidebar{width:var(--sw);background:var(--deep);min-height:100vh;display:flex;flex-direction:column;flex-shrink:0;position:fixed;top:0;right:0;z-index:100;transition:transform .3s}
-.sb-logo{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:12px}
-.sb-logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--acc),var(--p));border-radius:10px;display:flex;align-items:center;justify-content:center}
-.sb-logo-t{color:#fff;font-size:16px;font-weight:800}.sb-logo-s{color:rgba(255,255,255,.35);font-size:11px}
-.sb-nav{flex:1;padding:16px 12px}
+.sb-logo{padding:20px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:12px}
+.sb-logo-img{width:36px;height:36px;border-radius:10px;overflow:hidden;flex-shrink:0;background:linear-gradient(135deg,var(--p),var(--pdd))}
+.sb-logo-img img{width:100%;height:100%;object-fit:cover}
+.sb-logo-t{color:#fff;font-size:15px;font-weight:800}
+.sb-logo-s{color:rgba(255,255,255,.35);font-size:11px}
+.sb-nav{flex:1;padding:14px 12px;overflow-y:auto}
 .sb-sec{color:rgba(255,255,255,.28);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:10px 8px 4px;margin-top:10px}
-.ni{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;cursor:pointer;color:rgba(255,255,255,.55);font-size:14px;font-weight:500;transition:all .15s;margin-bottom:2px;border:none;background:none;width:100%;font-family:'Heebo',sans-serif;text-align:right}
+.ni{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;color:rgba(255,255,255,.55);font-size:14px;font-weight:500;transition:all .15s;margin-bottom:2px;border:none;background:none;width:100%;font-family:'Heebo',sans-serif;text-align:right}
 .ni:hover{background:rgba(255,255,255,.07);color:#fff}
 .ni.active{background:rgba(56,189,248,.15);color:var(--acc)}
 .bdg{margin-right:auto;background:var(--err);color:#fff;font-size:11px;font-weight:700;padding:2px 7px;border-radius:10px;min-width:20px;text-align:center}
-.sb-foot{padding:16px 12px;border-top:1px solid rgba(255,255,255,.07)}
-.btn-lo{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;cursor:pointer;color:rgba(255,255,255,.38);font-size:14px;font-weight:500;transition:all .15s;border:none;background:none;width:100%;font-family:'Heebo',sans-serif;text-align:right}
+.sb-foot{padding:14px 12px;border-top:1px solid rgba(255,255,255,.07)}
+.sb-user{display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:6px}
+.sb-user-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--pd));display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0}
+.sb-user-name{color:#fff;font-size:13px;font-weight:600}
+.sb-user-role{color:rgba(255,255,255,.4);font-size:11px}
+.btn-lo{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;color:rgba(255,255,255,.38);font-size:14px;font-weight:500;transition:all .15s;border:none;background:none;width:100%;font-family:'Heebo',sans-serif;text-align:right}
 .btn-lo:hover{background:rgba(239,68,68,.1);color:#f87171}
 .main{margin-right:var(--sw);flex:1;display:flex;flex-direction:column}
 .topbar{height:64px;background:#fff;border-bottom:1px solid var(--bdr);display:flex;align-items:center;padding:0 24px;gap:12px;position:sticky;top:0;z-index:50}
 .topbar-title{font-size:18px;font-weight:800;flex:1}
-.topbar-search{background:var(--bg);border:1.5px solid var(--bdr);border-radius:10px;padding:8px 14px;font-family:'Heebo',sans-serif;font-size:14px;width:200px;outline:none;transition:border-color .2s}
-.topbar-search:focus{border-color:var(--p)}
+.topbar-search{background:var(--bg);border:1.5px solid var(--bdr);border-radius:10px;padding:8px 14px;font-family:'Heebo',sans-serif;font-size:14px;width:200px;outline:none}
 .content{flex:1;padding:24px;overflow-y:auto}
 .panel{display:none}.panel.active{display:block}
-/* stats */
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:22px}
 .sc{background:#fff;border-radius:var(--r);padding:18px;box-shadow:var(--sh);display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .2s;border:1.5px solid transparent}
 .sc:hover{border-color:var(--p);transform:translateY(-2px)}
 .si{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .si.b{background:rgba(14,165,233,.1);color:var(--p)}.si.g{background:rgba(34,197,94,.1);color:var(--ok)}
 .si.r{background:rgba(239,68,68,.1);color:var(--err)}.si.o{background:rgba(245,158,11,.1);color:var(--warn)}
+.si.pu{background:rgba(139,92,246,.1);color:var(--pur)}
 .sn{font-size:26px;font-weight:900;line-height:1}.sl{font-size:12px;color:var(--muted);margin-top:3px}
-/* filters */
 .fb-wrap{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
 .fb{background:#fff;border:1.5px solid var(--bdr);border-radius:20px;color:var(--muted);font-family:'Heebo',sans-serif;font-size:13px;font-weight:600;padding:7px 15px;cursor:pointer;transition:all .2s}
 .fb:hover{border-color:var(--p);color:var(--p)}.fb.active{background:var(--p);border-color:var(--p);color:#fff}
-.fs{background:#fff;border:1.5px solid var(--bdr);border-radius:20px;color:var(--muted);font-family:'Heebo',sans-serif;font-size:13px;font-weight:600;padding:7px 12px;cursor:pointer;outline:none}
-/* card */
+.fs{background:#fff;border:1.5px solid var(--bdr);border-radius:20px;color:var(--muted);font-family:'Heebo',sans-serif;font-size:13px;padding:7px 12px;cursor:pointer;outline:none}
 .card{background:#fff;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:20px}
 .ch{padding:16px 20px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .ct{font-size:16px;font-weight:800}
-.btn-add{display:flex;align-items:center;gap:6px;background:var(--p);border:none;border-radius:var(--rs);color:#fff;font-family:'Heebo',sans-serif;font-size:14px;font-weight:700;padding:9px 16px;cursor:pointer;transition:opacity .2s}
-.btn-add:hover{opacity:.88}
-.bsm{display:inline-flex;align-items:center;gap:4px;border:none;border-radius:7px;font-family:'Heebo',sans-serif;font-size:12px;font-weight:600;padding:5px 10px;cursor:pointer;transition:opacity .2s;white-space:nowrap}
-.bsm:hover{opacity:.8}
+.btn-add{display:flex;align-items:center;gap:6px;background:var(--p);border:none;border-radius:var(--rs);color:#fff;font-family:'Heebo',sans-serif;font-size:14px;font-weight:700;padding:9px 16px;cursor:pointer}
+.bsm{display:inline-flex;align-items:center;gap:4px;border:none;border-radius:7px;font-family:'Heebo',sans-serif;font-size:12px;font-weight:600;padding:5px 10px;cursor:pointer;white-space:nowrap}
 .bsm.e{background:rgba(14,165,233,.1);color:var(--p)}.bsm.v{background:rgba(99,102,241,.1);color:#6366f1}
 .bsm.d{background:rgba(239,68,68,.1);color:var(--err)}.bsm.u{background:rgba(34,197,94,.1);color:var(--ok)}
 .bsm.bl{background:rgba(245,158,11,.1);color:var(--warn)}.bsm.m{background:rgba(139,92,246,.1);color:var(--pur)}
-.bsm.ch{background:rgba(14,165,233,.1);color:var(--p);border:none}
+.bsm.ch2{background:rgba(14,165,233,.1);color:var(--p)}.bsm.dp{opacity:.5;cursor:not-allowed;filter:grayscale(1)}
 .tw{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:14px}
 thead tr{background:#f8faff}
@@ -82,74 +96,63 @@ tr:hover td{background:#f8faff}
 .tag{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:700}
 .tag.a{background:rgba(34,197,94,.1);color:#16a34a}.tag.bu{background:rgba(245,158,11,.1);color:#d97706}
 .tag.pa{background:rgba(148,163,184,.1);color:#64748b}.tag.bl{background:rgba(239,68,68,.1);color:var(--err)}
-.tag.nm{background:rgba(139,92,246,.1);color:var(--pur)}
+.tag.nm{background:rgba(139,92,246,.1);color:var(--pur)}.tag.anomaly{background:rgba(239,68,68,.15);color:var(--err);border:1px solid rgba(239,68,68,.3);font-weight:800}
 .ac{display:flex;gap:4px;flex-wrap:wrap}
 .pm{width:70px;height:5px;background:var(--bdr);border-radius:3px;overflow:hidden;display:inline-block}
 .pmf{height:100%;border-radius:3px}
 .et{text-align:center;padding:40px;color:var(--muted);font-size:14px}
-/* modal */
 .mo{display:none;position:fixed;inset:0;background:rgba(12,26,46,.65);backdrop-filter:blur(5px);z-index:500;align-items:center;justify-content:center;padding:16px}
 .mo.show{display:flex;animation:fi .2s ease}
 @keyframes fi{from{opacity:0}to{opacity:1}}
 .md{background:#fff;border-radius:22px;width:100%;max-width:580px;max-height:92vh;overflow-y:auto;animation:si .25s cubic-bezier(.34,1.2,.64,1) both}
 @keyframes si{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
 .mh{padding:18px 22px 14px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:10;border-radius:22px 22px 0 0}
-.mt{font-size:18px;font-weight:800}
-.mc{background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;border-radius:6px;transition:background .15s}
-.mc:hover{background:var(--bg)}
+.mt2{font-size:18px;font-weight:800}
+.mc{background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;border-radius:6px}
 .mb{padding:18px 22px}
 .mf{padding:14px 22px;border-top:1px solid var(--bdr);display:flex;gap:10px;position:sticky;bottom:0;background:#fff;border-radius:0 0 22px 22px}
 .btn-cancel{background:var(--bg);border:1.5px solid var(--bdr);border-radius:var(--rs);color:var(--muted);font-family:'Heebo',sans-serif;font-size:14px;font-weight:600;padding:10px 20px;cursor:pointer}
 .fst{font-size:13px;font-weight:700;color:var(--p);margin:18px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:6px}
 .fr{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
 .fr.full{grid-template-columns:1fr}
-/* pin */
 .pin-wrap{display:flex;gap:8px;align-items:stretch}
 .pin-disp{flex:1;background:#f8faff;border:1.5px solid var(--bdr);border-radius:var(--rs);padding:12px 14px;font-size:24px;font-weight:900;letter-spacing:8px;text-align:center;color:var(--muted);font-family:'Heebo',sans-serif;direction:ltr;transition:all .3s}
 .pin-disp.ok{border-color:var(--ok);background:rgba(34,197,94,.05);color:var(--ok)}
-.btn-gp{background:linear-gradient(135deg,var(--p),var(--pd));border:none;border-radius:var(--rs);color:#fff;font-family:'Heebo',sans-serif;font-size:13px;font-weight:700;padding:12px 16px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;flex-shrink:0}
+.btn-gp{background:linear-gradient(135deg,var(--p),var(--pd));border:none;border-radius:var(--rs);color:#fff;font-family:'Heebo',sans-serif;font-size:13px;font-weight:700;padding:12px 16px;cursor:pointer;display:flex;align-items:center;gap:6px;flex-shrink:0}
 .btn-gp:disabled{opacity:.5;cursor:not-allowed}
 .ph{font-size:12px;color:var(--muted);margin-top:6px}
-/* sites editor */
 .sec{background:#f8faff;border:1.5px solid var(--bdr);border-radius:var(--rs);padding:14px;margin-bottom:10px}
 .sec-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .sec-n{font-size:13px;font-weight:700;color:var(--muted)}
 .btn-rm{background:none;border:none;cursor:pointer;color:var(--err);font-size:13px;display:flex;align-items:center;gap:4px;font-family:'Heebo',sans-serif}
-.btn-as{width:100%;background:none;border:2px dashed var(--bdr);border-radius:var(--rs);color:var(--p);font-family:'Heebo',sans-serif;font-size:14px;font-weight:600;padding:11px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px}
+.btn-as{width:100%;background:none;border:2px dashed var(--bdr);border-radius:var(--rs);color:var(--p);font-family:'Heebo',sans-serif;font-size:14px;font-weight:600;padding:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px}
 .btn-as:hover{border-color:var(--p)}
-/* view */
-.vs{margin-bottom:18px}.vl{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.pwd-item{background:#f8faff;border:1.5px solid var(--bdr);border-radius:var(--rs);padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pwd-val{flex:1;font-family:monospace;font-size:14px;letter-spacing:2px}
+.pwd-val.hidden{filter:blur(4px);user-select:none}
+.btn-pwd-show{background:none;border:none;cursor:pointer;color:var(--p);font-size:12px;font-family:'Heebo',sans-serif;font-weight:600;padding:4px 8px}
+.btn-pwd-copy{background:rgba(14,165,233,.1);border:none;border-radius:6px;color:var(--p);font-family:'Heebo',sans-serif;font-size:12px;font-weight:600;padding:4px 10px;cursor:pointer}
+.vs{margin-bottom:18px}
+.vl{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
 .vv{font-size:15px;font-weight:600}
 .vsc{background:var(--bg);border:1.5px solid var(--bdr);border-radius:var(--rs);padding:12px;margin-bottom:8px}
 .vp{width:100%;height:7px;background:var(--bdr);border-radius:4px;overflow:hidden;margin-top:7px}
 .vpf{height:100%;border-radius:4px;transition:width 1s ease .1s}
-/* messages */
 .mi{background:var(--bg);border:1.5px solid var(--bdr);border-radius:var(--rs);padding:13px;margin-bottom:9px}
 .mi.unread{border-color:var(--pur);background:rgba(139,92,246,.04)}
-.mt2{font-size:11px;color:var(--muted);margin-top:5px}
+.mt3{font-size:11px;color:var(--muted);margin-top:5px}
 .btn-mk{background:rgba(139,92,246,.1);border:none;border-radius:6px;color:var(--pur);font-family:'Heebo',sans-serif;font-size:12px;font-weight:600;padding:4px 10px;cursor:pointer;margin-top:7px}
-/* confirm */
-.ci{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
-.ci.d{background:rgba(239,68,68,.1);color:var(--err)}.ci.w{background:rgba(245,158,11,.1);color:var(--warn)}
-.ctit{font-size:20px;font-weight:800;margin-bottom:7px;text-align:center}
-.ctxt{font-size:14px;color:var(--muted);line-height:1.6;text-align:center;margin-bottom:22px}
-.cbtns{display:flex;gap:10px;justify-content:center}
-.btn-d{background:var(--err);border:none;border-radius:var(--rs);color:#fff;font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;padding:11px 26px;cursor:pointer}
-.btn-w{background:var(--warn);border:none;border-radius:var(--rs);color:#fff;font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;padding:11px 26px;cursor:pointer}
-/* chat */
 .chat-md{max-width:640px;display:flex;flex-direction:column;height:82vh}
 .chat-body{flex:1;display:flex;flex-direction:column;overflow:hidden;padding:0;min-height:0}
 .chat-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:6px;min-height:0}
-.chat-msgs::-webkit-scrollbar{width:4px}
-.chat-msgs::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
 .aw{display:flex;flex-direction:column;max-width:78%}
 .aw.c{align-self:flex-end;align-items:flex-end}
 .aw.a{align-self:flex-start;align-items:flex-start}
-.ab{padding:10px 14px;border-radius:18px;font-size:14px;line-height:1.5;word-break:break-word}
+.ab{padding:10px 14px;border-radius:18px;font-size:14px;line-height:1.5;word-break:break-word;cursor:pointer}
+.ab:hover{opacity:.85}
 .aw.c .ab{background:rgba(14,165,233,.1);color:var(--txt);border-bottom-left-radius:4px}
 .aw.a .ab{background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;border-bottom-right-radius:4px}
 .at{font-size:11px;color:var(--muted);margin-top:3px;padding:0 4px}
-.ar{font-size:10px;color:var(--ok);padding:0 4px}
 .add{text-align:center;font-size:11px;color:var(--muted);margin:6px 0;position:relative}
 .add::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:var(--bdr)}
 .add span{background:#fff;padding:0 10px;position:relative}
@@ -160,28 +163,63 @@ tr:hover td{background:#f8faff}
 .btn-im{background:rgba(139,92,246,.1);border:none;border-radius:8px;color:var(--pur);font-family:'Heebo',sans-serif;font-size:13px;font-weight:700;padding:7px 13px;cursor:pointer;display:flex;align-items:center;gap:5px}
 .cb-ban{background:rgba(100,116,139,.07);border-bottom:1px solid var(--bdr);padding:10px 14px;font-size:13px;color:var(--muted);text-align:center;display:none}
 .cb-ban.show{display:block}
+.reply-bar{background:var(--bg);border-top:1px solid var(--bdr);padding:10px 14px;display:none;align-items:center;gap:10px;flex-shrink:0}
+.reply-bar.show{display:flex}
 .chat-inp{padding:12px 14px;border-top:1px solid var(--bdr);display:flex;gap:8px;align-items:flex-end;flex-shrink:0;background:#fff}
-.chat-ta{flex:1;min-height:40px;max-height:110px;background:var(--bg);border:1.5px solid var(--bdr);border-radius:20px;padding:10px 14px;font-family:'Heebo',sans-serif;font-size:14px;resize:none;outline:none;transition:border-color .2s;color:var(--txt);line-height:1.5;overflow-y:auto}
+.chat-ta{flex:1;min-height:40px;max-height:110px;background:var(--bg);border:1.5px solid var(--bdr);border-radius:20px;padding:10px 14px;font-family:'Heebo',sans-serif;font-size:14px;resize:none;outline:none;color:var(--txt);line-height:1.5;overflow-y:auto}
 .chat-ta:focus{border-color:var(--p)}.chat-ta:disabled{opacity:.4}
-.chat-sb{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--pd));border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
-.chat-sb:active{transform:scale(.92)}.chat-sb:disabled{opacity:.4;cursor:not-allowed}
-/* spinner */
+.chat-sb{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--pd));border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.chat-sb:disabled{opacity:.4;cursor:not-allowed}
+.reply-prev-wrap{background:rgba(14,165,233,.08);border-right:3px solid var(--p);border-radius:8px;padding:7px 12px;margin-bottom:6px;align-self:stretch}
+.reactions-wrap{display:flex;flex-wrap:wrap;gap:3px;margin-top:4px}
+.rc{background:var(--bg);border:1px solid var(--bdr);border-radius:12px;padding:2px 7px;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:3px}
+.rc.mine{background:rgba(14,165,233,.1);border-color:var(--p)}
+.ctx-mo{display:none;position:fixed;inset:0;z-index:600;background:rgba(12,26,46,.6);backdrop-filter:blur(4px);align-items:flex-end;justify-content:center}
+.ctx-mo.show{display:flex;animation:fi .15s ease}
+.ctx-sheet{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:580px;padding:8px 0 24px;animation:su .3s cubic-bezier(.34,1.1,.64,1)}
+@keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.ctx-handle{width:40px;height:4px;background:var(--bdr);border-radius:2px;margin:10px auto 14px}
+.ctx-prev{margin:0 20px 14px;padding:10px 14px;border-radius:14px;font-size:13px;background:var(--bg);border:1px solid var(--bdr);max-height:80px;overflow:hidden}
+.ctx-emoji-row{display:flex;gap:6px;padding:0 20px 14px;border-bottom:1px solid var(--bdr);margin-bottom:8px}
+.ctx-emoji-btn{font-size:24px;background:none;border:none;padding:4px 8px;cursor:pointer;border-radius:8px}
+.ctx-item{display:flex;align-items:center;gap:14px;padding:13px 22px;cursor:pointer;font-size:15px;font-weight:500}
+.ctx-item:hover{background:var(--bg)}
+.ctx-item.danger{color:var(--err)}
+.ctx-sep{height:1px;background:var(--bdr);margin:4px 0}
+.edit-mo{display:none;position:fixed;inset:0;z-index:700;background:rgba(12,26,46,.6);backdrop-filter:blur(4px);align-items:flex-end;justify-content:center}
+.edit-mo.show{display:flex;animation:fi .15s ease}
+.edit-sheet{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:580px;padding:20px 20px 32px;animation:su .3s cubic-bezier(.34,1.1,.64,1)}
+.perm-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.perm-item{display:flex;align-items:center;justify-content:space-between;background:var(--bg);border:1.5px solid var(--bdr);border-radius:var(--rs);padding:10px 12px}
+.perm-label{font-size:13px;font-weight:600}
+.toggle-sw{position:relative;width:42px;height:24px;flex-shrink:0}
+.toggle-sw input{opacity:0;width:0;height:0}
+.toggle-sw .slider{position:absolute;inset:0;background:var(--bdr);border-radius:12px;cursor:pointer;transition:.3s}
+.toggle-sw .slider:before{content:"";position:absolute;width:18px;height:18px;right:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+.toggle-sw input:checked+.slider{background:var(--p)}
+.toggle-sw input:checked+.slider:before{transform:translateX(-18px)}
+.stars-display{display:flex;gap:2px}
+.star-svg{color:var(--warn)}.star-svg.empty{color:var(--bdr)}
+.ci{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.ci.d{background:rgba(239,68,68,.1);color:var(--err)}.ci.w{background:rgba(245,158,11,.1);color:var(--warn)}
+.ctit{font-size:20px;font-weight:800;margin-bottom:7px;text-align:center}
+.ctxt{font-size:14px;color:var(--muted);line-height:1.6;text-align:center;margin-bottom:22px}
+.cbtns{display:flex;gap:10px;justify-content:center}
+.btn-d{background:var(--err);border:none;border-radius:var(--rs);color:#fff;font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;padding:11px 26px;cursor:pointer}
+.btn-w{background:var(--warn);border:none;border-radius:var(--rs);color:#fff;font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;padding:11px 26px;cursor:pointer}
+.confirm-reason{width:100%;border:1.5px solid var(--bdr);border-radius:var(--rs);padding:10px 12px;font-family:'Heebo',sans-serif;font-size:14px;margin-bottom:16px;outline:none;min-height:80px;resize:none}
 .spo{display:none;position:fixed;inset:0;background:rgba(12,26,46,.55);backdrop-filter:blur(5px);z-index:1000;align-items:center;justify-content:center;flex-direction:column;gap:16px}
 .spo.show{display:flex}
 .sp{width:50px;height:50px;border:4px solid rgba(255,255,255,.15);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
 .spt{color:#fff;font-size:16px;font-weight:600}
-/* toast */
 #tc{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:2000;display:flex;flex-direction:column;gap:8px;align-items:center}
-.toast{background:#0d1b2e;color:#fff;border-radius:10px;padding:11px 18px;font-size:14px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.3);display:flex;align-items:center;gap:8px;white-space:nowrap;animation:tin .3s ease both}
+.toast{background:#0d1b2e;color:#fff;border-radius:10px;padding:11px 18px;font-size:14px;font-weight:500;display:flex;align-items:center;gap:8px;white-space:nowrap;animation:tin .3s ease both}
 .toast.s{border-right:3px solid var(--ok)}.toast.e{border-right:3px solid var(--err)}
 @keyframes tin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-/* notif */
 .nb{position:relative;background:none;border:none;cursor:pointer;color:var(--muted);padding:6px;border-radius:8px}
 .nc{position:absolute;top:0;right:0;width:16px;height:16px;border-radius:50%;background:var(--err);color:#fff;font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center}
 .nc.show{display:flex}
-/* responsive */
-@media(max-width:768px){.sidebar{transform:translateX(100%)}.sidebar.open{transform:translateX(0)}.main{margin-right:0}.fr{grid-template-columns:1fr}.content{padding:14px}}
+@media(max-width:768px){.sidebar{transform:translateX(100%)}.sidebar.open{transform:translateX(0)}.main{margin-right:0}.fr{grid-template-columns:1fr}.content{padding:14px}.perm-grid{grid-template-columns:1fr}}
 .sb-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99}
 .sb-ov.show{display:block}
 .menu-btn{display:none;background:none;border:none;cursor:pointer;color:var(--txt);padding:4px}
@@ -189,48 +227,48 @@ tr:hover td{background:#f8faff}
 </style>
 </head>
 <body>
-
-<!-- ══ דף כניסה ══ -->
+<div class="offline-banner" id="offline-banner">אין חיבור לאינטרנט</div>
+<div class="load-overlay" id="load-overlay">
+  <div style="width:56px;height:56px;position:relative">
+    <div class="load-ring"></div><div class="load-ring"></div><div class="load-ring"></div>
+  </div>
+  <div class="load-text" id="load-text">טוען...</div>
+</div>
 <div id="login-page">
   <div class="lc">
-    <div class="ll"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="2" y="5" width="24" height="16" rx="3" stroke="white" stroke-width="2"/><path d="M9 21v3M19 21v3M6 24h16" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+    <div class="ll"><img src="https://i.postimg.cc/43kbjD5D/IMG-0695.png" alt="" onerror="this.parentElement.style.background='linear-gradient(135deg,#0ea5e9,#075985)'"/></div>
     <div class="lt">WebDesk Pro</div>
     <div class="ls">כניסה למערכת ניהול</div>
     <div class="fg"><label class="fl">שם משתמש</label><input id="au" class="fi" type="text" autocomplete="off"/></div>
     <div class="fg"><label class="fl">סיסמה</label><input id="ap" class="fi" type="password" autocomplete="off"/></div>
-    <button id="login-btn" class="bp">כניסה למערכת</button>
+    <button class="bp" id="login-btn">כניסה למערכת</button>
     <div id="aerr" class="aerr"></div>
   </div>
 </div>
-
-<!-- ══ דשבורד ══ -->
 <div id="dash">
   <div class="sb-ov" id="sb-ov"></div>
   <aside class="sidebar" id="sidebar">
     <div class="sb-logo">
-      <div class="sb-logo-icon"><svg width="20" height="20" viewBox="0 0 28 28" fill="none"><rect x="2" y="5" width="24" height="16" rx="3" stroke="white" stroke-width="2"/><path d="M9 21v3M19 21v3M6 24h16" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+      <div class="sb-logo-img"><img src="https://i.postimg.cc/43kbjD5D/IMG-0695.png" alt="" onerror="this.style.display='none'"/></div>
       <div><div class="sb-logo-t">WebDesk Pro</div><div class="sb-logo-s">מערכת ניהול</div></div>
     </div>
-    <nav class="sb-nav">
-      <div class="sb-sec">ראשי</div>
-      <button class="ni active" id="nav-clients"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>לקוחות</button>
-      <button class="ni" id="nav-blocked"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>חסומים<span class="bdg" id="blocked-badge" style="display:none">0</span></button>
-      <button class="ni" id="nav-history"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>היסטוריה</button>
-      <button class="ni" id="nav-messages"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>הודעות<span class="bdg" id="msgs-badge" style="display:none">0</span></button>
-    </nav>
-    <div class="sb-foot"><button class="btn-lo" id="logout-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>יציאה</button></div>
+    <nav class="sb-nav" id="sb-nav"></nav>
+    <div class="sb-foot">
+      <div class="sb-user">
+        <div class="sb-user-av" id="sb-user-av">נ</div>
+        <div><div class="sb-user-name" id="sb-user-name">טוען...</div><div class="sb-user-role" id="sb-user-role">נציג</div></div>
+      </div>
+      <button class="btn-lo" id="logout-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>יציאה</button>
+    </div>
   </aside>
-
   <div class="main">
     <div class="topbar">
       <button class="menu-btn" id="menu-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
       <span class="topbar-title" id="topbar-title">ניהול לקוחות</span>
       <button class="nb" id="notif-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><span class="nc" id="notif-count">0</span></button>
-      <input class="topbar-search" id="srch" type="text" placeholder="חיפוש לקוח..."/>
+      <input class="topbar-search" id="srch" type="text" placeholder="חיפוש..."/>
     </div>
     <div class="content">
-
-      <!-- לקוחות -->
       <div class="panel active" id="p-clients">
         <div class="stats-grid" id="stats-grid"></div>
         <div class="fb-wrap">
@@ -239,116 +277,135 @@ tr:hover td{background:#f8faff}
           <button class="fb" data-filter="building">בבנייה</button>
           <button class="fb" data-filter="blocked">חסומים</button>
           <button class="fb" data-filter="msgs">יש הודעות</button>
-          <select class="fs" id="sort-sel">
-            <option value="name">מיון: שם</option>
-            <option value="newest">חדש ביותר</option>
-            <option value="oldest">ישן ביותר</option>
-            <option value="deadline">יעד קרוב</option>
-          </select>
+          <select class="fs" id="sort-sel"><option value="name">מיון: שם</option><option value="newest">חדש</option><option value="oldest">ישן</option><option value="deadline">יעד</option></select>
         </div>
-        <div class="card">
-          <div class="ch"><span class="ct" id="clients-lbl">לקוחות</span><button class="btn-add" id="btn-add-client"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>הוספת לקוח</button></div>
-          <div class="tw"><table><thead><tr><th>שם</th><th>טלפון</th><th>אתרים</th><th>התקדמות</th><th>יעד</th><th>כניסה אחרונה</th><th>הודעות</th><th>סטטוס</th><th>פעולות</th></tr></thead><tbody id="clients-tbody"></tbody></table></div>
-        </div>
+        <div class="card"><div class="ch"><span class="ct" id="clients-lbl">לקוחות</span><button class="btn-add" id="btn-add-client"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>הוספת לקוח</button></div>
+        <div class="tw"><table><thead><tr><th>שם</th><th>טלפון</th><th>אתרים</th><th>התקדמות</th><th>יעד</th><th>כניסה אחרונה</th><th>הודעות</th><th>דירוג</th><th>סטטוס</th><th>פעולות</th></tr></thead><tbody id="clients-tbody"></tbody></table></div></div>
       </div>
-
-      <!-- חסומים -->
-      <div class="panel" id="p-blocked">
-        <div class="card"><div class="ch"><span class="ct">לקוחות חסומים</span></div>
-        <div class="tw"><table><thead><tr><th>שם</th><th>טלפון</th><th>ניסיונות</th><th>תאריך חסימה</th><th>פעולות</th></tr></thead><tbody id="blocked-tbody"></tbody></table></div></div>
-      </div>
-
-      <!-- היסטוריה -->
-      <div class="panel" id="p-history">
-        <div class="card"><div class="ch"><span class="ct">היסטוריית כניסות</span></div>
-        <div class="tw"><table><thead><tr><th>שם</th><th>טלפון</th><th>תאריך ושעה</th><th>IP</th><th>מיקום</th><th>סוג</th></tr></thead><tbody id="history-tbody"></tbody></table></div></div>
-      </div>
-
-      <!-- הודעות -->
-      <div class="panel" id="p-messages">
-        <div class="card"><div class="ch"><span class="ct">הודעות מלקוחות</span></div>
-        <div id="msgs-list" style="padding:16px"></div></div>
-      </div>
-
+      <div class="panel" id="p-blocked"><div class="card"><div class="ch"><span class="ct">לקוחות חסומים</span></div><div class="tw"><table><thead><tr><th>שם</th><th>טלפון</th><th>סיבת חסימה</th><th>חסם על ידי</th><th>ניסיונות</th><th>תאריך</th><th>פעולות</th></tr></thead><tbody id="blocked-tbody"></tbody></table></div></div></div>
+      <div class="panel" id="p-history"><div class="card"><div class="ch"><span class="ct">היסטוריית כניסות</span></div><div class="tw"><table><thead><tr><th>שם</th><th>טלפון</th><th>תאריך ושעה</th><th>IP</th><th>מיקום</th><th>סוג</th></tr></thead><tbody id="history-tbody"></tbody></table></div></div></div>
+      <div class="panel" id="p-messages"><div class="card"><div class="ch"><span class="ct">הודעות מלקוחות</span></div><div id="msgs-list" style="padding:16px"></div></div></div>
+      <div class="panel" id="p-team"><div class="card"><div class="ch"><span class="ct">חברי צוות</span><button class="btn-add" id="btn-add-team"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>הוספת נציג</button></div><div class="tw"><table><thead><tr><th>שם</th><th>משתמש</th><th>נייד</th><th>כניסה אחרונה</th><th>סטטוס</th><th>פעולות</th></tr></thead><tbody id="team-tbody"></tbody></table></div></div></div>
+      <div class="panel" id="p-requests"><div class="card"><div class="ch"><span class="ct">בקשות הרשאה</span></div><div id="requests-list" style="padding:16px"></div></div></div>
     </div>
   </div>
 </div>
-
-<!-- Modal עריכת לקוח -->
-<div class="mo" id="mo-client">
-  <div class="md">
-    <div class="mh"><span class="mt" id="mo-client-t">הוספת לקוח</span><button class="mc" id="mo-client-close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
-    <div class="mb">
-      <div class="fst"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>פרטי לקוח</div>
-      <div class="fr"><div class="fg"><label class="fl">שם מלא</label><input id="f-name" class="fi" type="text" placeholder="ישראל ישראלי"/></div><div class="fg"><label class="fl">טלפון ישראלי</label><input id="f-phone" class="fi" type="tel" inputmode="numeric" placeholder="0500000000"/></div></div>
-      <div class="fg">
-        <label class="fl">קוד אישי</label>
-        <div class="pin-wrap"><div class="pin-disp" id="pin-disp">—  —  —  —</div><button class="btn-gp" id="btn-gp"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg><span id="gp-lbl">צור קוד</span></button></div>
-        <div class="ph" id="pin-hint">לחץ "צור קוד" — המערכת תיצור קוד ייחודי</div>
-        <input type="hidden" id="f-pin"/>
-      </div>
-      <div class="fr"><div class="fg"><label class="fl">אימייל (לא חובה)</label><input id="f-email" class="fi" type="email" placeholder="mail@example.com"/></div><div class="fg"><label class="fl">יעד לסיום (לא חובה)</label><input id="f-deadline" class="fi" type="date"/></div></div>
-      <div class="fr full"><div class="fg"><label class="fl">תזכורת פנימית (לא גלויה ללקוח)</label><input id="f-note" class="fi" type="text" placeholder="לחזור אליו ביום שלישי..."/></div></div>
-      <div class="fst"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20"/></svg>אתרים</div>
-      <div id="sites-editor"></div>
-      <button class="btn-as" id="btn-add-site"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>הוספת אתר</button>
-    </div>
-    <div class="mf"><button class="bp" style="width:auto;padding:10px 26px;margin-top:0" id="btn-save-client">שמירה</button><button class="btn-cancel" id="mo-client-cancel">ביטול</button></div>
+<!-- Modal לקוח -->
+<div class="mo" id="mo-client"><div class="md">
+  <div class="mh"><span class="mt2" id="mo-client-t">הוספת לקוח</span><button class="mc" id="mo-client-close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+  <div class="mb">
+    <div class="fst">פרטי לקוח</div>
+    <div class="fr"><div class="fg"><label class="fl">שם מלא</label><input id="f-name" class="fi" type="text" placeholder="ישראל ישראלי"/></div><div class="fg"><label class="fl">טלפון ישראלי</label><input id="f-phone" class="fi" type="tel" inputmode="numeric" placeholder="0500000000"/></div></div>
+    <div class="fg"><label class="fl">קוד אישי</label><div class="pin-wrap"><div class="pin-disp" id="pin-disp">—  —  —  —</div><button class="btn-gp" id="btn-gp"><span id="gp-lbl">צור קוד</span></button></div><div class="ph" id="pin-hint">לחץ לצירת קוד ייחודי</div><input type="hidden" id="f-pin"/></div>
+    <div class="fr"><div class="fg"><label class="fl">אימייל</label><input id="f-email" class="fi" type="email" placeholder="mail@example.com"/></div><div class="fg"><label class="fl">יעד לסיום</label><input id="f-deadline" class="fi" type="date"/></div></div>
+    <div class="fr full"><div class="fg"><label class="fl">תזכורת פנימית</label><input id="f-note" class="fi" type="text"/></div></div>
+    <div class="fr full"><div class="fg"><label class="fl">הודעה אישית ללקוח</label><input id="f-message" class="fi" type="text"/></div></div>
+    <div class="fst">סיסמאות ומפתחות</div>
+    <div id="passwords-editor"></div>
+    <button class="btn-as" id="btn-add-pwd">הוספת סיסמה</button>
+    <div class="fst">אתרים</div>
+    <div id="sites-editor"></div>
+    <button class="btn-as" id="btn-add-site">הוספת אתר</button>
   </div>
-</div>
-
+  <div class="mf"><button class="bp" style="width:auto;padding:10px 26px;margin-top:0" id="btn-save-client">שמירה</button><button class="btn-cancel" id="mo-client-cancel">ביטול</button></div>
+</div></div>
 <!-- Modal צפייה -->
-<div class="mo" id="mo-view"><div class="md"><div class="mh"><span class="mt" id="mo-view-t">פרטי לקוח</span><button class="mc" id="mo-view-close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="mb" id="mo-view-body"></div></div></div>
-
+<div class="mo" id="mo-view"><div class="md"><div class="mh"><span class="mt2" id="mo-view-t">פרטי לקוח</span><button class="mc" id="mo-view-close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="mb" id="mo-view-body"></div></div></div>
 <!-- Modal הודעות -->
-<div class="mo" id="mo-msgs"><div class="md"><div class="mh"><span class="mt" id="mo-msgs-t">הודעות</span><button class="mc" id="mo-msgs-close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="mb" id="mo-msgs-body"></div></div></div>
-
-<!-- Modal צ'אט נציג -->
-<div class="mo" id="mo-chat">
-  <div class="md chat-md">
-    <div class="mh" style="border-radius:22px 22px 0 0">
-      <span class="mt" id="mo-chat-t">שיחה</span>
-      <div style="display:flex;gap:8px">
-        <button class="btn-im" id="btn-init-msg"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>הודעה יזומה</button>
-        <button class="mc" id="mo-chat-close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-      </div>
+<div class="mo" id="mo-msgs"><div class="md"><div class="mh"><span class="mt2" id="mo-msgs-t">הודעות</span><button class="mc" id="mo-msgs-close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="mb" id="mo-msgs-body"></div></div></div>
+<!-- Modal נציג -->
+<div class="mo" id="mo-team"><div class="md">
+  <div class="mh"><span class="mt2" id="mo-team-t">הוספת נציג</span><button class="mc" id="mo-team-close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+  <div class="mb">
+    <div class="fr"><div class="fg"><label class="fl">שם פרטי</label><input id="tm-first" class="fi" type="text"/></div><div class="fg"><label class="fl">שם משפחה</label><input id="tm-last" class="fi" type="text"/></div></div>
+    <div class="fr"><div class="fg"><label class="fl">נייד</label><input id="tm-phone" class="fi" type="tel" inputmode="numeric"/></div><div class="fg"><label class="fl">שם משתמש</label><input id="tm-user" class="fi" type="text"/></div></div>
+    <div class="fr full"><div class="fg"><label class="fl">סיסמה</label><input id="tm-pass" class="fi" type="password"/></div></div>
+    <div class="fst">הרשאות</div>
+    <div class="perm-grid" id="perm-grid"></div>
+  </div>
+  <div class="mf"><button class="bp" style="width:auto;padding:10px 26px;margin-top:0" id="btn-save-team">שמירה</button><button class="btn-cancel" id="mo-team-cancel">ביטול</button></div>
+</div></div>
+<!-- Modal צ'אט -->
+<div class="mo" id="mo-chat"><div class="md chat-md">
+  <div class="mh" style="border-radius:22px 22px 0 0">
+    <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">
+      <div id="chat-avatar-mo" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--pd));display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:800;flex-shrink:0;overflow:hidden"></div>
+      <div style="min-width:0"><div class="mt2" id="mo-chat-t" style="font-size:16px">שיחה</div><div id="mo-chat-status" style="font-size:12px;color:var(--muted)"></div></div>
     </div>
-    <div class="chat-body">
-      <div class="chat-toolbar">
-        <span class="chat-toolbar-t" id="chat-status-lbl">שיחה פעילה</span>
-        <button class="btn-cc" id="btn-close-conv"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>סגור שיחה</button>
-        <button class="btn-rc" id="btn-reopen-conv" style="display:none"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>פתח מחדש</button>
-      </div>
-      <div class="cb-ban" id="cv-closed-ban">השיחה סגורה — ניתן לפתוח מחדש.</div>
-      <div class="chat-msgs" id="chat-msgs-list"></div>
-      <div class="chat-inp">
-        <textarea id="chat-ta" class="chat-ta" placeholder="כתוב תשובה..." rows="1"></textarea>
-        <button class="chat-sb" id="chat-send-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
-      </div>
+    <div style="display:flex;gap:6px">
+      <button class="btn-im" id="btn-init-msg" style="display:none">פתח שיחה</button>
+      <button class="mc" id="mo-chat-close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+  </div>
+  <div class="chat-body">
+    <div class="chat-toolbar">
+      <span class="chat-toolbar-t" id="chat-status-lbl">שיחה פעילה</span>
+      <button class="btn-cc" id="btn-close-conv">סגור שיחה</button>
+      <button class="btn-rc" id="btn-reopen-conv" style="display:none">פתח מחדש</button>
+      <button class="btn-cc" id="btn-del-chat" style="background:none;border:1px solid rgba(239,68,68,.3)">מחק שיחה</button>
+    </div>
+    <div class="cb-ban" id="cv-closed-ban">השיחה סגורה</div>
+    <div class="reply-bar" id="reply-bar">
+      <div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:700;color:var(--p)" id="rbar-name"></div><div style="font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="rbar-txt"></div></div>
+      <button style="background:none;border:none;cursor:pointer;color:var(--muted)" id="cancel-reply-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="chat-msgs" id="chat-msgs-list"></div>
+    <div class="chat-inp">
+      <textarea id="chat-ta" class="chat-ta" placeholder="כתוב תשובה..." rows="1"></textarea>
+      <button class="chat-sb" id="chat-send-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+    </div>
+  </div>
+</div></div>
+<!-- Context menu -->
+<div class="ctx-mo" id="ctx-mo">
+  <div class="ctx-sheet">
+    <div class="ctx-handle"></div>
+    <div class="ctx-prev" id="ctx-prev"></div>
+    <div class="ctx-emoji-row">
+      <button class="ctx-emoji-btn" data-emoji="❤️">❤️</button>
+      <button class="ctx-emoji-btn" data-emoji="👍">👍</button>
+      <button class="ctx-emoji-btn" data-emoji="😂">😂</button>
+      <button class="ctx-emoji-btn" data-emoji="😮">😮</button>
+      <button class="ctx-emoji-btn" data-emoji="🔥">🔥</button>
+    </div>
+    <div class="ctx-item" id="ctx-reply">השב להודעה</div>
+    <div class="ctx-item" id="ctx-copy">העתק</div>
+    <div class="ctx-item" id="ctx-edit" style="display:none">ערוך</div>
+    <div class="ctx-sep"></div>
+    <div class="ctx-item danger" id="ctx-del-me">מחק אצלי</div>
+    <div class="ctx-item danger" id="ctx-del-all">מחק אצל כולם</div>
+  </div>
+</div>
+<div class="edit-mo" id="edit-mo">
+  <div class="edit-sheet">
+    <div style="width:40px;height:4px;background:var(--bdr);border-radius:2px;margin:0 auto 16px"></div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:12px">עריכת הודעה</div>
+    <textarea id="edit-ta" class="chat-ta" style="border-radius:var(--rs);width:100%;display:block" rows="3"></textarea>
+    <div style="display:flex;gap:10px;margin-top:14px">
+      <button id="edit-save" style="flex:1;background:linear-gradient(135deg,var(--p),var(--pd));border:none;border-radius:var(--rs);color:#fff;font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;padding:13px;cursor:pointer">שמור</button>
+      <button id="edit-cancel" style="background:var(--bg);border:none;border-radius:var(--rs);color:var(--muted);font-family:'Heebo',sans-serif;font-size:15px;font-weight:600;padding:13px 20px;cursor:pointer">ביטול</button>
     </div>
   </div>
 </div>
-
-<!-- Modal Confirm -->
-<div class="mo" id="mo-confirm">
-  <div class="md" style="max-width:400px">
-    <div class="mb" style="padding:30px 26px">
-      <div class="ci" id="confirm-icon"></div>
-      <div class="ctit" id="confirm-title"></div>
-      <div class="ctxt" id="confirm-text"></div>
-      <div class="cbtns"><button id="confirm-ok" class="btn-d">אישור</button><button class="btn-cancel" id="confirm-cancel">ביטול</button></div>
-    </div>
-  </div>
-</div>
-
+<div class="mo" id="mo-confirm"><div class="md" style="max-width:420px"><div class="mb" style="padding:30px 26px">
+  <div class="ci" id="confirm-icon"></div>
+  <div class="ctit" id="confirm-title"></div>
+  <div class="ctxt" id="confirm-text"></div>
+  <textarea class="confirm-reason" id="confirm-reason" placeholder="סיבת החסימה (חובה)..." style="display:none"></textarea>
+  <div class="cbtns"><button id="confirm-ok" class="btn-d">אישור</button><button class="btn-cancel" id="confirm-cancel">ביטול</button></div>
+</div></div></div>
+<div class="mo" id="mo-logout"><div class="md" style="max-width:400px"><div class="mb" style="padding:30px 26px;text-align:center">
+  <div class="ci w"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg></div>
+  <div class="ctit">יציאה מהמערכת</div>
+  <div class="ctxt">לאחר היציאה תצטרך להתחבר מחדש.</div>
+  <div class="cbtns"><button class="btn-w" id="confirm-logout-btn">כן, צא</button><button class="btn-cancel" id="cancel-logout-btn">ביטול</button></div>
+</div></div></div>
 <div class="spo" id="spinner"><div class="sp"></div><div class="spt" id="sp-txt">טוען...</div></div>
 <div id="tc"></div>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, get, set, remove, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, get, set, remove, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-/* ── Firebase ── */
 const db = getDatabase(initializeApp({
   apiKey:"AIzaSyB9jeWAKY2UEz70V77SCPnSJ18IfwnsVV0",
   authDomain:"deshbord-atarim-sheli.firebaseapp.com",
@@ -359,512 +416,840 @@ const db = getDatabase(initializeApp({
   appId:"1:893227581235:web:3254c85705dfe5fe894846"
 }));
 
-/* ── קונסטנטות ── */
-const ADMIN_USER = "נתן מנדל";
-const ADMIN_PASS = "12345678";
-const KEY = "wd_admin";
+const ADMIN_ID = "mi0XmZ8T3nb5VmZ0tLamS25UHBw1";
+const SESSION_KEY = "wdc_admin_session";
+const MONTH_MS = 30 * 24 * 60 * 60 * 1000;
+const EDIT_WIN = 30 * 60 * 1000;
 
-/* ── State ── */
-let clients = {}, blocked = {}, usedPins = {};
-let editPhone = null, siteCount = 0;
-let curFilter = "all", searchQ = "";
-let chatPhone = null, chatListener = null;
+let clients={}, blocked={}, usedPins={}, team={}, permRequests={}, unknownFails={};
+let curFilter="all", searchQ="", editPhone=null, siteCount=0, pwdCount=0;
+let chatPhone=null, chatListener=null, chatReplyTo=null;
+let ctxMsgKey=null, ctxMsgData=null, editMsgKey=null;
+let currentUser=null, isAdmin=false;
 
-/* ── אירועים ── */
-document.getElementById("login-btn").onclick = doLogin;
-document.getElementById("ap").onkeydown = e => { if (e.key === "Enter") doLogin(); };
-document.getElementById("logout-btn").onclick = doLogout;
-document.getElementById("menu-btn").onclick = () => toggleSB();
-document.getElementById("sb-ov").onclick = () => toggleSB(false);
-document.getElementById("nav-clients").onclick = () => showPanel("p-clients", "nav-clients", "ניהול לקוחות");
-document.getElementById("nav-blocked").onclick = () => showPanel("p-blocked", "nav-blocked", "לקוחות חסומים");
-document.getElementById("nav-history").onclick = () => showPanel("p-history", "nav-history", "היסטוריית כניסות");
-document.getElementById("nav-messages").onclick = () => showPanel("p-messages", "nav-messages", "הודעות לקוחות");
-document.getElementById("notif-btn").onclick = () => showPanel("p-messages", "nav-messages", "הודעות לקוחות");
-document.getElementById("btn-add-client").onclick = () => openClientModal(null);
-document.getElementById("btn-save-client").onclick = saveClient;
-document.getElementById("mo-client-close").onclick = () => closeMo("mo-client");
-document.getElementById("mo-client-cancel").onclick = () => closeMo("mo-client");
-document.getElementById("mo-view-close").onclick = () => closeMo("mo-view");
-document.getElementById("mo-msgs-close").onclick = () => closeMo("mo-msgs");
-document.getElementById("mo-chat-close").onclick = closeChatModal;
-document.getElementById("mo-chat-close").onclick = closeChatModal;
-document.getElementById("btn-close-conv").onclick = agentCloseConv;
-document.getElementById("btn-reopen-conv").onclick = agentReopenConv;
-document.getElementById("btn-init-msg").onclick = agentInitMsg;
-document.getElementById("chat-send-btn").onclick = agentSend;
-document.getElementById("confirm-cancel").onclick = () => closeMo("mo-confirm");
-document.getElementById("btn-add-site").onclick = () => addSiteField();
-document.getElementById("btn-gp").onclick = generatePin;
-document.getElementById("srch").oninput = () => { searchQ = document.getElementById("srch").value.trim().toLowerCase(); renderClientsTable(); };
-document.getElementById("sort-sel").onchange = renderClientsTable;
-document.getElementById("chat-ta").onkeydown = e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); agentSend(); } };
-document.getElementById("chat-ta").oninput = function() { this.style.height = ""; this.style.height = Math.min(this.scrollHeight, 110) + "px"; };
-document.querySelectorAll(".fb").forEach(b => b.onclick = () => {
-  curFilter = b.dataset.filter;
-  document.querySelectorAll(".fb").forEach(x => x.classList.remove("active"));
-  b.classList.add("active");
-  renderClientsTable();
-});
-
-/* ── כניסה ── */
-function doLogin() {
-  const u = document.getElementById("au").value.trim();
-  const p = document.getElementById("ap").value;
-  const e = document.getElementById("aerr");
-  if (u === ADMIN_USER && p === ADMIN_PASS) {
-    sessionStorage.setItem(KEY, "ok");
-    showDash();
-  } else {
-    e.textContent = "שם משתמש או סיסמה שגויים";
+async function doLogin() {
+  const u=document.getElementById("au").value.trim();
+  const p=document.getElementById("ap").value;
+  const e=document.getElementById("aerr");
+  e.classList.remove("show");
+  showLoadOverlay("מאמת פרטים...");
+  try {
+    if(u==="נתן מנדל"&&p==="12345678") {
+      const dt=genToken();
+      localStorage.setItem(SESSION_KEY,JSON.stringify({userId:ADMIN_ID,role:"admin",name:"נתן מנדל",expiry:Date.now()+MONTH_MS,deviceToken:dt}));
+      set(ref(db,"sessions/"+ADMIN_ID),{deviceToken:dt,loginAt:Date.now()}).catch(()=>{});
+      hideLoadOverlay();
+      showDash({userId:ADMIN_ID,role:"admin",name:"נתן מנדל"});
+      return;
+    }
+    const tSnap=await get(ref(db,"team"));
+    if(tSnap.exists()) {
+      const td=tSnap.val();
+      const entry=Object.entries(td).find(([,m])=>m.username===u&&m.password===p);
+      if(entry) {
+        const [tid,member]=entry;
+        const sesSnap=await get(ref(db,"sessions/"+tid));
+        if(sesSnap.exists()) {
+          const ses=sesSnap.val();
+          const saved=JSON.parse(localStorage.getItem(SESSION_KEY)||"{}");
+          if(ses.deviceToken&&saved.deviceToken!==ses.deviceToken) {
+            hideLoadOverlay();
+            showDeviceConflict(tid,member);
+            return;
+          }
+        }
+        const dt=genToken();
+        localStorage.setItem(SESSION_KEY,JSON.stringify({userId:tid,role:"agent",name:member.firstName+" "+member.lastName,expiry:Date.now()+MONTH_MS,deviceToken:dt}));
+        set(ref(db,"sessions/"+tid),{deviceToken:dt,loginAt:Date.now()}).catch(()=>{});
+        hideLoadOverlay();
+        showDash({userId:tid,role:"agent",name:member.firstName+" "+member.lastName,perms:member.perms||{}});
+        return;
+      }
+    }
+    hideLoadOverlay();
+    e.textContent="שם משתמש או סיסמה שגויים";
+    e.classList.add("show");
+  } catch(err) {
+    hideLoadOverlay();
+    e.textContent="שגיאת תקשורת";
     e.classList.add("show");
   }
 }
-function doLogout() { sessionStorage.removeItem(KEY); location.reload(); }
 
-/* ── הצגת דשבורד ── */
-function showDash() {
-  document.getElementById("login-page").style.display = "none";
-  document.getElementById("dash").classList.add("show");
-  onValue(ref(db, "clients"), s => { clients = s.val() || {}; renderAll(); });
-  onValue(ref(db, "blocked"), s => { blocked = s.val() || {}; renderBlockedTable(); updateBlockedBadge(); });
-  onValue(ref(db, "usedPins"), s => { usedPins = s.val() || {}; });
-  if ("Notification" in window && Notification.permission === "default") Notification.requestPermission();
+function doLogout() {
+  localStorage.removeItem(SESSION_KEY);
+  if(currentUser) remove(ref(db,`sessions/${currentUser.userId}`)).catch(()=>{});
+  location.reload();
 }
-if (sessionStorage.getItem(KEY) === "ok") showDash();
 
-function renderAll() { renderStats(); renderClientsTable(); renderHistoryTable(); renderMsgsList(); updateMsgBadge(); }
+function checkSession() {
+  try {
+    const s=JSON.parse(localStorage.getItem(SESSION_KEY));
+    if(!s||!s.userId||Date.now()>s.expiry) {
+      if(s&&Date.now()>s.expiry) { localStorage.removeItem(SESSION_KEY); showAutoLogoutMsg(); }
+      return null;
+    }
+    return s;
+  } catch { return null; }
+}
 
-/* ── סטטיסטיקות ── */
-function renderStats() {
-  const cl = Object.values(clients);
-  const total = cl.length;
-  const totalSites = cl.reduce((s, c) => s + (c.sites ? Object.keys(c.sites).length : 0), 0);
-  const active = cl.filter(c => c.sites && Object.values(c.sites).some(s => s.status === "active")).length;
-  const blk = Object.keys(blocked).filter(k => blocked[k]?.blocked).length;
-  const stats = [
-    { ic: '<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>', c: "b", n: total, l: "לקוחות", f: "all" },
-    { ic: '<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20"/>', c: "g", n: totalSites, l: "אתרים", f: "all" },
-    { ic: '<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>', c: "o", n: active, l: "פעילים", f: "active" },
-    { ic: '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>', c: "r", n: blk, l: "חסומים", f: "blocked" },
+function showAutoLogoutMsg() {
+  document.getElementById("login-page").style.display="flex";
+  const d=document.createElement("div");
+  d.style.cssText="position:fixed;top:24px;left:50%;transform:translateX(-50%);background:#0d1b2e;color:#fff;border-radius:12px;padding:12px 20px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.4);border-right:3px solid var(--warn);white-space:nowrap";
+  d.textContent="ניתקנו אותך לצורך אבטחה — ניתן להתחבר מחדש";
+  document.body.appendChild(d);
+  setTimeout(()=>d.remove(),5000);
+}
+
+function showDeviceConflict(tid,member) {
+  const div=document.createElement("div");
+  div.id="device-conflict";
+  div.style.cssText="position:fixed;inset:0;background:linear-gradient(145deg,var(--deep),#0a2540);display:flex;align-items:center;justify-content:center;z-index:9999;padding:24px";
+  div.innerHTML=`<div style="background:#fff;border-radius:22px;padding:36px;max-width:380px;text-align:center;box-shadow:0 24px 64px rgba(12,26,46,.45)">
+    <div style="width:56px;height:56px;border-radius:50%;background:rgba(239,68,68,.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:var(--err)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+    <div style="font-size:20px;font-weight:800;margin-bottom:8px">המשתמש מחובר במכשיר אחר</div>
+    <div style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:24px">כדי להתחבר מכאן, נתק את המכשיר הקודם.</div>
+    <div style="display:flex;gap:10px;flex-direction:column">
+      <button id="force-login-btn" style="background:linear-gradient(135deg,var(--p),var(--pd));border:none;border-radius:var(--rs);color:#fff;font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;padding:13px;cursor:pointer">נתק מכשיר קודם והתחבר כאן</button>
+      <button onclick="document.getElementById('device-conflict').remove()" style="background:var(--bg);border:1.5px solid var(--bdr);border-radius:var(--rs);color:var(--muted);font-family:'Heebo',sans-serif;font-size:14px;font-weight:600;padding:12px;cursor:pointer">ביטול</button>
+    </div>
+  </div>`;
+  document.body.appendChild(div);
+  document.getElementById("force-login-btn").onclick=async()=>{
+    const dt=genToken();
+    localStorage.setItem(SESSION_KEY,JSON.stringify({userId:tid,role:"agent",name:member.firstName+" "+member.lastName,expiry:Date.now()+MONTH_MS,deviceToken:dt}));
+    await set(ref(db,`sessions/${tid}`),{deviceToken:dt,loginAt:Date.now()});
+    div.remove();
+    showDash({userId:tid,role:"agent",name:member.firstName+" "+member.lastName,perms:member.perms||{}});
+  };
+}
+
+function genToken(){return Math.random().toString(36).slice(2)+Date.now().toString(36);}
+
+/* ── Session check on load ── */
+/* ── Event listeners ── */
+document.getElementById("login-btn").onclick = doLogin;
+document.getElementById("ap").onkeydown = e => { if(e.key==="Enter") doLogin(); };
+document.getElementById("logout-btn").onclick = ()=>openMo("mo-logout");
+document.getElementById("confirm-logout-btn").onclick = doLogout;
+document.getElementById("cancel-logout-btn").onclick = ()=>closeMo("mo-logout");
+
+window.addEventListener("DOMContentLoaded",()=>{
+  const s=checkSession();
+  if(!s) return;
+  get(ref(db,`sessions/${s.userId}`)).then(snap=>{
+    if(snap.exists()&&snap.val().deviceToken!==s.deviceToken){localStorage.removeItem(SESSION_KEY);showAutoLogoutMsg();return;}
+    if(s.role==="admin"){showDash({userId:s.userId,role:"admin",name:s.name});return;}
+    get(ref(db,`team/${s.userId}`)).then(tSnap=>{
+      const m=tSnap.val()||{};
+      showDash({userId:s.userId,role:"agent",name:s.name,perms:m.perms||{}});
+    }).catch(()=>showDash({userId:s.userId,role:"agent",name:s.name,perms:{}}));
+  }).catch(()=>{showDash({userId:s.userId,role:s.role||"admin",name:s.name,perms:{}});});
+});
+
+/* ── Show Dashboard ── */
+function showDash(user) {
+  currentUser=user; isAdmin=user.role==="admin";
+  document.getElementById("login-page").style.display="none";
+  document.getElementById("dash").classList.add("show");
+  document.getElementById("sb-user-name").textContent=user.name;
+  document.getElementById("sb-user-role").textContent=isAdmin?"מנהל ראשי":"נציג";
+  document.getElementById("sb-user-av").textContent=(user.name||"נ")[0];
+  buildSidebar();
+  startListening();
+  if("Notification"in window&&Notification.permission==="default")Notification.requestPermission();
+}
+
+/* ── Build Sidebar ── */
+function buildSidebar() {
+  const nav=document.getElementById("sb-nav");
+  const perms=currentUser.perms||{};
+  const items=[
+    {id:"ni-clients",panel:"p-clients",title:"ניהול לקוחות",ic:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>',always:true},
+    {id:"ni-blocked",panel:"p-blocked",title:"חסומים",ic:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>',perm:"block",badge:"blocked-badge"},
+    {id:"ni-history",panel:"p-history",title:"היסטוריה",ic:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',perm:"viewHistory"},
+    {id:"ni-messages",panel:"p-messages",title:"הודעות",ic:'<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>',perm:"viewMsgs",badge:"msgs-badge"},
+    ...(isAdmin?[
+      {id:"ni-team",panel:"p-team",title:"חברי צוות",ic:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>',always:true},
+      {id:"ni-requests",panel:"p-requests",title:"בקשות הרשאה",ic:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',always:true,badge:"requests-badge"},
+    ]:[]),
   ];
-  document.getElementById("stats-grid").innerHTML = stats.map(s =>
-    `<div class="sc" data-filter="${s.f}"><div class="si ${s.c}"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${s.ic}</svg></div><div><div class="sn">${s.n}</div><div class="sl">${s.l}</div></div></div>`
-  ).join("");
-  document.querySelectorAll(".sc[data-filter]").forEach(c => c.onclick = () => {
-    curFilter = c.dataset.filter;
-    document.querySelectorAll(".fb").forEach(b => b.classList.toggle("active", b.dataset.filter === curFilter));
-    showPanel("p-clients", "nav-clients", "ניהול לקוחות");
-    renderClientsTable();
+  nav.innerHTML=`<div class="sb-sec">ראשי</div>`+items.map((item,idx)=>{
+    const allowed=isAdmin||item.always||perms[item.perm];
+    return`<button class="ni${idx===0?" active":""}" id="${item.id}">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${item.ic}</svg>
+      ${item.title}
+      ${item.badge?`<span class="bdg" id="${item.badge}" style="display:none">0</span>`:""}
+      ${!allowed&&item.perm?`<span style="font-size:10px;color:rgba(255,255,255,.3);margin-right:auto">🔒</span>`:""}
+    </button>`;
+  }).join("");
+  items.forEach(item=>{
+    const btn=document.getElementById(item.id);if(!btn)return;
+    btn.onclick=()=>{
+      const allowed=isAdmin||item.always||perms[item.perm];
+      if(!allowed){showPermDenied(item.title);return;}
+      showPanel(item.panel,item.id,item.title);
+    };
+  });
+  /* events */
+  document.getElementById("sb-ov").onclick=()=>toggleSB(false);
+  document.getElementById("menu-btn").onclick=()=>toggleSB();
+  document.getElementById("notif-btn").onclick=()=>showPanel("p-messages","ni-messages","הודעות לקוחות");
+  document.getElementById("srch").oninput=()=>{searchQ=document.getElementById("srch").value.trim().toLowerCase();renderClientsTable();};
+  document.getElementById("sort-sel").onchange=renderClientsTable;
+  document.querySelectorAll(".fb").forEach(b=>b.onclick=()=>{curFilter=b.dataset.filter;document.querySelectorAll(".fb").forEach(x=>x.classList.remove("active"));b.classList.add("active");renderClientsTable();});
+  document.getElementById("btn-add-client").onclick=()=>{if(!isAdmin&&!perms.editClient){showPermDenied("הוספת לקוח");return;}openClientModal(null);};
+  if(document.getElementById("btn-add-team"))document.getElementById("btn-add-team").onclick=()=>openTeamModal(null);
+  document.getElementById("mo-chat-close").onclick=closeChatModal;
+  document.getElementById("btn-close-conv").onclick=agentCloseConv;
+  document.getElementById("btn-reopen-conv").onclick=agentReopenConv;
+  document.getElementById("btn-init-msg").onclick=agentInitMsg;
+  document.getElementById("chat-send-btn").onclick=agentSend;
+  document.getElementById("cancel-reply-btn").onclick=cancelReply;
+  document.getElementById("btn-del-chat").onclick=()=>{if(chatPhone)confirmDeleteChat(chatPhone);};
+  document.getElementById("chat-ta").onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();agentSend();}};
+  document.getElementById("chat-ta").oninput=function(){this.style.height="";this.style.height=Math.min(this.scrollHeight,110)+"px";};
+  document.getElementById("ctx-mo").onclick=e=>{if(e.target===document.getElementById("ctx-mo"))closeCtx();};
+  document.querySelectorAll(".ctx-emoji-btn").forEach(b=>b.onclick=()=>addReaction(b.dataset.emoji));
+  document.getElementById("ctx-reply").onclick=()=>{setReply(ctxMsgKey,ctxMsgData);closeCtx();};
+  document.getElementById("ctx-copy").onclick=()=>{copyMsg(ctxMsgData);closeCtx();};
+  document.getElementById("ctx-edit").onclick=()=>{openEditMsg(ctxMsgKey,ctxMsgData);closeCtx();};
+  document.getElementById("ctx-del-me").onclick=()=>{delMsgMe(ctxMsgKey);closeCtx();};
+  document.getElementById("ctx-del-all").onclick=()=>{delMsgAll(ctxMsgKey);closeCtx();};
+  document.getElementById("edit-save").onclick=saveEditMsg;
+  document.getElementById("edit-cancel").onclick=()=>closeMo("edit-mo");
+  document.getElementById("edit-mo").onclick=e=>{if(e.target===document.getElementById("edit-mo"))closeMo("edit-mo");};
+  document.getElementById("btn-gp").onclick=()=>{
+    if(!isAdmin&&!(currentUser.perms||{}).changePin){showPermDenied("החלפת קוד אישי");return;}
+    generatePin();
+  };
+  document.getElementById("btn-add-site").onclick=()=>addSiteField();
+  document.getElementById("btn-add-pwd").onclick=()=>addPwdField();
+  document.getElementById("btn-save-client").onclick=saveClient;
+  document.getElementById("mo-client-close").onclick=()=>closeMo("mo-client");
+  document.getElementById("mo-client-cancel").onclick=()=>closeMo("mo-client");
+  document.getElementById("mo-view-close").onclick=()=>closeMo("mo-view");
+  document.getElementById("mo-msgs-close").onclick=()=>closeMo("mo-msgs");
+  document.getElementById("confirm-cancel").onclick=()=>closeMo("mo-confirm");
+  if(document.getElementById("mo-team-close")){
+    document.getElementById("mo-team-close").onclick=()=>closeMo("mo-team");
+    document.getElementById("mo-team-cancel").onclick=()=>closeMo("mo-team");
+    document.getElementById("btn-save-team").onclick=saveTeamMember;
+  }
+}
+
+function showPermDenied(action) {
+  /* פופאפ עם 2 אפשרויות */
+  const ov = document.createElement("div");
+  ov.style.cssText = "position:fixed;inset:0;background:rgba(12,26,46,.7);backdrop-filter:blur(6px);z-index:600;display:flex;align-items:center;justify-content:center;padding:24px;animation:fi .2s ease";
+  ov.innerHTML = `
+    <div style="background:#fff;border-radius:22px;padding:32px 28px;max-width:380px;width:100%;text-align:center;box-shadow:0 24px 64px rgba(12,26,46,.4)">
+      <div style="width:56px;height:56px;border-radius:50%;background:rgba(239,68,68,.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:var(--err)">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      </div>
+      <div style="font-size:19px;font-weight:800;margin-bottom:8px">נדרשת הרשאה</div>
+      <div style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:24px">אין לך הרשאה לבצע: <strong>${action}</strong><br/>ניתן לשלוח בקשה למנהל.</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button id="req-perm-btn" style="background:linear-gradient(135deg,var(--p),var(--pd));border:none;border-radius:var(--rs);color:#fff;font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;padding:13px;cursor:pointer">שלח בקשת הרשאה</button>
+        <button id="req-cancel-btn" style="background:var(--bg);border:1.5px solid var(--bdr);border-radius:var(--rs);color:var(--muted);font-family:'Heebo',sans-serif;font-size:14px;font-weight:600;padding:12px;cursor:pointer">ביטול</button>
+      </div>
+    </div>`;
+  document.body.appendChild(ov);
+  ov.onclick = e => { if(e.target===ov) ov.remove(); };
+  document.getElementById("req-cancel-btn").onclick = () => ov.remove();
+  document.getElementById("req-perm-btn").onclick = async () => {
+    const key = `req_${Date.now()}`;
+    await set(ref(db,`permRequests/${key}`),{
+      userId:currentUser.userId, name:currentUser.name,
+      action, requestedAt:Date.now(), status:"pending"
+    }).catch(()=>{});
+    ov.remove();
+    toast("בקשת הרשאה נשלחה למנהל","s");
+  };
+}
+window.showPermDenied=showPermDenied;
+
+/* ── Listen ── */
+function startListening() {
+  /* האזנה לשינוי session — ניתוק מרחוק */
+  if(currentUser) {
+    onValue(ref(db,`sessions/${currentUser.userId}`),snap=>{
+      if(!snap.exists()) return;
+      const ses = snap.val();
+      const saved = JSON.parse(localStorage.getItem(SESSION_KEY)||"{}");
+      if(ses.deviceToken==="REVOKED"||(ses.deviceToken&&ses.deviceToken!==saved.deviceToken)){
+        localStorage.removeItem(SESSION_KEY);
+        location.reload();
+      }
+    });
+  }
+  showLoadOverlay("טוען נתונים...");
+  let n=0; const done=()=>{n++;if(n>=3)hideLoadOverlay();};
+  onValue(ref(db,"clients"),s=>{clients=s.val()||{};renderAll();done();});
+  onValue(ref(db,"blocked"),s=>{blocked=s.val()||{};renderBlockedTable();updateBlockedBadge();done();});
+  onValue(ref(db,"usedPins"),s=>{usedPins=s.val()||{};done();});
+  onValue(ref(db,"team"),s=>{
+    team=s.val()||{};
+    renderTeamTable();
+    /* אם המשתמש הנוכחי הוא נציג — עדכון הרשאות בזמן אמת */
+    if(!isAdmin&&currentUser&&team[currentUser.userId]){
+      currentUser.perms = team[currentUser.userId].perms || {};
+      buildSidebar(); /* בנייה מחדש של הסרגל לפי הרשאות עדכניות */
+    }
+  });
+  onValue(ref(db,"failedUnknown"),s=>{unknownFails=s.val()||{};renderHistoryTable();});
+  if(isAdmin)onValue(ref(db,"permRequests"),s=>{permRequests=s.val()||{};renderRequests();updateRequestsBadge();});
+}
+function renderAll(){renderStats();renderClientsTable();renderHistoryTable();renderMsgsList();updateMsgBadge();}
+
+/* ── Stats ── */
+function renderStats() {
+  const cl=Object.values(clients).filter(c=>c.name&&c.pin);
+  const total=cl.length,totalSites=cl.reduce((s,c)=>s+(c.sites?Object.keys(c.sites).length:0),0);
+  const active=cl.filter(c=>c.sites&&Object.values(c.sites).some(s=>s.status==="active")).length;
+  const blk=Object.keys(blocked).filter(k=>blocked[k]?.blocked).length;
+  const teamCount=Object.keys(team).length;
+  const stats=[
+    {ic:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>',c:"b",n:total,l:"לקוחות",f:"all"},
+    {ic:'<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20"/>',c:"g",n:totalSites,l:"אתרים",f:"all"},
+    {ic:'<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>',c:"o",n:active,l:"פעילים",f:"active"},
+    {ic:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>',c:"r",n:blk,l:"חסומים",f:"blocked"},
+    ...(isAdmin?[{ic:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>',c:"pu",n:teamCount,l:"נציגים",f:"team"}]:[]),
+  ];
+  document.getElementById("stats-grid").innerHTML=stats.map(s=>`<div class="sc" data-f="${s.f}"><div class="si ${s.c}"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${s.ic}</svg></div><div><div class="sn">${s.n}</div><div class="sl">${s.l}</div></div></div>`).join("");
+  document.querySelectorAll(".sc[data-f]").forEach(c=>c.onclick=()=>{
+    if(c.dataset.f==="team"){showPanel("p-team","ni-team","חברי צוות");return;}
+    curFilter=c.dataset.f;
+    document.querySelectorAll(".fb").forEach(b=>b.classList.toggle("active",b.dataset.filter===curFilter));
+    showPanel("p-clients","ni-clients","ניהול לקוחות");renderClientsTable();
   });
 }
 
-/* ── טבלת לקוחות ── */
+/* ── Clients Table ── */
 function renderClientsTable() {
-  const tbody = document.getElementById("clients-tbody");
-  let entries = Object.entries(clients);
-  if (searchQ) entries = entries.filter(([ph, c]) => (c.name || "").toLowerCase().includes(searchQ) || ph.includes(searchQ));
-  if (curFilter === "blocked")  entries = entries.filter(([p]) => blocked[p]?.blocked);
-  else if (curFilter === "active")   entries = entries.filter(([, c]) => c.sites && Object.values(c.sites).some(s => s.status === "active"));
-  else if (curFilter === "building") entries = entries.filter(([, c]) => c.sites && Object.values(c.sites).some(s => s.status === "building"));
-  else if (curFilter === "msgs")     entries = entries.filter(([, c]) => c.messages && Object.values(c.messages).some(m => !m.agentRead && (m.sender === "client" || !m.sender) && m.type !== "closed"));
-  const sort = document.getElementById("sort-sel").value;
-  entries = [...entries];
-  if (sort === "name")     entries.sort(([, a], [, b]) => (a.name || "").localeCompare(b.name || "", "he"));
-  else if (sort === "newest") entries.sort(([, a], [, b]) => (b.joinedAt || 0) - (a.joinedAt || 0));
-  else if (sort === "oldest") entries.sort(([, a], [, b]) => (a.joinedAt || 0) - (b.joinedAt || 0));
-  else if (sort === "deadline") entries.sort(([, a], [, b]) => { if (!a.deadline && !b.deadline) return 0; if (!a.deadline) return 1; if (!b.deadline) return -1; return new Date(a.deadline) - new Date(b.deadline); });
-  document.getElementById("clients-lbl").textContent = `לקוחות (${entries.length})`;
-  if (!entries.length) { tbody.innerHTML = `<tr><td colspan="9"><div class="et">אין לקוחות להצגה</div></td></tr>`; return; }
-  tbody.innerHTML = entries.map(([phone, c]) => {
-    const sites = c.sites ? Object.values(c.sites) : [];
-    const isBlk = blocked[phone]?.blocked;
-    const msgs = c.messages ? Object.values(c.messages).filter(m => m.type !== "closed") : [];
-    const unread = msgs.filter(m => (m.sender === "client" || !m.sender) && !m.agentRead).length;
-    const avg = sites.length ? Math.round(sites.reduce((s, si) => s + (parseInt(si.progress || 0)), 0) / sites.length) : 0;
-    const pc = avg >= 100 ? "#22c55e" : avg >= 75 ? "#8b5cf6" : avg >= 50 ? "#3b82f6" : avg >= 25 ? "#f59e0b" : "#ef4444";
-    let dl = "—";
-    if (c.deadline) { const d = Math.ceil((new Date(c.deadline) - new Date()) / 864e5); dl = d < 0 ? `<span style="color:var(--err);font-size:12px;font-weight:700">איחור ${Math.abs(d)}י'</span>` : d === 0 ? `<span style="color:var(--warn);font-size:12px;font-weight:700">היום!</span>` : `<span style="font-size:12px;color:var(--muted)">${d}י'</span>`; }
-    return `<tr>
-      <td class="cn">
-        <div style="display:flex;align-items:center;gap:8px">
-          ${c.avatar
-            ? `<img src="${c.avatar}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;flex-shrink:0" onerror="this.style.display='none'" />`
-            : `<div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#0ea5e9,#0284c7);display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:700;flex-shrink:0">${(c.name||"?")[0]}</div>`}
-          ${c.name || "—"}${c.note ? `<span title="${c.note}" style="cursor:help">📌</span>` : ""}
-        </div>
-      </td>
+  const tbody=document.getElementById("clients-tbody");
+  let entries=Object.entries(clients).filter(([,c])=>c.name&&c.pin);
+  if(searchQ)entries=entries.filter(([ph,c])=>(c.name||"").toLowerCase().includes(searchQ)||ph.includes(searchQ));
+  if(curFilter==="blocked")entries=entries.filter(([p])=>blocked[p]?.blocked);
+  else if(curFilter==="active")entries=entries.filter(([,c])=>c.sites&&Object.values(c.sites).some(s=>s.status==="active"));
+  else if(curFilter==="building")entries=entries.filter(([,c])=>c.sites&&Object.values(c.sites).some(s=>s.status==="building"));
+  else if(curFilter==="msgs")entries=entries.filter(([,c])=>c.messages&&Object.values(c.messages).some(m=>!m.agentRead&&(m.sender==="client"||!m.sender)&&m.type!=="closed"));
+  const sort=document.getElementById("sort-sel").value;
+  entries=[...entries];
+  if(sort==="name")entries.sort(([,a],[,b])=>(a.name||"").localeCompare(b.name||"","he"));
+  else if(sort==="newest")entries.sort(([,a],[,b])=>(b.joinedAt||0)-(a.joinedAt||0));
+  else if(sort==="oldest")entries.sort(([,a],[,b])=>(a.joinedAt||0)-(b.joinedAt||0));
+  else if(sort==="deadline")entries.sort(([,a],[,b])=>{if(!a.deadline&&!b.deadline)return 0;if(!a.deadline)return 1;if(!b.deadline)return -1;return new Date(a.deadline)-new Date(b.deadline);});
+  document.getElementById("clients-lbl").textContent=`לקוחות (${entries.length})`;
+  if(!entries.length){tbody.innerHTML=`<tr><td colspan="10"><div class="et">אין לקוחות להצגה</div></td></tr>`;return;}
+  const perms=currentUser.perms||{};
+  tbody.innerHTML=entries.map(([phone,c])=>{
+    const sites=c.sites?Object.values(c.sites):[];
+    const isBlk=blocked[phone]?.blocked;
+    const msgs=c.messages?Object.values(c.messages).filter(m=>m.type!=="closed"):[];
+    const unread=msgs.filter(m=>(m.sender==="client"||!m.sender)&&!m.agentRead).length;
+    const avg=sites.length?Math.round(sites.reduce((s,si)=>s+(parseInt(si.progress||0)),0)/sites.length):0;
+    const pc=avg>=100?"#22c55e":avg>=75?"#8b5cf6":avg>=50?"#3b82f6":avg>=25?"#f59e0b":"#ef4444";
+    let dl="—";
+    if(c.deadline){const d=Math.ceil((new Date(c.deadline)-new Date())/864e5);dl=d<0?`<span style="color:var(--err);font-size:12px;font-weight:700">איחור ${Math.abs(d)}י'</span>`:d===0?`<span style="color:var(--warn);font-size:12px;font-weight:700">היום!</span>`:`<span style="font-size:12px;color:var(--muted)">${d}י'</span>`;}
+    const rating=c.rating||0;
+    const starsHtml=rating?`<div class="stars-display">${[1,2,3,4,5].map(i=>`<svg width="13" height="13" viewBox="0 0 24 24" class="star-svg${i<=rating?'':' empty'}" fill="${i<=rating?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`).join("")}</div>`:"—";
+    const canEdit=isAdmin||perms.editClient;
+    const canBlock=isAdmin||perms.block;
+    const canDel=isAdmin||perms.deleteClient;
+    const canChat=isAdmin||perms.chat;
+    return`<tr>
+      <td class="cn"><div style="display:flex;align-items:center;gap:8px">
+        ${c.avatar?`<img src="${c.avatar}" style="width:28px;height:28px;border-radius:50%;object-fit:contain;background:#f8faff;flex-shrink:0" onerror="this.style.display='none'"/>`:`<div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--pd));display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0">${(c.name||"?")[0]}</div>`}
+        ${c.name||"—"}
+        ${c.note?`<span class="note-icon" title="${c.note}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--warn)" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>`:""}
+      </div></td>
       <td class="cp">${fmtPhone(phone)}</td>
       <td>${sites.length}</td>
-      <td>${sites.length ? `<div style="display:flex;align-items:center;gap:5px"><div class="pm"><div class="pmf" style="width:${avg}%;background:${pc}"></div></div><span style="font-size:12px;font-weight:700;color:${pc}">${avg}%</span></div>` : "—"}</td>
+      <td>${sites.length?`<div style="display:flex;align-items:center;gap:5px"><div class="pm"><div class="pmf" style="width:${avg}%;background:${pc}"></div></div><span style="font-size:12px;font-weight:700;color:${pc}">${avg}%</span></div>`:"—"}</td>
       <td>${dl}</td>
       <td style="font-size:12px;color:var(--muted)">${getLL(c.loginHistory)}</td>
-      <td>${unread > 0 ? `<button class="bsm m" onclick="openMsgsModal('${phone}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>${unread}</button>` : msgs.length ? `<span style="font-size:12px;color:var(--muted)">${msgs.length}</span>` : "—"}</td>
-      <td>${isBlk ? `<span class="tag bl">חסום</span>` : `<span class="tag a">פעיל</span>`}</td>
+      <td>${unread>0?`<button class="bsm m" onclick="openMsgsModal('${phone}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>${unread}</button>`:msgs.length?`<span style="font-size:12px;color:var(--muted)">${msgs.length}</span>`:"—"}</td>
+      <td>${starsHtml}</td>
+      <td>${isBlk?`<span class="tag bl">חסום</span>`:`<span class="tag a">פעיל</span>`}</td>
       <td><div class="ac">
         <button class="bsm v" onclick="openViewModal('${phone}')">צפייה</button>
-        <button class="bsm e" onclick="openClientModal('${phone}')">עריכה</button>
-        <button class="bsm ch" onclick="openChatModal('${phone}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>צ'אט</button>
-        ${isBlk ? `<button class="bsm u" onclick="confirmUnblock('${phone}')">שחרור</button>` : `<button class="bsm bl" onclick="confirmBlock('${phone}')">חסימה</button>`}
-        <button class="bsm d" onclick="confirmDelete('${phone}')">מחיקה</button>
+        <button class="bsm e${canEdit?'':' dp'}" onclick="${canEdit?`openClientModal('${phone}')`:`showPermDenied('עריכת לקוח')`}">עריכה</button>
+        <button class="bsm ch2${canChat?'':' dp'}" onclick="${canChat?`openChatModal('${phone}')`:`showPermDenied('צ\\'אט')`}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>צ'אט</button>
+        ${isBlk?`<button class="bsm u${canBlock?'':' dp'}" onclick="${canBlock?`confirmUnblock('${phone}')`:`showPermDenied('שחרור')`}">שחרור</button>`:`<button class="bsm bl${canBlock?'':' dp'}" onclick="${canBlock?`confirmBlock('${phone}')`:`showPermDenied('חסימה')`}">חסימה</button>`}
+        <button class="bsm d${canDel?'':' dp'}" onclick="${canDel?`confirmDelete('${phone}')`:`showPermDenied('מחיקה')`}">מחיקה</button>
+        <button class="bsm d" style="font-size:11px" onclick="confirmDeleteChat('${phone}')"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>מחק שיחה</button>
       </div></td>
     </tr>`;
   }).join("");
 }
 
-/* ── יצירת קוד ── */
+/* ── PIN ── */
 async function generatePin() {
-  const btn = document.getElementById("btn-gp");
-  const lbl = document.getElementById("gp-lbl");
-  btn.disabled = true; lbl.textContent = "מחפש...";
+  const btn=document.getElementById("btn-gp"),lbl=document.getElementById("gp-lbl");
+  btn.disabled=true;lbl.textContent="מחפש...";
   try {
-    const [ps, cs] = await Promise.all([get(ref(db, "usedPins")), get(ref(db, "clients"))]);
-    const taken = new Set();
-    if (ps.exists()) Object.keys(ps.val()).forEach(p => taken.add(p));
-    if (cs.exists()) Object.values(cs.val()).forEach(c => { if (c.pin) taken.add(String(c.pin)); });
-    if (editPhone && clients[editPhone]?.pin) taken.delete(String(clients[editPhone].pin));
-    let pin = null, tries = 0;
-    while (!pin && tries < 500) { const c = String(Math.floor(Math.random() * 9000) + 1000); if (!taken.has(c)) pin = c; tries++; }
-    if (!pin) { toast("המאגר מלא", "e"); return; }
-    document.getElementById("f-pin").value = pin;
-    document.getElementById("pin-disp").textContent = pin.split("").join("  ");
+    const [ps,cs]=await Promise.all([get(ref(db,"usedPins")),get(ref(db,"clients"))]);
+    const taken=new Set();
+    if(ps.exists())Object.keys(ps.val()).forEach(p=>taken.add(p));
+    if(cs.exists())Object.values(cs.val()).forEach(c=>{if(c.pin)taken.add(String(c.pin));});
+    if(editPhone&&clients[editPhone]?.pin)taken.delete(String(clients[editPhone].pin));
+    let pin=null,tries=0;
+    while(!pin&&tries<500){const c=String(Math.floor(Math.random()*9000)+1000);if(!taken.has(c))pin=c;tries++;}
+    if(!pin){toast("המאגר מלא","e");return;}
+    document.getElementById("f-pin").value=pin;
+    document.getElementById("pin-disp").textContent=pin.split("").join("  ");
     document.getElementById("pin-disp").classList.add("ok");
-    lbl.textContent = "החלף קוד";
-    document.getElementById("pin-hint").innerHTML = `<span style="color:var(--ok);font-weight:700">✓ קוד ייחודי נוצר</span> — ישמר לאחר לחיצה על שמירה`;
-  } catch (err) { toast("שגיאה ביצירת קוד", "e"); console.error(err); }
-  finally { btn.disabled = false; }
+    lbl.textContent="החלף קוד";
+    document.getElementById("pin-hint").innerHTML=`<span style="color:var(--ok);font-weight:700">✓ קוד ייחודי נוצר</span>`;
+  } catch(err){toast("שגיאה","e");}finally{btn.disabled=false;}
 }
 
-/* ── Modal לקוח ── */
+/* ── Client Modal ── */
 function openClientModal(phone) {
-  editPhone = phone; siteCount = 0;
-  document.getElementById("sites-editor").innerHTML = "";
-  document.getElementById("f-pin").value = "";
-  document.getElementById("pin-disp").textContent = "—  —  —  —";
+  editPhone=phone;siteCount=0;pwdCount=0;
+  document.getElementById("sites-editor").innerHTML="";
+  document.getElementById("passwords-editor").innerHTML="";
+  document.getElementById("f-pin").value="";
+  document.getElementById("pin-disp").textContent="—  —  —  —";
   document.getElementById("pin-disp").classList.remove("ok");
-  document.getElementById("gp-lbl").textContent = "צור קוד";
-  document.getElementById("pin-hint").innerHTML = 'לחץ "צור קוד" — המערכת תיצור קוד ייחודי';
-  if (phone && clients[phone]) {
-    const c = clients[phone];
-    document.getElementById("mo-client-t").textContent = "עריכת לקוח";
-    document.getElementById("f-name").value = c.name || "";
-    document.getElementById("f-phone").value = phone;
-    document.getElementById("f-phone").disabled = true;
-    document.getElementById("f-email").value = c.email || "";
-    document.getElementById("f-deadline").value = c.deadline || "";
-    document.getElementById("f-note").value = c.note || "";
-    if (c.pin) {
-      document.getElementById("f-pin").value = String(c.pin);
-      document.getElementById("pin-disp").textContent = String(c.pin).split("").join("  ");
-      document.getElementById("pin-disp").classList.add("ok");
-      document.getElementById("gp-lbl").textContent = "החלף קוד";
-      document.getElementById("pin-hint").innerHTML = `<span style="color:var(--ok);font-weight:700">✓ קוד קיים</span> — לחץ "החלף קוד" לשינוי`;
-    }
-    if (c.sites) Object.values(c.sites).forEach(s => addSiteField(s));
+  document.getElementById("gp-lbl").textContent="צור קוד";
+  document.getElementById("pin-hint").innerHTML='לחץ "צור קוד"';
+  if(phone&&clients[phone]){
+    const c=clients[phone];
+    document.getElementById("mo-client-t").textContent="עריכת לקוח";
+    document.getElementById("f-name").value=c.name||"";
+    document.getElementById("f-phone").value=phone;document.getElementById("f-phone").disabled=true;
+    document.getElementById("f-email").value=c.email||"";
+    document.getElementById("f-deadline").value=c.deadline||"";
+    document.getElementById("f-note").value=c.note||"";
+    document.getElementById("f-message").value=c.message||"";
+    if(c.pin){document.getElementById("f-pin").value=String(c.pin);document.getElementById("pin-disp").textContent=String(c.pin).split("").join("  ");document.getElementById("pin-disp").classList.add("ok");document.getElementById("gp-lbl").textContent="החלף קוד";document.getElementById("pin-hint").innerHTML=`<span style="color:var(--ok);font-weight:700">✓ קוד קיים</span>`;}
+    if(c.sites)Object.values(c.sites).forEach(s=>addSiteField(s));
+    if(c.passwords)Object.values(c.passwords).forEach(p=>addPwdField(p));
   } else {
-    document.getElementById("mo-client-t").textContent = "הוספת לקוח";
-    ["f-name","f-phone","f-email","f-deadline","f-note"].forEach(id => { document.getElementById(id).value = ""; });
-    document.getElementById("f-phone").disabled = false;
+    document.getElementById("mo-client-t").textContent="הוספת לקוח";
+    ["f-name","f-phone","f-email","f-deadline","f-note","f-message"].forEach(id=>document.getElementById(id).value="");
+    document.getElementById("f-phone").disabled=false;
   }
   openMo("mo-client");
 }
-window.openClientModal = openClientModal;
+window.openClientModal=openClientModal;
 
-function addSiteField(site = {}) {
-  siteCount++;
-  const id = siteCount;
-  const div = document.createElement("div");
-  div.className = "sec"; div.id = `sc-${id}`;
-  const stOpts = ["active","building","paused"].map(s => `<option value="${s}" ${site.status === s ? "selected" : ""}>${s === "active" ? "פעיל" : s === "building" ? "בבנייה" : "מושהה"}</option>`).join("");
-  div.innerHTML = `<div class="sec-top"><span class="sec-n">אתר ${id}</span><button class="btn-rm" type="button" onclick="document.getElementById('sc-${id}').remove()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>הסרה</button></div>
-  <div class="fr"><div class="fg"><label class="fl">שם האתר</label><input class="fi s-name" type="text" placeholder="אתר העסק" value="${site.name||""}"/></div><div class="fg"><label class="fl">כתובת URL</label><input class="fi s-url" type="url" placeholder="https://..." value="${site.url||""}" dir="ltr"/></div></div>
-  <div class="fr"><div class="fg"><label class="fl">סטטוס</label><select class="fi s-status">${stOpts}</select></div><div class="fg"><label class="fl">התקדמות 0–100</label><input class="fi s-prog" type="number" min="0" max="100" placeholder="0" value="${site.progress||"0"}"/></div></div>
-  <div class="fr"><div class="fg"><label class="fl">תאריך השקה</label><input class="fi s-launch" type="text" placeholder="01/2026" value="${site.launchDate||""}"/></div><div class="fg"><label class="fl">עדכון אחרון</label><input class="fi s-upd" type="text" placeholder="01/06/2025" value="${site.lastUpdated||""}"/></div></div>
-  <div class="fr full"><div class="fg"><label class="fl">קישור לתמונה</label><input class="fi s-img" type="url" placeholder="https://..." value="${site.image||""}" dir="ltr"/></div></div>
-  <div class="fr full"><div class="fg"><label class="fl">הודעה אישית ללקוח</label><input class="fi s-msg" type="text" placeholder="האתר בשלבי גימור..." value="${site.message||""}"/></div></div>`;
+function addSiteField(site={}) {
+  siteCount++;const id=siteCount;
+  const div=document.createElement("div");div.className="sec";div.id=`sc-${id}`;
+  const so=["active","building","paused"].map(s=>`<option value="${s}" ${site.status===s?"selected":""}>${s==="active"?"פעיל":s==="building"?"בבנייה":"מושהה"}</option>`).join("");
+  div.innerHTML=`<div class="sec-top"><span class="sec-n">אתר ${id}</span><button class="btn-rm" type="button" onclick="document.getElementById('sc-${id}').remove()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>הסרה</button></div>
+  <div class="fr"><div class="fg"><label class="fl">שם האתר</label><input class="fi s-name" type="text" value="${site.name||""}"/></div><div class="fg"><label class="fl">כתובת URL</label><input class="fi s-url" type="url" value="${site.url||""}" dir="ltr"/></div></div>
+  <div class="fr"><div class="fg"><label class="fl">סטטוס</label><select class="fi s-status">${so}</select></div><div class="fg"><label class="fl">התקדמות 0–100</label><input class="fi s-prog" type="number" min="0" max="100" value="${site.progress||"0"}"/></div></div>
+  <div class="fr"><div class="fg"><label class="fl">תאריך השקה</label><input class="fi s-launch" type="text" placeholder="01/2026" value="${site.launchDate||""}"/></div><div class="fg"><label class="fl">עדכון אחרון</label><input class="fi s-upd" type="text" value="${site.lastUpdated||""}"/></div></div>
+  <div class="fr full"><div class="fg"><label class="fl">קישור לתמונה</label><input class="fi s-img" type="url" value="${site.image||""}" dir="ltr"/></div></div>
+  <div class="fr full"><div class="fg"><label class="fl">הודעה אישית ללקוח</label><input class="fi s-msg" type="text" value="${site.message||""}"/></div></div>`;
   document.getElementById("sites-editor").appendChild(div);
 }
 
+function addPwdField(pwd={}) {
+  pwdCount++;const id=pwdCount;
+  const div=document.createElement("div");div.className="sec";div.id=`pw-${id}`;
+  div.innerHTML=`<div class="sec-top"><span class="sec-n">סיסמה ${id}</span><button class="btn-rm" type="button" onclick="document.getElementById('pw-${id}').remove()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>הסרה</button></div>
+  <div class="fr"><div class="fg"><label class="fl">שם / תיאור</label><input class="fi pw-label" type="text" placeholder="סיסמת דשבורד האתר" value="${pwd.label||""}"/></div><div class="fg"><label class="fl">הסיסמה</label><input class="fi pw-value" type="text" placeholder="••••••••" value="${pwd.value||""}"/></div></div>`;
+  document.getElementById("passwords-editor").appendChild(div);
+}
+
 async function saveClient() {
-  const name  = document.getElementById("f-name").value.trim();
-  const phone = editPhone || document.getElementById("f-phone").value.replace(/\D/g, "");
-  const pin   = document.getElementById("f-pin").value.trim();
-  const email = document.getElementById("f-email").value.trim();
-  const dl    = document.getElementById("f-deadline").value;
-  const note  = document.getElementById("f-note").value.trim();
-  if (!name) return toast("חסר שם מלא", "e");
-  if (!/^0[0-9]{8,9}$/.test(phone)) return toast("טלפון ישראלי לא תקין", "e");
-  if (!pin) return toast("יש ליצור קוד אישי תחילה", "e");
-  const sc = document.querySelectorAll(".sec");
-  const sites = {};
-  let ok = true;
-  sc.forEach((card, i) => {
-    const url = card.querySelector(".s-url").value.trim();
-    if (url && !isUrl(url)) { toast(`URL לא תקין באתר ${i + 1}`, "e"); ok = false; return; }
-    const prog = Math.max(0, Math.min(100, parseInt(card.querySelector(".s-prog").value) || 0));
-    sites[`site_${i + 1}`] = { name: card.querySelector(".s-name").value.trim() || "", url, status: card.querySelector(".s-status").value, progress: prog, ...(card.querySelector(".s-launch").value.trim() && { launchDate: card.querySelector(".s-launch").value.trim() }), ...(card.querySelector(".s-upd").value.trim() && { lastUpdated: card.querySelector(".s-upd").value.trim() }), ...(card.querySelector(".s-img").value.trim() && { image: card.querySelector(".s-img").value.trim() }), ...(card.querySelector(".s-msg").value.trim() && { message: card.querySelector(".s-msg").value.trim() }) };
+  const name=document.getElementById("f-name").value.trim();
+  const phone=editPhone||document.getElementById("f-phone").value.replace(/\D/g,"");
+  const pin=document.getElementById("f-pin").value.trim();
+  const email=document.getElementById("f-email").value.trim();
+  const dl=document.getElementById("f-deadline").value;
+  const note=document.getElementById("f-note").value.trim();
+  const message=document.getElementById("f-message").value.trim();
+  if(!name)return toast("חסר שם מלא","e");
+  if(!/^0[0-9]{8,9}$/.test(phone))return toast("טלפון לא תקין","e");
+  if(!pin)return toast("יש ליצור קוד אישי","e");
+  const sc=document.querySelectorAll(".sec[id^='sc-']");
+  const sites={};let ok=true;
+  sc.forEach((card,i)=>{
+    const url=card.querySelector(".s-url").value.trim();
+    if(url&&!isUrl(url)){toast(`URL לא תקין באתר ${i+1}`,"e");ok=false;return;}
+    const prog=Math.max(0,Math.min(100,parseInt(card.querySelector(".s-prog").value)||0));
+    sites[`site_${i+1}`]={name:card.querySelector(".s-name").value.trim()||"",url,status:card.querySelector(".s-status").value,progress:prog,
+      ...(card.querySelector(".s-launch").value.trim()&&{launchDate:card.querySelector(".s-launch").value.trim()}),
+      ...(card.querySelector(".s-upd").value.trim()&&{lastUpdated:card.querySelector(".s-upd").value.trim()}),
+      ...(card.querySelector(".s-img").value.trim()&&{image:card.querySelector(".s-img").value.trim()}),
+      ...(card.querySelector(".s-msg").value.trim()&&{message:card.querySelector(".s-msg").value.trim()})};
   });
-  if (!ok) return;
+  if(!ok)return;
+  const pwCards=document.querySelectorAll(".sec[id^='pw-']");
+  const passwords={};
+  pwCards.forEach((card,i)=>{const lbl=card.querySelector(".pw-label").value.trim();const val=card.querySelector(".pw-value").value.trim();if(lbl&&val)passwords[`pwd_${i+1}`]={label:lbl,value:val};});
   showSP("שומר...");
   try {
-    const ex = clients[phone] || {};
-    await set(ref(db, `clients/${phone}`), { ...ex, name, pin, ...(email && { email }), ...(dl && { deadline: dl }), ...(note && { note }), ...(!ex.joinedAt && { joinedAt: Date.now() }), sites: Object.keys(sites).length > 0 ? sites : (ex.sites || {}) });
-    await set(ref(db, `usedPins/${pin}`), true);
-    toast(editPhone ? "עודכן" : "נוסף", "s");
+    const ex=clients[phone]||{};
+    await set(ref(db,`clients/${phone}`),{...ex,name,pin,...(email&&{email}),...(dl&&{deadline:dl}),...(note&&{note}),...(message&&{message}),...(!ex.joinedAt&&{joinedAt:Date.now()}),sites:Object.keys(sites).length>0?sites:(ex.sites||{}),passwords:Object.keys(passwords).length>0?passwords:(ex.passwords||{})});
+    await set(ref(db,`usedPins/${pin}`),true);
+    toast(editPhone?"עודכן":"נוסף","s");
     closeMo("mo-client");
-  } catch (e) { toast("שגיאה: " + e.message, "e"); } finally { hideSP(); }
+  } catch(e){toast("שגיאה: "+e.message,"e");}finally{hideSP();}
 }
 
-/* ── צפייה ── */
+/* ── View ── */
 function openViewModal(phone) {
-  const c = clients[phone] || {};
-  const sites = c.sites ? Object.values(c.sites) : [];
-  const msgs = c.messages ? Object.values(c.messages).filter(m => m.type !== "closed") : [];
-  document.getElementById("mo-view-t").textContent = `פרטי לקוח — ${c.name || phone}`;
-  let dlH = "לא הוגדר";
-  if (c.deadline) { const d = Math.ceil((new Date(c.deadline) - new Date()) / 864e5); dlH = `${new Date(c.deadline).toLocaleDateString("he-IL")} <span style="${d < 0 ? "color:var(--err)" : "color:var(--ok)"};font-weight:700">(${d < 0 ? `איחור ${Math.abs(d)}` : d} ימים)</span>`; }
-  document.getElementById("mo-view-body").innerHTML = `
-    <div class="vs"><div class="vl">שם מלא</div><div class="vv">${c.name || "—"}</div></div>
+  const c=clients[phone]||{};
+  const sites=c.sites?Object.values(c.sites):[];
+  const msgs=c.messages?Object.values(c.messages).filter(m=>m.type!=="closed"):[];
+  const pwds=c.passwords?Object.values(c.passwords):[];
+  document.getElementById("mo-view-t").textContent=`פרטי לקוח — ${c.name||phone}`;
+  let dlH="לא הוגדר";
+  if(c.deadline){const d=Math.ceil((new Date(c.deadline)-new Date())/864e5);dlH=`${new Date(c.deadline).toLocaleDateString("he-IL")} <span style="${d<0?"color:var(--err)":"color:var(--ok)"};font-weight:700">(${d<0?`איחור ${Math.abs(d)}`:d} ימים)</span>`;}
+  const rating=c.rating||0;
+  const rHtml=`<div class="stars-display">${[1,2,3,4,5].map(i=>`<svg width="18" height="18" viewBox="0 0 24 24" class="star-svg${i<=rating?'':' empty'}" fill="${i<=rating?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`).join("")}${rating?`<span style="font-size:13px;color:var(--muted);margin-right:8px">${rating}/5</span>`:""}</div>`;
+  const pwdsHtml=pwds.length?`<div class="vs"><div class="vl">סיסמאות</div>${pwds.map((p,i)=>`<div class="pwd-item"><span class="pwd-label">${p.label||"סיסמה"}</span><span class="pwd-val hidden" id="pv${i}">${p.value||""}</span><button class="btn-pwd-show" onclick="togglePwdView('pv${i}',this)">הצג</button><button class="btn-pwd-copy" onclick="navigator.clipboard?.writeText('${p.value||""}').then(()=>toast('הועתק ✓','s'))">העתק</button></div>`).join("")}</div>`:"";
+  document.getElementById("mo-view-body").innerHTML=`
+    <div class="vs"><div class="vl">שם מלא</div><div class="vv">${c.name||"—"}</div></div>
     <div class="vs"><div class="vl">טלפון</div><div class="vv" style="direction:ltr">${fmtPhone(phone)}</div></div>
-    ${c.email ? `<div class="vs"><div class="vl">אימייל</div><div class="vv">${c.email}</div></div>` : ""}
-    <div class="vs"><div class="vl">תאריך הצטרפות</div><div class="vv">${c.joinedAt ? fmtDate(c.joinedAt) : "—"}</div></div>
+    ${c.email?`<div class="vs"><div class="vl">אימייל</div><div class="vv">${c.email}</div></div>`:""}
+    <div class="vs"><div class="vl">הצטרפות</div><div class="vv">${c.joinedAt?fmtDate(c.joinedAt):"—"}</div></div>
     <div class="vs"><div class="vl">יעד לסיום</div><div class="vv">${dlH}</div></div>
-    ${c.note ? `<div class="vs"><div class="vl">תזכורת פנימית</div><div class="vv">${c.note}</div></div>` : ""}
-    <div class="vs"><div class="vl">ניסיונות כושלים</div><div class="vv" style="color:${(c.failedAttempts || 0) > 0 ? "var(--err)" : "var(--ok)"}">${c.failedAttempts || 0}</div></div>
-    ${sites.length ? `<div class="vs"><div class="vl">אתרים</div>${sites.map(s => { const p = parseInt(s.progress || 0); const pc = p >= 100 ? "#22c55e" : p >= 75 ? "#8b5cf6" : p >= 50 ? "#3b82f6" : p >= 25 ? "#f59e0b" : "#ef4444"; return `<div class="vsc"><div style="display:flex;justify-content:space-between"><strong>${s.name || "ללא שם"}</strong><span class="tag ${s.status === "active" ? "a" : s.status === "building" ? "bu" : "pa"}">${s.status === "active" ? "פעיל" : s.status === "building" ? "בבנייה" : "מושהה"}</span></div>${s.url ? `<div style="font-size:12px;color:var(--muted);margin-top:3px;direction:ltr">${s.url}</div>` : ""}<div class="vp"><div class="vpf" style="width:0%;background:${pc}" data-t="${p}"></div></div><div style="font-size:12px;font-weight:700;color:${pc};margin-top:3px">${p}%</div></div>`; }).join("")}</div>` : ""}
-    ${msgs.length ? `<div class="vs"><div class="vl">הודעות (${msgs.length})</div><button class="bsm m" onclick="openMsgsModal('${phone}')">צפייה בהודעות</button></div>` : ""}
-    ${(() => {
-      const logins = c.loginHistory ? Object.values(c.loginHistory).sort((a,b)=>b.at-a.at).slice(0,3) : [];
-      if (!logins.length) return "";
-      return `<div class="vs"><div class="vl">כניסות אחרונות</div>${logins.map(h => {
-        const flag = countryFlag(h.country||"");
-        return `<div style="font-size:13px;padding:6px 0;border-bottom:1px solid var(--bdr);display:flex;gap:8px;align-items:center">
-          <span style="font-size:18px">${flag}</span>
-          <div>
-            <div style="font-weight:600">${fmtDate(h.at)}</div>
-            <div style="color:var(--muted);font-size:12px;direction:ltr">${h.ip||""} ${h.city ? "· "+h.city : ""}</div>
-          </div>
-        </div>`;
-      }).join("")}</div>`;
-    })()}
-    `;
+    ${c.note?`<div class="vs"><div class="vl">תזכורת פנימית</div><div class="vv">${c.note}</div></div>`:""}
+    <div class="vs"><div class="vl">דירוג</div>${rHtml}</div>
+    <div class="vs"><div class="vl">ניסיונות כושלים</div><div class="vv" style="color:${(c.failedAttempts||0)>0?"var(--err)":"var(--ok)"}">${c.failedAttempts||0}</div></div>
+    ${pwdsHtml}
+    ${sites.length?`<div class="vs"><div class="vl">אתרים</div>${sites.map(s=>{const p=parseInt(s.progress||0);const pc=p>=100?"#22c55e":p>=75?"#8b5cf6":p>=50?"#3b82f6":p>=25?"#f59e0b":"#ef4444";return`<div class="vsc"><div style="display:flex;justify-content:space-between"><strong>${s.name||"ללא שם"}</strong><span class="tag ${s.status==="active"?"a":s.status==="building"?"bu":"pa"}">${s.status==="active"?"פעיל":s.status==="building"?"בבנייה":"מושהה"}</span></div>${s.url?`<div style="font-size:12px;color:var(--muted);margin-top:3px;direction:ltr">${s.url}</div>`:""}<div class="vp"><div class="vpf" style="width:0%;background:${pc}" data-t="${p}"></div></div><div style="font-size:12px;font-weight:700;color:${pc};margin-top:3px">${p}%</div></div>`;}).join("")}</div>`:""}
+    ${msgs.length?`<div class="vs"><div class="vl">הודעות (${msgs.length})</div><button class="bsm m" onclick="openMsgsModal('${phone}')">צפייה בהודעות</button></div>`:""}`;
   openMo("mo-view");
-  setTimeout(() => document.querySelectorAll(".vpf").forEach(el => { el.style.width = el.getAttribute("data-t") + "%"; }), 100);
+  setTimeout(()=>document.querySelectorAll(".vpf").forEach(el=>{el.style.width=el.getAttribute("data-t")+"%";}),100);
 }
-window.openViewModal = openViewModal;
+window.openViewModal=openViewModal;
+window.togglePwdView=(id,btn)=>{const el=document.getElementById(id);el.classList.toggle("hidden");btn.textContent=el.classList.contains("hidden")?"הצג":"הסתר";};
 
-/* ── הודעות ── */
+/* ── Messages ── */
 function openMsgsModal(phone) {
-  const c = clients[phone] || {};
-  const msgs = c.messages ? Object.entries(c.messages).filter(([, m]) => m.type !== "closed") : [];
-  document.getElementById("mo-msgs-t").textContent = `הודעות — ${c.name || phone}`;
-  msgs.sort(([, a], [, b]) => b.at - a.at);
-  document.getElementById("mo-msgs-body").innerHTML = msgs.length === 0
-    ? `<p style="color:var(--muted);text-align:center;padding:24px">אין הודעות</p>`
-    : msgs.map(([key, m]) => {
-        const isClient = m.sender === "client" || !m.sender;
-        return `<div class="mi ${!m.agentRead && isClient ? "unread" : ""}">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
-            <span class="tag ${isClient ? "bu" : "a"}" style="font-size:11px">${isClient ? "לקוח" : "נציג"}</span>
-            ${!m.agentRead && isClient ? `<span class="tag nm" style="font-size:11px">חדשה</span>` : ""}
-          </div>
-          <div style="font-size:14px;line-height:1.6">${m.text}</div>
-          <div class="mt2">${fmtDate(m.at)}</div>
-          ${!m.agentRead && isClient ? `<button class="btn-mk" onclick="markRead('${phone}','${key}')">סמן כנקרא</button>` : ""}
-        </div>`;
-      }).join("");
+  const c=clients[phone]||{};
+  const msgs=c.messages?Object.entries(c.messages).filter(([,m])=>m.type!=="closed"):[];
+  document.getElementById("mo-msgs-t").textContent=`הודעות — ${c.name||phone}`;
+  msgs.sort(([,a],[,b])=>b.at-a.at);
+  document.getElementById("mo-msgs-body").innerHTML=msgs.length===0?`<p style="color:var(--muted);text-align:center;padding:24px">אין הודעות</p>`:msgs.map(([key,m])=>{
+    const isClient=m.sender==="client"||!m.sender;
+    return`<div class="mi ${!m.agentRead&&isClient?"unread":""}">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;gap:8px">
+        <span class="tag ${isClient?"bu":"a"}" style="font-size:11px">${isClient?"לקוח":"נציג"}</span>
+        ${!m.agentRead&&isClient?`<span class="tag nm" style="font-size:11px">חדשה</span>`:""}
+      </div>
+      <div style="font-size:14px;line-height:1.6">${m.deleted?`<em style="opacity:.6">🚫 ההודעה נמחקה</em>`:m.text}</div>
+      <div class="mt3">${fmtDate(m.at)}</div>
+      ${!m.agentRead&&isClient?`<button class="btn-mk" onclick="markRead('${phone}','${key}')">סמן כנקרא</button>`:""}
+    </div>`;
+  }).join("");
   openMo("mo-msgs");
 }
-window.openMsgsModal = openMsgsModal;
-
-async function markRead(phone, key) { await set(ref(db, `clients/${phone}/messages/${key}/agentRead`), true); openMsgsModal(phone); }
-window.markRead = markRead;
+window.openMsgsModal=openMsgsModal;
+async function markRead(phone,key){await set(ref(db,`clients/${phone}/messages/${key}/agentRead`),true);openMsgsModal(phone);}
+window.markRead=markRead;
 
 function renderMsgsList() {
-  const cont = document.getElementById("msgs-list");
-  const all = [];
-  Object.entries(clients).forEach(([phone, c]) => { if (c.messages) Object.entries(c.messages).forEach(([key, m]) => { if (m.type !== "closed") all.push({ phone, name: c.name || "—", key, ...m }); }); });
-  all.sort((a, b) => b.at - a.at);
-  if (!all.length) { cont.innerHTML = `<p style="color:var(--muted);text-align:center;padding:32px">אין הודעות עדיין</p>`; return; }
-  cont.innerHTML = all.map(m => {
-    const isClient = m.sender === "client" || !m.sender;
-    const unread = isClient && !m.agentRead;
-    return `<div class="mi ${unread ? "unread" : ""}" style="margin-bottom:10px">
+  const cont=document.getElementById("msgs-list"),all=[];
+  Object.entries(clients).forEach(([phone,c])=>{if(c.messages)Object.entries(c.messages).forEach(([key,m])=>{if(m.type!=="closed")all.push({phone,name:c.name||"—",key,...m});});});
+  all.sort((a,b)=>b.at-a.at);
+  if(!all.length){cont.innerHTML=`<p style="color:var(--muted);text-align:center;padding:32px">אין הודעות עדיין</p>`;return;}
+  cont.innerHTML=all.map(m=>{
+    const isClient=m.sender==="client"||!m.sender;
+    const unread=isClient&&!m.agentRead;
+    return`<div class="mi ${unread?"unread":""}" style="margin-bottom:10px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;gap:8px">
         <strong>${m.name}</strong>
-        <div style="display:flex;gap:6px">${isClient ? `<span class="tag bu" style="font-size:11px">לקוח</span>` : `<span class="tag a" style="font-size:11px">נציג</span>`}${unread ? `<span class="tag nm">חדשה</span>` : ""}</div>
+        <div style="display:flex;gap:6px">${isClient?`<span class="tag bu" style="font-size:11px">לקוח</span>`:`<span class="tag a" style="font-size:11px">נציג</span>`}${unread?`<span class="tag nm">חדשה</span>`:""}</div>
       </div>
-      <div style="font-size:14px;line-height:1.6">${m.text}</div>
-      <div class="mt2">${fmtDate(m.at)}</div>
+      <div style="font-size:14px;line-height:1.6">${m.deleted?`<em style="opacity:.6">🚫 נמחקה</em>`:m.text}</div>
+      <div class="mt3">${fmtDate(m.at)}</div>
       <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
-        ${unread ? `<button class="btn-mk" onclick="markRead('${m.phone}','${m.key}')">סמן כנקרא</button>` : ""}
+        ${unread?`<button class="btn-mk" onclick="markRead('${m.phone}','${m.key}')">סמן כנקרא</button>`:""}
         <button class="bsm e" style="font-size:12px" onclick="openChatModal('${m.phone}')">פתח צ'אט</button>
       </div>
     </div>`;
   }).join("");
 }
-
 function updateMsgBadge() {
-  let u = 0;
-  Object.values(clients).forEach(c => { if (c.messages) Object.values(c.messages).forEach(m => { if ((m.sender === "client" || !m.sender) && !m.agentRead && m.type !== "closed") u++; }); });
-  const b = document.getElementById("msgs-badge"), nc = document.getElementById("notif-count");
-  if (u > 0) { b.textContent = u; b.style.display = ""; nc.textContent = u; nc.classList.add("show"); if ("Notification" in window && Notification.permission === "granted") new Notification("WebDesk Pro", { body: `${u} הודעות חדשות` }); }
-  else { b.style.display = "none"; nc.classList.remove("show"); }
+  let u=0;Object.values(clients).forEach(c=>{if(c.messages)Object.values(c.messages).forEach(m=>{if((m.sender==="client"||!m.sender)&&!m.agentRead&&m.type!=="closed")u++;});});
+  const b=document.getElementById("msgs-badge"),nc=document.getElementById("notif-count");
+  if(b){if(u>0){b.textContent=u;b.style.display="";}else b.style.display="none";}
+  if(u>0){nc.textContent=u;nc.classList.add("show");if("Notification"in window&&Notification.permission==="granted")new Notification("WebDesk Pro",{body:`${u} הודעות חדשות`});}
+  else nc.classList.remove("show");
 }
 
-/* ── צ'אט נציג ── */
+/* ── Chat ── */
 function openChatModal(phone) {
-  chatPhone = phone;
-  const c = clients[phone] || {};
-  document.getElementById("mo-chat-t").textContent = `שיחה עם ${c.name || phone}`;
+  chatPhone=phone;
+  const c=clients[phone]||{};
+  document.getElementById("mo-chat-t").textContent=c.name||phone;
+  const av=document.getElementById("chat-avatar-mo");
+  if(c.avatar){av.innerHTML=`<img src="${c.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.style.display='none'"/>`;av.style.padding="0";}
+  else{av.textContent=(c.name||"?")[0];av.style.padding="";}
   openMo("mo-chat");
-  if (chatListener) { chatListener(); chatListener = null; }
-  chatListener = onValue(ref(db, `clients/${phone}/messages`), snap => { renderChatMsgs(snap.val() || {}); });
+  if(chatListener){chatListener();chatListener=null;}
+  chatListener=onValue(ref(db,`clients/${phone}/messages`),snap=>renderChatMsgs(snap.val()||{}));
+  onValue(ref(db,`clients/${phone}/presence`),snap=>{
+    const p=snap.val();const st=document.getElementById("mo-chat-status");
+    if(p?.online){st.textContent="מחובר עכשיו";st.style.color="var(--ok)";}
+    else if(p?.lastSeen){st.textContent=`נראה ${fmtDate(p.lastSeen)}`;st.style.color="var(--muted)";}
+    else st.textContent="";
+  });
 }
-window.openChatModal = openChatModal;
+window.openChatModal=openChatModal;
 
-function closeChatModal() { closeMo("mo-chat"); if (chatListener) { chatListener(); chatListener = null; } chatPhone = null; }
+function closeChatModal(){closeMo("mo-chat");if(chatListener){chatListener();chatListener=null;}chatPhone=null;chatReplyTo=null;}
 
 function renderChatMsgs(msgs) {
-  const entries = Object.entries(msgs).filter(([, m]) => m.type !== "closed");
-  const isClosed = Object.values(msgs).some(m => m.type === "closed");
-  const ta = document.getElementById("chat-ta");
-  const sb = document.getElementById("chat-send-btn");
-  const ban = document.getElementById("cv-closed-ban");
-  const closeBt = document.getElementById("btn-close-conv");
-  const reopenBt = document.getElementById("btn-reopen-conv");
-  ban.classList.toggle("show", isClosed);
-  ta.disabled = isClosed; sb.disabled = isClosed;
-  closeBt.style.display = isClosed ? "none" : "";
-  reopenBt.style.display = isClosed ? "" : "none";
-  document.getElementById("chat-status-lbl").textContent = isClosed ? "שיחה סגורה" : "שיחה פעילה";
-  const cont = document.getElementById("chat-msgs-list");
-  cont.innerHTML = "";
-  if (!entries.length) { cont.innerHTML = `<div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;padding:32px;text-align:center">אין הודעות עדיין</div>`; return; }
-  entries.sort(([, a], [, b]) => a.at - b.at);
-  let lastDate = "";
-  entries.forEach(([key, m]) => {
-    const ds = new Date(m.at).toLocaleDateString("he-IL");
-    if (ds !== lastDate) { lastDate = ds; const d = document.createElement("div"); d.className = "add"; d.innerHTML = `<span>${ds}</span>`; cont.appendChild(d); }
-    const isAgent = m.sender === "agent";
-    const w = document.createElement("div"); w.className = `aw ${isAgent ? "a" : "c"}`;
-    w.innerHTML = `<div class="ab">${m.text}</div><div class="at">${fmtTime(m.at)} · ${isAgent ? "נציג" : "לקוח"}</div>${isAgent && m.clientRead ? `<div class="ar">✓ נקרא ע"י הלקוח</div>` : ""}`;
+  const entries=Object.entries(msgs).filter(([,m])=>m.type!=="closed"&&!m.hiddenForAgent);
+  const isClosed=Object.values(msgs).some(m=>m.type==="closed");
+  const ta=document.getElementById("chat-ta"),sb=document.getElementById("chat-send-btn");
+  const ban=document.getElementById("cv-closed-ban"),closeBt=document.getElementById("btn-close-conv"),reopenBt=document.getElementById("btn-reopen-conv"),initBt=document.getElementById("btn-init-msg");
+  ban.classList.toggle("show",isClosed);ta.disabled=isClosed;sb.disabled=isClosed;
+  closeBt.style.display=isClosed?"none":"";reopenBt.style.display=isClosed?"":"none";initBt.style.display=isClosed?"":"none";
+  document.getElementById("chat-status-lbl").textContent=isClosed?"שיחה סגורה":"שיחה פעילה";
+  const cont=document.getElementById("chat-msgs-list");cont.innerHTML="";
+  if(!entries.length){cont.innerHTML=`<div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;padding:32px;text-align:center">אין הודעות עדיין</div>`;return;}
+  entries.sort(([,a],[,b])=>a.at-b.at);
+  let lastDate="";
+  entries.forEach(([key,m])=>{
+    const ds=new Date(m.at).toLocaleDateString("he-IL");
+    if(ds!==lastDate){lastDate=ds;const d=document.createElement("div");d.className="add";d.innerHTML=`<span>${ds}</span>`;cont.appendChild(d);}
+    const isAgent=m.sender==="agent";
+    const w=document.createElement("div");w.className=`aw ${isAgent?"a":"c"}`;
+    let replyHtml="";
+    if(m.replyTo)replyHtml=`<div class="reply-prev-wrap"><div class="reply-prev-name">${m.replyTo.sender==="agent"?"נציג":"לקוח"}</div><div class="reply-prev-txt">${m.replyTo.text}</div></div>`;
+    const rGroups={};
+    Object.entries(m.reactions||{}).forEach(([,r])=>{if(!rGroups[r.emoji])rGroups[r.emoji]={count:0,mine:false};rGroups[r.emoji].count++;if(r.by==="agent")rGroups[r.emoji].mine=true;});
+    const rHtml=Object.keys(rGroups).length?`<div class="reactions-wrap">${Object.entries(rGroups).map(([e,d])=>`<div class="rc ${d.mine?"mine":""}" onclick="toggleRC('${key}','${e}')">${e}<span class="rc-cnt">${d.count>1?d.count:""}</span></div>`).join("")}</div>`:"";
+    const bubbleTxt=m.deleted?`<em style="opacity:.6">🚫 ההודעה נמחקה</em>`:`${m.text}${m.edited?`<span style="font-size:10px;opacity:.5;margin-right:4px">(נערך)</span>`:""}`;
+    let statusHtml="";
+    if(isAgent&&!m.deleted){
+      if(m.clientRead){statusHtml=`<span style="color:var(--ok);font-size:10px;display:flex;align-items:center;gap:2px;padding:0 4px"><svg width="18" height="11" viewBox="0 0 18 11" fill="none"><path d="M1 5.5l3.5 3.5L11 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 5.5l3.5 3.5L16 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>${m.clientReadAt?fmtTime(m.clientReadAt):""}</span>`;}
+      else statusHtml=`<span style="color:var(--muted);font-size:10px;padding:0 4px"><svg width="12" height="11" viewBox="0 0 12 11" fill="none"><path d="M1 5.5l3.5 3.5L11 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
+    }
+    w.innerHTML=`${replyHtml}<div class="ab" data-key="${key}">${bubbleTxt}</div>${rHtml}<div style="display:flex;align-items:center;gap:4px;margin-top:3px;padding:0 2px"><span class="at">${fmtTime(m.at)} · ${isAgent?"נציג":"לקוח"}</span>${statusHtml}</div>`;
+    w.querySelector(".ab").addEventListener("click",()=>{if(!m.deleted)openCtx(key,m,isAgent);});
     cont.appendChild(w);
-    if (!isAgent && !m.agentRead) set(ref(db, `clients/${chatPhone}/messages/${key}/agentRead`), true);
+    if(!isAgent&&!m.agentRead)set(ref(db,`clients/${chatPhone}/messages/${key}/agentRead`),true);
   });
-  setTimeout(() => { cont.scrollTop = cont.scrollHeight; }, 50);
+  cont.scrollTop=cont.scrollHeight;
 }
 
 async function agentSend() {
-  const ta = document.getElementById("chat-ta");
-  const text = ta.value.trim();
-  if (!text || !chatPhone) return;
-  const btn = document.getElementById("chat-send-btn"); btn.disabled = true;
+  const ta=document.getElementById("chat-ta");const text=ta.value.trim();
+  if(!text||!chatPhone)return;
+  const btn=document.getElementById("chat-send-btn");btn.disabled=true;
   try {
-    await set(ref(db, `clients/${chatPhone}/messages/msg_${Date.now()}`), { text, at: Date.now(), sender: "agent", agentRead: true, clientRead: false });
-    ta.value = ""; ta.style.height = "";
-  } catch (e) { toast("שגיאה", "e"); } finally { btn.disabled = false; }
+    const key=`msg_${Date.now()}`;
+    const msg={text,at:Date.now(),sender:"agent",agentRead:true,clientRead:false,agentName:currentUser.name};
+    if(chatReplyTo){msg.replyTo={text:chatReplyTo.text.slice(0,80),sender:chatReplyTo.sender};cancelReply();}
+    await set(ref(db,`clients/${chatPhone}/messages/${key}`),msg);
+    ta.value="";ta.style.height="";
+  } catch(e){toast("שגיאה","e");}finally{btn.disabled=false;}
 }
 
-function agentInitMsg() { document.getElementById("chat-ta").disabled = false; document.getElementById("chat-send-btn").disabled = false; document.getElementById("chat-ta").focus(); toast("כתוב הודעה ושלח — הלקוח יראה אותה", "s"); }
+function setReply(key,msg){chatReplyTo={...msg,key};document.getElementById("reply-bar-name").textContent=msg.sender==="agent"?"אתה":clients[chatPhone]?.name||"לקוח";document.getElementById("reply-bar-txt").textContent=msg.text.slice(0,60);document.getElementById("reply-bar").classList.add("show");document.getElementById("chat-ta").focus();}
+function cancelReply(){chatReplyTo=null;document.getElementById("reply-bar").classList.remove("show");}
 
-async function agentCloseConv() {
-  if (!chatPhone) return; showSP("סוגר...");
-  try { await set(ref(db, `clients/${chatPhone}/messages/sys_${Date.now()}`), { type: "closed", at: Date.now(), sender: "system" }); toast("שיחה נסגרה", "s"); }
-  catch (e) { toast("שגיאה", "e"); } finally { hideSP(); }
+async function agentCloseConv(){if(!chatPhone)return;showSP("סוגר...");try{await set(ref(db,`clients/${chatPhone}/messages/sys_${Date.now()}`),{type:"closed",at:Date.now(),sender:"system"});toast("שיחה נסגרה","s");}catch(e){toast("שגיאה","e");}finally{hideSP();}}
+async function agentReopenConv(){if(!chatPhone)return;showSP("פותח...");try{const snap=await get(ref(db,`clients/${chatPhone}/messages`));if(snap.exists())Object.entries(snap.val()).forEach(([key,m])=>{if(m.type==="closed")remove(ref(db,`clients/${chatPhone}/messages/${key}`));});toast("שיחה נפתחה","s");}catch(e){toast("שגיאה","e");}finally{hideSP();}}
+function agentInitMsg(){document.getElementById("chat-ta").disabled=false;document.getElementById("chat-send-btn").disabled=false;document.getElementById("chat-ta").focus();}
+
+/* ctx */
+function openCtx(key,msg,isAgent){ctxMsgKey=key;ctxMsgData=msg;document.getElementById("ctx-prev").textContent=msg.text;document.getElementById("ctx-edit").style.display=(isAgent&&(Date.now()-msg.at)<EDIT_WIN)?"":"none";document.getElementById("ctx-mo").classList.add("show");}
+function closeCtx(){document.getElementById("ctx-mo").classList.remove("show");ctxMsgKey=null;ctxMsgData=null;}
+async function addReaction(emoji){if(!ctxMsgKey||!chatPhone)return;const snap=await get(ref(db,`clients/${chatPhone}/messages/${ctxMsgKey}/reactions/r_agent`));if(snap.exists()&&snap.val().emoji===emoji)await remove(ref(db,`clients/${chatPhone}/messages/${ctxMsgKey}/reactions/r_agent`));else await set(ref(db,`clients/${chatPhone}/messages/${ctxMsgKey}/reactions/r_agent`),{emoji,by:"agent",at:Date.now()});closeCtx();}
+async function toggleRC(key,emoji){if(!chatPhone)return;const snap=await get(ref(db,`clients/${chatPhone}/messages/${key}/reactions/r_agent`));if(snap.exists()&&snap.val().emoji===emoji)await remove(ref(db,`clients/${chatPhone}/messages/${key}/reactions/r_agent`));else await set(ref(db,`clients/${chatPhone}/messages/${key}/reactions/r_agent`),{emoji,by:"agent",at:Date.now()});}
+window.toggleRC=toggleRC;
+function copyMsg(msg){navigator.clipboard?.writeText(msg.text).then(()=>toast("הועתק ✓","s"));}
+async function delMsgMe(key){await set(ref(db,`clients/${chatPhone}/messages/${key}/hiddenForAgent`),true);toast("נמחק אצלך","s");}
+async function delMsgAll(key){await update(ref(db,`clients/${chatPhone}/messages/${key}`),{deleted:true,text:"ההודעה נמחקה",deletedAt:Date.now()});toast("נמחק אצל כולם","s");}
+function openEditMsg(key,msg){editMsgKey=key;document.getElementById("edit-ta").value=msg.text;document.getElementById("edit-mo").classList.add("show");document.getElementById("edit-ta").focus();}
+async function saveEditMsg(){const text=document.getElementById("edit-ta").value.trim();if(!text||!editMsgKey||!chatPhone)return;await update(ref(db,`clients/${chatPhone}/messages/${editMsgKey}`),{text,edited:true,editedAt:Date.now()});closeMo("edit-mo");toast("עודכן","s");}
+
+/* ── Block / Delete ── */
+function confirmBlock(phone) {
+  const name=clients[phone]?.name||phone;
+  const needReason=!isAdmin;
+  document.getElementById("confirm-reason").style.display=needReason?"block":"none";
+  document.getElementById("confirm-reason").value="";
+  showConfirm("w",`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>`,
+    "חסימת לקוח",`האם לחסום את <strong>${name}</strong>?${needReason?"<br/><small>חובה לרשום סיבה</small>":""}`,
+    async()=>{
+      const reason=document.getElementById("confirm-reason").value.trim();
+      if(needReason&&!reason){toast("יש לרשום סיבת חסימה","e");return;}
+      showSP("חוסם...");try{await set(ref(db,`blocked/${phone}`),{blocked:true,blockedAt:Date.now(),reason:reason||"חסימה ידנית",blockedBy:currentUser.name});toast("נחסם","s");}catch(e){toast("שגיאה","e");}finally{hideSP();}
+    });
+}
+function confirmUnblock(phone){const name=clients[phone]?.name||phone;document.getElementById("confirm-reason").style.display="none";showConfirm("w",`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>`,"שחרור חסימה",`האם לשחרר את <strong>${name}</strong>?`,async()=>{showSP("משחרר...");try{await remove(ref(db,`blocked/${phone}`));await set(ref(db,`clients/${phone}/failedAttempts`),0);toast("שוחרר","s");}catch(e){toast("שגיאה","e");}finally{hideSP();}});}
+function confirmDelete(phone){const name=clients[phone]?.name||phone;document.getElementById("confirm-reason").style.display="none";showConfirm("d",`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>`,"מחיקת לקוח",`האם למחוק את <strong>${name}</strong>?<br/>פעולה זו אינה ניתנת לשחזור.`,async()=>{showSP("מוחק...");try{await remove(ref(db,`clients/${phone}`));await remove(ref(db,`blocked/${phone}`));toast("נמחק","s");}catch(e){toast("שגיאה","e");}finally{hideSP();}});}
+function confirmDeleteChat(phone){const name=clients[phone]?.name||phone;document.getElementById("confirm-reason").style.display="none";showConfirm("d",`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>`,"מחיקת שיחה",`האם למחוק את כל השיחה עם <strong>${name}</strong>?`,async()=>{showSP("מוחק...");try{await remove(ref(db,`clients/${phone}/messages`));toast("שיחה נמחקה","s");}catch(e){toast("שגיאה","e");}finally{hideSP();}});}
+window.confirmBlock=confirmBlock;window.confirmUnblock=confirmUnblock;window.confirmDelete=confirmDelete;window.confirmDeleteChat=confirmDeleteChat;
+
+/* ── Blocked ── */
+function renderBlockedTable(){const tbody=document.getElementById("blocked-tbody");const entries=Object.entries(blocked).filter(([,v])=>v?.blocked);if(!entries.length){tbody.innerHTML=`<tr><td colspan="7"><div class="et">אין חסומים</div></td></tr>`;return;}tbody.innerHTML=entries.map(([phone,b])=>{const c=clients[phone]||{};return`<tr><td class="cn">${c.name||"—"}</td><td class="cp">${fmtPhone(phone)}</td><td style="font-size:13px">${b.reason||"—"}</td><td style="font-size:13px">${b.blockedBy||"מערכת"}</td><td>${c.failedAttempts||0}</td><td>${b.blockedAt?fmtDate(b.blockedAt):"—"}</td><td><button class="bsm u" onclick="confirmUnblock('${phone}')">שחרור</button></td></tr>`;}).join("");}
+function updateBlockedBadge(){const n=Object.values(blocked).filter(v=>v?.blocked).length;const b=document.getElementById("blocked-badge");if(b){n>0?(b.textContent=n,b.style.display=""):b.style.display="none";}}
+
+/* ── History ── */
+function countryFlag(code){if(!code||code.length!==2)return"";return code.toUpperCase().split("").map(c=>String.fromCodePoint(c.charCodeAt(0)+127397)).join("");}
+function renderHistoryTable(){
+  const tbody=document.getElementById("history-tbody"),entries=[];
+  Object.entries(clients).forEach(([phone,c])=>{
+    if(!c.name||!c.pin)return;
+    if(c.loginHistory)Object.values(c.loginHistory).forEach(h=>entries.push({phone,name:c.name||"—",at:h.at,type:"s",ip:h.ip||"",country:h.country||"",city:h.city||"",countryName:h.countryName||""}));
+    if(c.failLog)Object.values(c.failLog).forEach(h=>entries.push({phone,name:c.name||"—",at:h.at,type:"f",ip:h.ip||"",country:h.country||"",city:h.city||"",countryName:h.countryName||""}));
+  });
+  if(unknownFails)Object.values(unknownFails).forEach(h=>entries.push({phone:h.phone||"לא ידוע",name:"⚠️ מספר לא קיים",at:h.at||0,type:"f",ip:h.ip||"",country:h.country||"",city:h.city||"",countryName:h.countryName||"",anomaly:true}));
+  entries.sort((a,b)=>b.at-a.at);const r=entries.slice(0,100);
+  if(!r.length){tbody.innerHTML=`<tr><td colspan="6"><div class="et">אין היסטוריה</div></td></tr>`;return;}
+  tbody.innerHTML=r.map(e=>{
+    const flag=countryFlag(e.country);
+    const loc=e.city&&e.countryName?`${flag} ${e.city}, ${e.countryName}`:e.countryName?`${flag} ${e.countryName}`:`<span style="color:var(--muted);font-size:12px">—</span>`;
+    return`<tr ${e.anomaly?'style="background:rgba(239,68,68,.03)"':""}>
+      <td class="${e.anomaly?"tag anomaly":"cn"}">${e.name}</td>
+      <td class="cp">${fmtPhone(e.phone)}</td>
+      <td>${fmtDate(e.at)}</td>
+      <td style="direction:ltr;font-size:12px;color:var(--muted)">${e.ip||"—"}</td>
+      <td style="font-size:13px">${loc}</td>
+      <td><span class="tag ${e.type==="s"?"a":"bl"}">${e.type==="s"?"כניסה מוצלחת":e.anomaly?"ניסיון חשוד":"ניסיון כושל"}</span></td>
+    </tr>`;
+  }).join("");
 }
 
-async function agentReopenConv() {
-  if (!chatPhone) return; showSP("פותח...");
-  try {
-    const snap = await get(ref(db, `clients/${chatPhone}/messages`));
-    if (snap.exists()) Object.entries(snap.val()).forEach(([key, m]) => { if (m.type === "closed") remove(ref(db, `clients/${chatPhone}/messages/${key}`)); });
-    toast("שיחה נפתחה", "s");
-  } catch (e) { toast("שגיאה", "e"); } finally { hideSP(); }
+/* ── Team ── */
+const ALL_PERMS=[
+  {key:"chat",label:"שיחת צ'אט עם לקוח"},{key:"block",label:"חסימת לקוח"},
+  {key:"unblock",label:"שחרור חסימה"},{key:"editClient",label:"עריכת פרטי לקוח"},
+  {key:"changePin",label:"החלפת קוד אישי"},{key:"deleteClient",label:"מחיקת לקוח"},
+  {key:"viewHistory",label:"צפייה בהיסטוריה"},{key:"viewMsgs",label:"צפייה בהודעות"},
+  {key:"deleteChat",label:"מחיקת שיחה"},
+];
+
+function openTeamModal(memberId){
+  document.getElementById("mo-team-t").textContent=memberId?"עריכת נציג":"הוספת נציג";
+  ["tm-first","tm-last","tm-phone","tm-user","tm-pass"].forEach(id=>document.getElementById(id).value="");
+  const existPerms=memberId&&team[memberId]?team[memberId].perms||{}:{};
+  document.getElementById("perm-grid").innerHTML=ALL_PERMS.map(p=>`<div class="perm-item"><span class="perm-label">${p.label}</span><label class="toggle-sw"><input type="checkbox" id="perm-${p.key}" ${existPerms[p.key]?"checked":""}><span class="slider"></span></label></div>`).join("");
+  if(memberId&&team[memberId]){const m=team[memberId];document.getElementById("tm-first").value=m.firstName||"";document.getElementById("tm-last").value=m.lastName||"";document.getElementById("tm-phone").value=m.phone||"";document.getElementById("tm-user").value=m.username||"";}
+  document.getElementById("mo-team").dataset.editId=memberId||"";
+  openMo("mo-team");
+}
+window.openTeamModal=openTeamModal;
+
+async function saveTeamMember(){
+  const first=document.getElementById("tm-first").value.trim(),last=document.getElementById("tm-last").value.trim();
+  const phone=document.getElementById("tm-phone").value.replace(/\D/g,""),user=document.getElementById("tm-user").value.trim(),pass=document.getElementById("tm-pass").value;
+  const editId=document.getElementById("mo-team").dataset.editId;
+  if(!first||!last)return toast("חסר שם","e");if(!user)return toast("חסר שם משתמש","e");if(!editId&&!pass)return toast("חסרה סיסמה","e");
+  const perms={};ALL_PERMS.forEach(p=>{perms[p.key]=document.getElementById(`perm-${p.key}`)?.checked||false;});
+  showSP("שומר...");
+  try{const id=editId||`tm_${Date.now()}`;const ex=editId?team[editId]:{};await set(ref(db,`team/${id}`),{...ex,firstName:first,lastName:last,phone,username:user,...(pass&&{password:pass}),perms,createdAt:ex.createdAt||Date.now()});toast(editId?"עודכן":"נציג נוסף","s");closeMo("mo-team");}
+  catch(e){toast("שגיאה","e");}finally{hideSP();}
 }
 
-/* ── חסומים / מחיקה ── */
-function renderBlockedTable() {
-  const tbody = document.getElementById("blocked-tbody");
-  const entries = Object.entries(blocked).filter(([, v]) => v?.blocked);
-  if (!entries.length) { tbody.innerHTML = `<tr><td colspan="5"><div class="et">אין חסומים</div></td></tr>`; return; }
-  tbody.innerHTML = entries.map(([phone, b]) => { const c = clients[phone] || {}; return `<tr><td class="cn">${c.name || "—"}</td><td class="cp">${fmtPhone(phone)}</td><td>${c.failedAttempts || 0}</td><td>${b.blockedAt ? fmtDate(b.blockedAt) : "—"}</td><td><button class="bsm u" onclick="confirmUnblock('${phone}')">שחרור</button></td></tr>`; }).join("");
+function renderTeamTable(){
+  const tbody=document.getElementById("team-tbody");if(!tbody)return;
+  const entries=Object.entries(team);
+  if(!entries.length){tbody.innerHTML=`<tr><td colspan="6"><div class="et">אין נציגים עדיין</div></td></tr>`;return;}
+  tbody.innerHTML=entries.map(([id,m])=>`<tr>
+    <td class="cn">${m.firstName||""} ${m.lastName||""}</td>
+    <td>${m.username||"—"}</td>
+    <td class="cp">${fmtPhone(m.phone||"")}</td>
+    <td style="font-size:12px;color:var(--muted)">${m.lastLogin?fmtDate(m.lastLogin):"—"}</td>
+    <td><span class="tag ${m.lastLogin&&(Date.now()-m.lastLogin)<120000?"a":"pa"}">${m.lastLogin&&(Date.now()-m.lastLogin)<120000?"מחובר":"לא מחובר"}</span></td>
+    <td><div class="ac">
+      <button class="bsm e" onclick="openTeamModal('${id}')">עריכה</button>
+      <button class="bsm d" onclick="confirmDelTeam('${id}','${(m.firstName||"")+" "+(m.lastName||"")}')">הסרה</button>
+      <button class="bsm bl" onclick="forceLogout('${id}')">נתק</button>
+    </div></td>
+  </tr>`).join("");
 }
-function updateBlockedBadge() { const n = Object.values(blocked).filter(v => v?.blocked).length; const b = document.getElementById("blocked-badge"); n > 0 ? (b.textContent = n, b.style.display = "") : b.style.display = "none"; }
+function confirmDelTeam(id,name){document.getElementById("confirm-reason").style.display="none";showConfirm("d",`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>`,"הסרת נציג",`האם להסיר את <strong>${name}</strong>?`,async()=>{showSP("מסיר...");try{await remove(ref(db,`team/${id}`));await remove(ref(db,`sessions/${id}`));toast("הנציג הוסר","s");}catch(e){toast("שגיאה","e");}finally{hideSP();}});}
+async function forceLogout(id){
+  showSP("מנתק...");
+  try{
+    await remove(ref(db,`sessions/${id}`));
+    /* כותב token שגוי כדי לנתק גם אם הדף פתוח */
+    await set(ref(db,`sessions/${id}`),{deviceToken:"REVOKED",loginAt:Date.now()});
+    toast("הנציג נותק","s");
+  }catch(e){toast("שגיאה","e");}finally{hideSP();}
+}
+window.confirmDelTeam=confirmDelTeam;window.forceLogout=forceLogout;
 
-function confirmBlock(phone) { const n = clients[phone]?.name || phone; showConfirm("w", `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>`, "חסימת לקוח", `האם לחסום את <strong>${n}</strong>?`, () => toggleBlock(phone, true)); }
-function confirmUnblock(phone) { const n = clients[phone]?.name || phone; showConfirm("w", `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>`, "שחרור חסימה", `האם לשחרר את <strong>${n}</strong>?`, () => toggleBlock(phone, false)); }
-function confirmDelete(phone) { const n = clients[phone]?.name || phone; showConfirm("d", `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>`, "מחיקת לקוח", `האם למחוק את <strong>${n}</strong>?<br/>פעולה זו אינה ניתנת לשחזור.`, () => deleteClient(phone)); }
-window.confirmBlock = confirmBlock; window.confirmUnblock = confirmUnblock; window.confirmDelete = confirmDelete;
-
-function showConfirm(type, svg, title, text, cb) {
-  const ci = document.getElementById("confirm-icon"); ci.className = `ci ${type}`; ci.innerHTML = svg;
-  document.getElementById("confirm-title").textContent = title;
-  document.getElementById("confirm-text").innerHTML = text;
-  const btn = document.getElementById("confirm-ok"); btn.className = type === "d" ? "btn-d" : "btn-w";
-  btn.onclick = () => { closeMo("mo-confirm"); cb(); };
-  openMo("mo-confirm");
+/* ── Permission Requests ── */
+function renderRequests(){
+  const cont=document.getElementById("requests-list");if(!cont)return;
+  const entries=Object.entries(permRequests).filter(([,r])=>r.status==="pending");
+  if(!entries.length){cont.innerHTML=`<p style="color:var(--muted);text-align:center;padding:32px">אין בקשות ממתינות</p>`;return;}
+  cont.innerHTML=entries.map(([key,r])=>`<div class="mi req-item" data-key="${key}" data-uid="${r.userId||''}" data-action="${(r.action||'').replace(/"/g,'&quot;')}" style="margin-bottom:10px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><strong>${r.name||"—"}</strong><span class="tag bu">ממתין</span></div>
+    <div style="font-size:14px">מבקש גישה: <strong>${r.action||"—"}</strong></div>
+    <div class="mt3">${fmtDate(r.requestedAt)}</div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="bsm u req-approve-btn">אישור</button>
+      <button class="bsm d req-deny-btn">דחייה</button>
+    </div>
+  </div>`).join("");
+  /* חיבור events אחרי render */
+  cont.querySelectorAll(".req-item").forEach(item => {
+    item.querySelector(".req-approve-btn").onclick = () =>
+      approveReq(item.dataset.key, item.dataset.uid, item.dataset.action);
+    item.querySelector(".req-deny-btn").onclick = () =>
+      denyReq(item.dataset.key);
+  });
 }
-
-async function toggleBlock(phone, block) {
-  showSP(block ? "חוסם..." : "משחרר...");
-  try { if (block) await set(ref(db, `blocked/${phone}`), { blocked: true, blockedAt: Date.now() }); else { await remove(ref(db, `blocked/${phone}`)); await set(ref(db, `clients/${phone}/failedAttempts`), 0); } toast(block ? "נחסם" : "שוחרר", "s"); }
-  catch (e) { toast("שגיאה", "e"); } finally { hideSP(); }
-}
-async function deleteClient(phone) {
-  showSP("מוחק...");
-  try { await remove(ref(db, `clients/${phone}`)); await remove(ref(db, `blocked/${phone}`)); toast("נמחק", "s"); }
-  catch (e) { toast("שגיאה", "e"); } finally { hideSP(); }
-}
-
-/* ── היסטוריה ── */
-function renderHistoryTable() {
-  const tbody = document.getElementById("history-tbody");
-  const entries = [];
-  Object.entries(clients).forEach(([phone, c]) => { if (c.loginHistory) Object.values(c.loginHistory).forEach(h => entries.push({ phone, name: c.name || "—", at: h.at, type: "s" })); if (c.failLog) Object.values(c.failLog).forEach(h => entries.push({ phone, name: c.name || "—", at: h.at, type: "f" })); });
-  entries.sort((a, b) => b.at - a.at);
-  const r = entries.slice(0, 80);
-  if (!r.length) { tbody.innerHTML = `<tr><td colspan="4"><div class="et">אין היסטוריה</div></td></tr>`; return; }
-  tbody.innerHTML = r.map(e => `<tr><td class="cn">${e.name}</td><td class="cp">${fmtPhone(e.phone)}</td><td>${fmtDate(e.at)}</td><td><span class="tag ${e.type === "s" ? "a" : "bl"}">${e.type === "s" ? "כניסה מוצלחת" : "ניסיון כושל"}</span></td></tr>`).join("");
-}
-
-/* ── עזרים ── */
-function showPanel(panelId, navId, title) {
-  document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
-  document.getElementById(panelId).classList.add("active");
-  document.querySelectorAll(".ni").forEach(n => n.classList.remove("active"));
-  document.getElementById(navId).classList.add("active");
-  document.getElementById("topbar-title").textContent = title;
-  if (window.innerWidth <= 768) toggleSB(false);
-}
-function toggleSB(force) { const sb = document.getElementById("sidebar"), ov = document.getElementById("sb-ov"); const o = force !== undefined ? force : !sb.classList.contains("open"); sb.classList.toggle("open", o); ov.classList.toggle("show", o); }
-function openMo(id)  { document.getElementById(id).classList.add("show"); }
-function closeMo(id) { document.getElementById(id).classList.remove("show"); }
-function showSP(t)   { document.getElementById("sp-txt").textContent = t || "טוען..."; document.getElementById("spinner").classList.add("show"); }
-function hideSP()    { document.getElementById("spinner").classList.remove("show"); }
-function toast(msg, type = "s") { const el = document.createElement("div"); el.className = `toast ${type}`; const ic = type === "s" ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>` : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`; el.innerHTML = ic + msg; document.getElementById("tc").appendChild(el); setTimeout(() => { el.style.animation = "tin .3s ease reverse"; setTimeout(() => el.remove(), 300); }, 3000); }
-/* מחיקת שיחה מהשרת */
-  function confirmDeleteChat(phone) {
-    const name = clients[phone]?.name || phone;
-    showConfirm("d",
-      `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>`,
-      "מחיקת שיחה",
-      "האם למחוק את כל השיחה עם <strong>" + name + "</strong>?<br/>ההודעות יימחקו לצמיתות.",
-      async () => {
-        showSP("מוחק שיחה...");
-        try {
-          await remove(ref(db, "clients/" + phone + "/messages"));
-          toast("השיחה נמחקה", "s");
-        } catch(e) { toast("שגיאה", "e"); } finally { hideSP(); }
+async function approveReq(key,userId,action){
+  showSP("מאשר...");
+  try{
+    /* מוצא את מפתח ה-perm */
+    const pk = ALL_PERMS.find(p => p.label === action || p.key === action)?.key;
+    if(pk && userId){
+      await set(ref(db,`team/${userId}/perms/${pk}`),true);
+      await set(ref(db,`team/${userId}/permNotify`),{action,approved:true,at:Date.now()});
+      /* עדכון toggle בחלון עריכה אם פתוח */
+      const editId = document.getElementById("mo-team")?.dataset?.editId;
+      if(editId===userId){
+        const chk = document.getElementById("perm-"+pk);
+        if(chk){ chk.checked=true; }
       }
-    );
+      /* עדכון המשתמש הנוכחי אם הוא הנציג */
+      if(currentUser?.userId===userId){
+        if(!currentUser.perms) currentUser.perms={};
+        currentUser.perms[pk]=true;
+        buildSidebar();
+      }
+    }
+    await set(ref(db,`permRequests/${key}/status`),"approved");
+    toast("הרשאה אושרה ✓","s");
   }
+  catch(e){console.error(e);toast("שגיאה: "+e.message,"e");}finally{hideSP();}
+}
+async function denyReq(key){await set(ref(db,`permRequests/${key}/status`),"denied");toast("נדחה","s");}
+function updateRequestsBadge(){const n=Object.values(permRequests).filter(r=>r.status==="pending").length;const b=document.getElementById("requests-badge");if(b){if(n>0){b.textContent=n;b.style.display="";}else b.style.display="none";}}
+window.approveReq=approveReq;window.denyReq=denyReq;
 
-  function fmtPhone(p) { const s = String(p).replace(/\D/g, ""); return s.length === 10 ? s.slice(0, 3) + "-" + s.slice(3) : s; }
-function fmtDate(ts) { if (!ts) return "—"; const d = new Date(ts); return d.toLocaleDateString("he-IL") + " " + d.toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit" }); }
-function fmtTime(ts) { return new Date(ts).toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit" }); }
-function getLL(hist) { if (!hist) return "—"; const t = Object.values(hist).map(h => h.at).filter(Boolean); return t.length ? fmtDate(Math.max(...t)) : "—"; }
-function isUrl(s) { try { new URL(s); return true; } catch { return false; } }
+/* ── Utils ── */
+function showPanel(id,navId,title){document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll(".ni").forEach(n=>n.classList.remove("active"));const el=document.getElementById(navId);if(el)el.classList.add("active");document.getElementById("topbar-title").textContent=title;if(window.innerWidth<=768)toggleSB(false);}
+function toggleSB(f){const sb=document.getElementById("sidebar"),ov=document.getElementById("sb-ov");const o=f!==undefined?f:!sb.classList.contains("open");sb.classList.toggle("open",o);ov.classList.toggle("show",o);}
+function openMo(id){document.getElementById(id).classList.add("show");}
+function closeMo(id){document.getElementById(id).classList.remove("show");}
+function showConfirm(type,svg,title,text,cb){const ci=document.getElementById("confirm-icon");ci.className=`ci ${type}`;ci.innerHTML=svg;document.getElementById("confirm-title").textContent=title;document.getElementById("confirm-text").innerHTML=text;const btn=document.getElementById("confirm-ok");btn.className=type==="d"?"btn-d":"btn-w";btn.onclick=()=>{closeMo("mo-confirm");cb();};openMo("mo-confirm");}
+function showSP(t){document.getElementById("sp-txt").textContent=t||"טוען...";document.getElementById("spinner").classList.add("show");}
+function hideSP(){document.getElementById("spinner").classList.remove("show");}
+function showLoadOverlay(t){document.getElementById("load-text").textContent=t||"טוען...";document.getElementById("load-overlay").classList.add("show");}
+function hideLoadOverlay(){document.getElementById("load-overlay").classList.remove("show");}
+function toast(msg,type="s"){const el=document.createElement("div");el.className=`toast ${type}`;const ic=type==="s"?`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;el.innerHTML=ic+msg;document.getElementById("tc").appendChild(el);setTimeout(()=>{el.style.animation="tin .3s ease reverse";setTimeout(()=>el.remove(),300);},3000);}
+function fmtPhone(p){const s=String(p).replace(/\D/g,"");return s.length===10?s.slice(0,3)+"-"+s.slice(3):s;}
+function fmtDate(ts){if(!ts)return"—";const d=new Date(ts);return d.toLocaleDateString("he-IL")+" "+d.toLocaleTimeString("he-IL",{hour:"2-digit",minute:"2-digit"});}
+function fmtTime(ts){return new Date(ts).toLocaleTimeString("he-IL",{hour:"2-digit",minute:"2-digit"});}
+function getLL(hist){if(!hist)return"—";const t=Object.values(hist).map(h=>h.at).filter(Boolean);return t.length?fmtDate(Math.max(...t)):"—";}
+function isUrl(s){try{new URL(s);return true}catch{return false}}
+</script>
+</body>
+</html>
+
 </script>
 </body>
 </html>

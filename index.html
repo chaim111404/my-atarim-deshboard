@@ -211,6 +211,9 @@ tr:hover td{background:#f8faff}
 .btn-d{background:var(--err);border:none;border-radius:var(--rs);color:#fff;font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;padding:11px 26px;cursor:pointer}
 .btn-w{background:var(--warn);border:none;border-radius:var(--rs);color:#fff;font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;padding:11px 26px;cursor:pointer}
 .confirm-reason{width:100%;border:1.5px solid var(--bdr);border-radius:var(--rs);padding:10px 12px;font-family:'Heebo',sans-serif;font-size:14px;margin-bottom:16px;outline:none;min-height:80px;resize:none}
+.confirm-reason.field-error{border-color:#ef4444;background:rgba(239,68,68,.04);animation:shakeX .35s}
+.field-err-msg{color:#ef4444;font-size:12.5px;font-weight:600;margin:-10px 0 14px;text-align:right}
+@keyframes shakeX{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .spo{display:none;position:fixed;inset:0;background:rgba(12,26,46,.55);backdrop-filter:blur(5px);z-index:1000;align-items:center;justify-content:center;flex-direction:column;gap:16px}
 .spo.show{display:flex}
 .sp{width:50px;height:50px;border:4px solid rgba(255,255,255,.15);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite}
@@ -240,6 +243,23 @@ tr:hover td{background:#f8faff}
 </head>
 <body>
 <div class="offline-banner" id="offline-banner">אין חיבור לאינטרנט</div>
+<div id="boot-splash" style="position:fixed;inset:0;z-index:99999;background:linear-gradient(145deg,#0c1a2e,#0a2540);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;transition:opacity .4s ease">
+  <img src="https://i.postimg.cc/43kbjD5D/IMG-0695.png" alt="WebDesk Admin" style="width:96px;height:96px;border-radius:24px;box-shadow:0 12px 40px rgba(0,0,0,.4);animation:bootPulse 1.8s ease-in-out infinite"/>
+  <div style="display:flex;gap:8px">
+    <span style="width:10px;height:10px;border-radius:50%;background:#0ea5e9;animation:bootDot 1.2s ease-in-out infinite"></span>
+    <span style="width:10px;height:10px;border-radius:50%;background:#0ea5e9;animation:bootDot 1.2s ease-in-out .2s infinite"></span>
+    <span style="width:10px;height:10px;border-radius:50%;background:#0ea5e9;animation:bootDot 1.2s ease-in-out .4s infinite"></span>
+  </div>
+</div>
+<style>
+  @keyframes bootPulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.06);opacity:.85} }
+  @keyframes bootDot { 0%,100%{transform:translateY(0);opacity:.4} 50%{transform:translateY(-8px);opacity:1} }
+  #boot-splash.hide { opacity:0; pointer-events:none; }
+</style>
+<script>
+  window.__hideBoot = function(){ var b=document.getElementById("boot-splash"); if(b){ b.classList.add("hide"); setTimeout(function(){ b.remove(); }, 450); } };
+  window.addEventListener("load", function(){ setTimeout(window.__hideBoot, 600); });
+</script>
 <div class="load-overlay" id="load-overlay">
   <div style="width:56px;height:56px;position:relative">
     <div class="load-ring"></div><div class="load-ring"></div><div class="load-ring"></div>
@@ -423,7 +443,7 @@ tr:hover td{background:#f8faff}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, get, set, remove, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, get, set, remove, onValue, update, onDisconnect } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 const _app = initializeApp({
   apiKey:"AIzaSyB9jeWAKY2UEz70V77SCPnSJ18IfwnsVV0",
@@ -558,7 +578,7 @@ document.getElementById("cancel-logout-btn").onclick = ()=>closeMo("mo-logout");
 
 window.addEventListener("DOMContentLoaded",()=>{
   const s=checkSession();
-  if(!s) return;
+  if(!s){ if(window.__hideBoot)window.__hideBoot(); return; }
   get(ref(db,`sessions/${s.userId}`)).then(snap=>{
     if(snap.exists()&&snap.val().deviceToken!==s.deviceToken){localStorage.removeItem(SESSION_KEY);showAutoLogoutMsg();return;}
     if(s.role==="admin"){showDash({userId:s.userId,role:"admin",name:s.name});return;}
@@ -571,6 +591,7 @@ window.addEventListener("DOMContentLoaded",()=>{
 
 /* ── Show Dashboard ── */
 function showDash(user) {
+  if(window.__hideBoot)window.__hideBoot();
   currentUser=user; isAdmin=user.role==="admin";
   document.getElementById("login-page").style.display="none";
   document.getElementById("dash").classList.add("show");
@@ -579,7 +600,42 @@ function showDash(user) {
   document.getElementById("sb-user-av").textContent=(user.name||"נ")[0];
   buildSidebar();
   startListening();
+  setupAgentPresence(user);
+  listenMyPermNotify(user);
   if("Notification"in window&&Notification.permission==="default")Notification.requestPermission();
+}
+
+/* ── presence אמיתי לנציג/מנהל בדשבורד (#4) ── */
+function setupAgentPresence(user){
+  if(!user?.userId) return;
+  const pRef=ref(db,`team/${user.userId}/presence`);
+  const write=on=>set(pRef,{online:on,lastSeen:Date.now(),where:"dashboard"}).catch(()=>{});
+  set(ref(db,`team/${user.userId}/lastLogin`),Date.now()).catch(()=>{});
+  write(true);
+  onDisconnect(pRef).set({online:false,lastSeen:Date.now()}).catch(()=>{});
+  document.addEventListener("visibilitychange",()=>{
+    if(!currentUser?.userId)return;
+    write(document.visibilityState!=="hidden");
+  });
+  window.addEventListener("pagehide",()=>{ if(currentUser?.userId) set(pRef,{online:false,lastSeen:Date.now()}).catch(()=>{}); });
+}
+
+/* ── מאזין התראת הרשאה לנציג שמחובר בדשבורד (#3) ── */
+let myPermNotifyRef=null;
+function listenMyPermNotify(user){
+  if(!user?.userId||user.role==="admin")return;
+  myPermNotifyRef=ref(db,`team/${user.userId}/permNotify`);
+  onValue(myPermNotifyRef,snap=>{
+    const n=snap.val();
+    if(n&&n.approved){
+      toast(`אושרה לך הרשאה: ${n.action} ✓`,"s");
+      get(ref(db,`team/${user.userId}/perms`)).then(ps=>{
+        currentUser.perms=ps.val()||{};
+        buildSidebar();
+      }).catch(()=>{});
+      remove(myPermNotifyRef).catch(()=>{});
+    }
+  });
 }
 
 /* ── Build Sidebar ── */
@@ -778,6 +834,7 @@ function renderClientsTable() {
     const starsHtml=rating?`<div class="stars-display">${[1,2,3,4,5].map(i=>`<svg width="13" height="13" viewBox="0 0 24 24" class="star-svg${i<=rating?'':' empty'}" fill="${i<=rating?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`).join("")}</div>`:"—";
     const canEdit=isAdmin||perms.editClient;
     const canBlock=isAdmin||perms.block;
+    const canUnblock=isAdmin||perms.unblock;
     const canDel=isAdmin||perms.deleteClient;
     const canChat=isAdmin||perms.chat;
     return`<tr>
@@ -798,7 +855,7 @@ function renderClientsTable() {
         <button class="bsm v" onclick="openViewModal('${phone}')">צפייה</button>
         <button class="bsm e${canEdit?'':' dp'}" onclick="${canEdit?`openClientModal('${phone}')`:`showPermDenied('עריכת לקוח')`}">עריכה</button>
         <button class="bsm ch2${canChat?'':' dp'}" onclick="${canChat?`openChatModal('${phone}')`:`showPermDenied('צ\\'אט')`}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>צ'אט</button>
-        ${isBlk?`<button class="bsm u${canBlock?'':' dp'}" onclick="${canBlock?`confirmUnblock('${phone}')`:`showPermDenied('שחרור')`}">שחרור</button>`:`<button class="bsm bl${canBlock?'':' dp'}" onclick="${canBlock?`confirmBlock('${phone}')`:`showPermDenied('חסימה')`}">חסימה</button>`}
+        ${isBlk?`<button class="bsm u${canUnblock?'':' dp'}" onclick="${canUnblock?`confirmUnblock('${phone}')`:`showPermDenied('שחרור')`}">שחרור</button>`:`<button class="bsm bl${canBlock?'':' dp'}" onclick="${canBlock?`confirmBlock('${phone}')`:`showPermDenied('חסימה')`}">חסימה</button>`}
         <button class="bsm d${canDel?'':' dp'}" onclick="${canDel?`confirmDelete('${phone}')`:`showPermDenied('מחיקה')`}">מחיקה</button>
         <button class="bsm d" style="font-size:11px" onclick="confirmDeleteChat('${phone}')"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>מחק שיחה</button>
       </div></td>
@@ -1048,6 +1105,9 @@ function renderChatMsgs(msgs) {
   const cont=document.getElementById("chat-msgs-list");cont.innerHTML="";
   if(!entries.length){cont.innerHTML=`<div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;padding:32px;text-align:center">אין הודעות עדיין</div>`;return;}
   entries.sort(([,a],[,b])=>a.at-b.at);
+  /* #2 — באנר 'נפתחה על ידי' */
+  const ob=clients[chatPhone]?.openedBy;
+  if(ob&&ob.role){const who=ob.role==="client"?(clients[chatPhone]?.name||"הלקוח"):(ob.name||(ob.role==="admin"?"המנהל":"נציג"));const b=document.createElement("div");b.style.cssText="text-align:center;font-size:11px;color:var(--muted);background:var(--bg2);border-radius:8px;padding:5px 10px;margin:4px auto 8px;max-width:80%";b.textContent=`השיחה נפתחה על ידי ${who}`;cont.appendChild(b);}
   let lastDate="";
   entries.forEach(([key,m])=>{
     const ds=new Date(m.at).toLocaleDateString("he-IL");
@@ -1068,7 +1128,7 @@ function renderChatMsgs(msgs) {
       if(m.clientRead){statusHtml=`<span style="color:var(--ok);font-size:10px;display:flex;align-items:center;gap:2px;padding:0 4px"><svg width="18" height="11" viewBox="0 0 18 11" fill="none"><path d="M1 5.5l3.5 3.5L11 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 5.5l3.5 3.5L16 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>${m.clientReadAt?fmtTime(m.clientReadAt):""}</span>`;}
       else statusHtml=`<span style="color:var(--muted);font-size:10px;padding:0 4px"><svg width="12" height="11" viewBox="0 0 12 11" fill="none"><path d="M1 5.5l3.5 3.5L11 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
     }
-    w.innerHTML=`${replyHtml}<div class="ab" data-key="${key}">${bubbleTxt}</div>${rHtml}<div style="display:flex;align-items:center;gap:4px;margin-top:3px;padding:0 2px"><span class="at">${fmtTime(m.at)} · ${isAgent?"נציג":"לקוח"}</span>${statusHtml}</div>`;
+    w.innerHTML=`${replyHtml}<div class="ab" data-key="${key}">${bubbleTxt}</div>${rHtml}<div style="display:flex;align-items:center;gap:4px;margin-top:3px;padding:0 2px"><span class="at">${fmtTime(m.at)} · ${isAgent?(m.agentName||"נציג"):"לקוח"}</span>${statusHtml}</div>`;
     w.querySelector(".ab").addEventListener("click",()=>{if(!m.deleted)openCtx(key,m,isAgent);});
     cont.appendChild(w);
     if(!isAgent&&!m.agentRead)set(ref(db,`clients/${chatPhone}/messages/${key}/agentRead`),true);
@@ -1085,6 +1145,8 @@ async function agentSend() {
     const msg={text,at:Date.now(),sender:"agent",agentRead:true,clientRead:false,agentName:currentUser.name};
     if(chatReplyTo){msg.replyTo={text:chatReplyTo.text.slice(0,80),sender:chatReplyTo.sender};cancelReply();}
     await set(ref(db,`clients/${chatPhone}/messages/${key}`),msg);
+    /* #2 — סימון מי פתח (אם אין עדיין) */
+    try{const ob=await get(ref(db,`clients/${chatPhone}/openedBy`));if(!ob.exists())await set(ref(db,`clients/${chatPhone}/openedBy`),{role:isAdmin?"admin":"agent",name:currentUser.name||"",at:Date.now()});}catch(_){}
     ta.value="";ta.style.height="";
   } catch(e){toast("שגיאה","e");}finally{btn.disabled=false;}
 }
@@ -1112,17 +1174,51 @@ async function saveEditMsg(){const text=document.getElementById("edit-ta").value
 function confirmBlock(phone) {
   const name=clients[phone]?.name||phone;
   const needReason=!isAdmin;
-  document.getElementById("confirm-reason").style.display=needReason?"block":"none";
-  document.getElementById("confirm-reason").value="";
+  const ta=document.getElementById("confirm-reason");
+  ta.style.display=needReason?"block":"none";
+  ta.value="";
+  ta.classList.remove("field-error");
+  document.getElementById("reason-err")?.remove();
   showConfirm("w",`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>`,
     "חסימת לקוח",`האם לחסום את <strong>${name}</strong>?${needReason?"<br/><small>חובה לרשום סיבה</small>":""}`,
     async()=>{
-      const reason=document.getElementById("confirm-reason").value.trim();
-      if(needReason&&!reason){toast("יש לרשום סיבת חסימה","e");return;}
+      const reason=ta.value.trim();
+      if(needReason&&!reason){
+        /* #6 — שדה חובה אדום במקום toast למטה */
+        ta.classList.add("field-error");
+        ta.focus();
+        if(!document.getElementById("reason-err")){
+          const e=document.createElement("div");
+          e.id="reason-err";e.className="field-err-msg";e.textContent="שדה חובה — יש לרשום סיבת חסימה";
+          ta.insertAdjacentElement("afterend",e);
+        }
+        return false; /* משאיר את החלון פתוח */
+      }
       showSP("חוסם...");try{await set(ref(db,`blocked/${phone}`),{blocked:true,blockedAt:Date.now(),reason:reason||"חסימה ידנית",blockedBy:currentUser.name});toast("נחסם","s");}catch(e){toast("שגיאה","e");}finally{hideSP();}
     });
+  /* ניקוי שגיאה בהקלדה */
+  ta.oninput=()=>{ ta.classList.remove("field-error"); document.getElementById("reason-err")?.remove(); };
 }
-function confirmUnblock(phone){const name=clients[phone]?.name||phone;document.getElementById("confirm-reason").style.display="none";showConfirm("w",`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>`,"שחרור חסימה",`האם לשחרר את <strong>${name}</strong>?`,async()=>{showSP("משחרר...");try{await remove(ref(db,`blocked/${phone}`));await set(ref(db,`clients/${phone}/failedAttempts`),0);toast("שוחרר","s");}catch(e){toast("שגיאה","e");}finally{hideSP();}});}
+function confirmUnblock(phone){
+  const name=clients[phone]?.name||phone;
+  const needReason=!isAdmin;
+  const ta=document.getElementById("confirm-reason");
+  ta.style.display=needReason?"block":"none";
+  ta.value="";
+  ta.classList.remove("field-error");
+  ta.setAttribute("placeholder","סיבת שחרור החסימה (חובה)...");
+  document.getElementById("reason-err")?.remove();
+  showConfirm("w",`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>`,"שחרור חסימה",`האם לשחרר את <strong>${name}</strong>?${needReason?"<br/><small>חובה לרשום סיבת שחרור</small>":""}`,async()=>{
+    const reason=ta.value.trim();
+    if(needReason&&!reason){
+      ta.classList.add("field-error");ta.focus();
+      if(!document.getElementById("reason-err")){const e=document.createElement("div");e.id="reason-err";e.className="field-err-msg";e.textContent="שדה חובה — יש לרשום סיבת שחרור";ta.insertAdjacentElement("afterend",e);}
+      return false;
+    }
+    showSP("משחרר...");try{await remove(ref(db,`blocked/${phone}`));await set(ref(db,`clients/${phone}/failedAttempts`),0);if(reason)await set(ref(db,`clients/${phone}/unblockLog/${Date.now()}`),{reason,by:currentUser.name,at:Date.now()});toast("שוחרר","s");}catch(e){toast("שגיאה","e");}finally{hideSP();}
+  });
+  ta.oninput=()=>{ ta.classList.remove("field-error"); document.getElementById("reason-err")?.remove(); };
+}
 function confirmDelete(phone){const name=clients[phone]?.name||phone;document.getElementById("confirm-reason").style.display="none";showConfirm("d",`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>`,"מחיקת לקוח",`האם למחוק את <strong>${name}</strong>?<br/>פעולה זו אינה ניתנת לשחזור.`,async()=>{showSP("מוחק...");try{await remove(ref(db,`clients/${phone}`));await remove(ref(db,`blocked/${phone}`));toast("נמחק","s");}catch(e){toast("שגיאה","e");}finally{hideSP();}});}
 function confirmDeleteChat(phone){const name=clients[phone]?.name||phone;document.getElementById("confirm-reason").style.display="none";showConfirm("d",`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>`,"מחיקת שיחה",`האם למחוק את כל השיחה עם <strong>${name}</strong>?`,async()=>{showSP("מוחק...");try{await remove(ref(db,`clients/${phone}/messages`));toast("שיחה נמחקה","s");}catch(e){toast("שגיאה","e");}finally{hideSP();}});}
 window.confirmBlock=confirmBlock;window.confirmUnblock=confirmUnblock;window.confirmDelete=confirmDelete;window.confirmDeleteChat=confirmDeleteChat;
@@ -1192,18 +1288,27 @@ function renderTeamTable(){
   const tbody=document.getElementById("team-tbody");if(!tbody)return;
   const entries=Object.entries(team);
   if(!entries.length){tbody.innerHTML=`<tr><td colspan="6"><div class="et">אין נציגים עדיין</div></td></tr>`;return;}
-  tbody.innerHTML=entries.map(([id,m])=>`<tr>
+  tbody.innerHTML=entries.map(([id,m])=>{
+    const pres=m.presence||{};
+    const isOn=pres.online===true;
+    const seenTs=pres.lastSeen||m.lastLogin||0;
+    const statusHtml=isOn
+      ? `<span class="tag a">מחובר</span>`
+      : seenTs
+        ? `<span class="tag pa">נראה ${fmtSeen(seenTs)}</span>`
+        : `<span class="tag pa">לא מחובר</span>`;
+    return `<tr>
     <td class="cn">${m.firstName||""} ${m.lastName||""}</td>
     <td>${m.username||"—"}</td>
     <td class="cp">${fmtPhone(m.phone||"")}</td>
-    <td style="font-size:12px;color:var(--muted)">${m.lastLogin?fmtDate(m.lastLogin):"—"}</td>
-    <td><span class="tag ${m.lastLogin&&(Date.now()-m.lastLogin)<120000?"a":"pa"}">${m.lastLogin&&(Date.now()-m.lastLogin)<120000?"מחובר":"לא מחובר"}</span></td>
+    <td style="font-size:12px;color:var(--muted)">${m.lastLogin?fmtSeen(m.lastLogin):"—"}</td>
+    <td>${statusHtml}</td>
     <td><div class="ac">
       <button class="bsm e" onclick="openTeamModal('${id}')">עריכה</button>
       <button class="bsm d" onclick="confirmDelTeam('${id}','${(m.firstName||"")+" "+(m.lastName||"")}')">הסרה</button>
       <button class="bsm bl" onclick="forceLogout('${id}')">נתק</button>
     </div></td>
-  </tr>`).join("");
+  </tr>`;}).join("");
 }
 function confirmDelTeam(id,name){document.getElementById("confirm-reason").style.display="none";showConfirm("d",`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>`,"הסרת נציג",`האם להסיר את <strong>${name}</strong>?`,async()=>{showSP("מסיר...");try{await remove(ref(db,`team/${id}`));await remove(ref(db,`sessions/${id}`));toast("הנציג הוסר","s");}catch(e){toast("שגיאה","e");}finally{hideSP();}});}
 async function forceLogout(id){
@@ -1274,7 +1379,7 @@ function showPanel(id,navId,title){document.querySelectorAll(".panel").forEach(p
 function toggleSB(f){const sb=document.getElementById("sidebar"),ov=document.getElementById("sb-ov");const o=f!==undefined?f:!sb.classList.contains("open");sb.classList.toggle("open",o);ov.classList.toggle("show",o);}
 function openMo(id){document.getElementById(id).classList.add("show");}
 function closeMo(id){document.getElementById(id).classList.remove("show");}
-function showConfirm(type,svg,title,text,cb){const ci=document.getElementById("confirm-icon");ci.className=`ci ${type}`;ci.innerHTML=svg;document.getElementById("confirm-title").textContent=title;document.getElementById("confirm-text").innerHTML=text;const btn=document.getElementById("confirm-ok");btn.className=type==="d"?"btn-d":"btn-w";btn.onclick=()=>{closeMo("mo-confirm");cb();};openMo("mo-confirm");}
+function showConfirm(type,svg,title,text,cb){const ci=document.getElementById("confirm-icon");ci.className=`ci ${type}`;ci.innerHTML=svg;document.getElementById("confirm-title").textContent=title;document.getElementById("confirm-text").innerHTML=text;const btn=document.getElementById("confirm-ok");btn.className=type==="d"?"btn-d":"btn-w";btn.onclick=async()=>{const r=await cb();if(r===false)return;closeMo("mo-confirm");};openMo("mo-confirm");}
 function showSP(t){document.getElementById("sp-txt").textContent=t||"טוען...";document.getElementById("spinner").classList.add("show");}
 function hideSP(){document.getElementById("spinner").classList.remove("show");}
 function showLoadOverlay(t){document.getElementById("load-text").textContent=t||"טוען...";document.getElementById("load-overlay").classList.add("show");}
@@ -1287,6 +1392,29 @@ function fmtSeen(ts){if(!ts)return"";const d=new Date(ts);const now=new Date();c
 function fmtTime(ts){return new Date(ts).toLocaleTimeString("he-IL",{hour:"2-digit",minute:"2-digit"});}
 function getLL(hist){if(!hist)return"—";const t=Object.values(hist).map(h=>h.at).filter(Boolean);return t.length?fmtDate(Math.max(...t)):"—";}
 function isUrl(s){try{new URL(s);return true}catch{return false}}
+
+/* ── מודול אופליין (#8): באנר + חסימת פעולות בזמן אין אינטרנט ── */
+(function(){
+  const banner=document.getElementById("offline-banner");
+  function update(){
+    const off=!navigator.onLine;
+    if(banner)banner.classList.toggle("show",off);
+    document.body.classList.toggle("is-offline",off);
+  }
+  /* חסימת לחיצות בזמן אופליין (capture) — מונע באגים מפעולות ללא רשת */
+  document.addEventListener("click",e=>{
+    if(navigator.onLine)return;
+    const t=e.target.closest("button,a,.bsm,[onclick]");
+    if(!t)return;
+    /* לא חוסמים סגירת חלונות/ביטול */
+    if(t.id&&/close|cancel|מבטל/i.test(t.id))return;
+    e.preventDefault();e.stopPropagation();
+    try{toast("אין חיבור לאינטרנט — נסה שוב כשהחיבור יחזור","e");}catch(_){}
+  },true);
+  window.addEventListener("online",update);
+  window.addEventListener("offline",update);
+  update();
+})();
 </script>
 </body>
 </html>

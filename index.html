@@ -37,6 +37,10 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--txt);min-he
 .load-ring:nth-child(2){inset:8px;border-right-color:rgba(56,189,248,.5);animation-duration:.7s;animation-direction:reverse}
 .load-ring:nth-child(3){inset:16px;border-bottom-color:rgba(125,211,248,.3);animation-duration:1.2s}
 @keyframes spin{to{transform:rotate(360deg)}}
+.ls-circle .ls-c{stroke:#22c55e;stroke-width:2.5;stroke-dasharray:151;stroke-dashoffset:151;animation:lsCirc .5s ease forwards}
+.ls-circle .ls-p{stroke:#22c55e;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:48;stroke-dashoffset:48;animation:lsCheck .35s .45s ease forwards}
+@keyframes lsCirc{to{stroke-dashoffset:0}}
+@keyframes lsCheck{to{stroke-dashoffset:0}}
 .load-text{color:#fff;font-size:15px;font-weight:600}
 #dash{display:none;min-height:100vh}
 #dash.show{display:flex}
@@ -480,7 +484,7 @@ async function doLogin() {
       localStorage.setItem(SESSION_KEY,JSON.stringify({userId:ADMIN_ID,role:"admin",name:"נתן מנדל",expiry:Date.now()+MONTH_MS,deviceToken:dt}));
       set(ref(db,"sessions/"+ADMIN_ID),{deviceToken:dt,loginAt:Date.now()}).catch(()=>{});
       hideLoadOverlay();
-      showDash({userId:ADMIN_ID,role:"admin",name:"נתן מנדל"});
+      showLoginSuccess("נתן מנדל",()=>showDash({userId:ADMIN_ID,role:"admin",name:"נתן מנדל"}));
       return;
     }
     const tSnap=await get(ref(db,"team"));
@@ -503,7 +507,7 @@ async function doLogin() {
         localStorage.setItem(SESSION_KEY,JSON.stringify({userId:tid,role:"agent",name:member.firstName+" "+member.lastName,expiry:Date.now()+MONTH_MS,deviceToken:dt}));
         set(ref(db,"sessions/"+tid),{deviceToken:dt,loginAt:Date.now()}).catch(()=>{});
         hideLoadOverlay();
-        showDash({userId:tid,role:"agent",name:member.firstName+" "+member.lastName,perms:member.perms||{}});
+        showLoginSuccess(member.firstName+" "+member.lastName,()=>showDash({userId:tid,role:"agent",name:member.firstName+" "+member.lastName,perms:member.perms||{}}));
         return;
       }
     }
@@ -590,6 +594,7 @@ window.addEventListener("DOMContentLoaded",()=>{
 });
 
 /* ── Show Dashboard ── */
+function showLoginSuccess(name,done){const ov=document.getElementById("login-success");document.getElementById("ls-name").textContent=`התחברת בהצלחה, ${name}`;ov.style.display="flex";setTimeout(()=>{ov.style.display="none";done&&done();},1400);}
 function showDash(user) {
   if(window.__hideBoot)window.__hideBoot();
   currentUser=user; isAdmin=user.role==="admin";
@@ -1415,10 +1420,6 @@ function isUrl(s){try{new URL(s);return true}catch{return false}}
   window.addEventListener("offline",update);
   update();
 })();
-</script>
-</body>
-</html>
-
 
   /* ══ שליחת תמונות בצ'אט נציג ══ */
   window.openLightbox = (url) => {
@@ -1456,5 +1457,10 @@ function isUrl(s){try{new URL(s);return true}catch{return false}}
   }
 
 </script>
+<div id="login-success" style="display:none;position:fixed;inset:0;z-index:99998;background:linear-gradient(145deg,#0c1a2e,#0a2540);flex-direction:column;align-items:center;justify-content:center;gap:22px">
+  <div class="ls-circle"><svg viewBox="0 0 52 52" width="80" height="80"><circle class="ls-c" cx="26" cy="26" r="24" fill="none"/><path class="ls-p" fill="none" d="M14 27 L23 36 L38 18"/></svg></div>
+  <div style="color:#fff;font-size:20px;font-weight:800" id="ls-name">התחברת בהצלחה</div>
+  <div style="color:#7fb8e0;font-size:14px">טוען לוח בקרה...</div>
+</div>
 </body>
 </html>

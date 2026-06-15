@@ -128,6 +128,9 @@ tr:hover td{background:#f8faff}
 .btn-as{width:100%;background:none;border:2px dashed var(--bdr);border-radius:var(--rs);color:var(--p);font-family:'Heebo',sans-serif;font-size:14px;font-weight:600;padding:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px}
 .btn-as:hover{border-color:var(--p)}
 .pwd-item{background:#f8faff;border:1.5px solid var(--bdr);border-radius:var(--rs);padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.site-pwds-block{margin-top:12px;padding-top:12px;border-top:1px dashed var(--bdr)}
+.site-pwds-title{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px}
+.vsc-pwds{margin-top:10px;padding-top:10px;border-top:1px dashed var(--bdr)}
 .pwd-val{flex:1;font-family:monospace;font-size:14px;letter-spacing:2px}
 .pwd-val.hidden{filter:blur(4px);user-select:none}
 .btn-pwd-show{background:none;border:none;cursor:pointer;color:var(--p);font-size:12px;font-family:'Heebo',sans-serif;font-weight:600;padding:4px 8px}
@@ -211,6 +214,15 @@ tr:hover td{background:#f8faff}
 .spo{display:none;position:fixed;inset:0;background:rgba(12,26,46,.55);backdrop-filter:blur(5px);z-index:1000;align-items:center;justify-content:center;flex-direction:column;gap:16px}
 .spo.show{display:flex}
 .sp{width:50px;height:50px;border:4px solid rgba(255,255,255,.15);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite}
+
+    .msg-img { max-width:220px; max-height:220px; border-radius:12px; object-fit:cover; cursor:pointer; display:block; margin-top:4px; }
+    .chat-img-btn2 { background:none; border:none; cursor:pointer; color:var(--muted); padding:6px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+    .chat-img-btn2:hover { background:var(--bg); }
+    .img-lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,.92); z-index:1000; align-items:center; justify-content:center; }
+    .img-lightbox.show { display:flex; }
+    .img-lightbox img { max-width:95vw; max-height:95vh; object-fit:contain; border-radius:12px; }
+    .img-lightbox-close { position:absolute; top:16px; right:16px; background:rgba(255,255,255,.15); border:none; border-radius:50%; width:38px; height:38px; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+
 .spt{color:#fff;font-size:16px;font-weight:600}
 #tc{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:2000;display:flex;flex-direction:column;gap:8px;align-items:center}
 .toast{background:#0d1b2e;color:#fff;border-radius:10px;padding:11px 18px;font-size:14px;font-weight:500;display:flex;align-items:center;gap:8px;white-space:nowrap;animation:tin .3s ease both}
@@ -300,9 +312,7 @@ tr:hover td{background:#f8faff}
     <div class="fr"><div class="fg"><label class="fl">אימייל</label><input id="f-email" class="fi" type="email" placeholder="mail@example.com"/></div><div class="fg"><label class="fl">יעד לסיום</label><input id="f-deadline" class="fi" type="date"/></div></div>
     <div class="fr full"><div class="fg"><label class="fl">תזכורת פנימית</label><input id="f-note" class="fi" type="text"/></div></div>
     <div class="fr full"><div class="fg"><label class="fl">הודעה אישית ללקוח</label><input id="f-message" class="fi" type="text"/></div></div>
-    <div class="fst">סיסמאות ומפתחות</div>
-    <div id="passwords-editor"></div>
-    <button class="btn-as" id="btn-add-pwd">הוספת סיסמה</button>
+    <div id="passwords-editor" style="display:none"></div>
     <div class="fst">אתרים</div>
     <div id="sites-editor"></div>
     <button class="btn-as" id="btn-add-site">הוספת אתר</button>
@@ -351,6 +361,9 @@ tr:hover td{background:#f8faff}
     </div>
     <div class="chat-msgs" id="chat-msgs-list"></div>
     <div class="chat-inp">
+      <button class="chat-img-btn2" id="admin-img-btn" title="שלח תמונה">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      </button>
       <textarea id="chat-ta" class="chat-ta" placeholder="כתוב תשובה..." rows="1"></textarea>
       <button class="chat-sb" id="chat-send-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
     </div>
@@ -402,11 +415,17 @@ tr:hover td{background:#f8faff}
 </div></div></div>
 <div class="spo" id="spinner"><div class="sp"></div><div class="spt" id="sp-txt">טוען...</div></div>
 <div id="tc"></div>
+<div class="img-lightbox" id="img-lightbox" onclick="this.classList.remove('show')">
+  <button class="img-lightbox-close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  <img id="lightbox-img" src="" alt="תמונה"/>
+</div>
+<input type="file" id="admin-file-input" accept="image/*" style="display:none"/>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, get, set, remove, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
-const db = getDatabase(initializeApp({
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+const _app = initializeApp({
   apiKey:"AIzaSyB9jeWAKY2UEz70V77SCPnSJ18IfwnsVV0",
   authDomain:"deshbord-atarim-sheli.firebaseapp.com",
   databaseURL:"https://deshbord-atarim-sheli-default-rtdb.firebaseio.com",
@@ -414,7 +433,9 @@ const db = getDatabase(initializeApp({
   storageBucket:"deshbord-atarim-sheli.firebasestorage.app",
   messagingSenderId:"893227581235",
   appId:"1:893227581235:web:3254c85705dfe5fe894846"
-}));
+});
+const db = getDatabase(_app);
+const storage = getStorage(_app);
 
 const ADMIN_ID = "mi0XmZ8T3nb5VmZ0tLamS25UHBw1";
 const SESSION_KEY = "wdc_admin_session";
@@ -625,7 +646,7 @@ function buildSidebar() {
     generatePin();
   };
   document.getElementById("btn-add-site").onclick=()=>addSiteField();
-  document.getElementById("btn-add-pwd").onclick=()=>addPwdField();
+  document.getElementById("btn-add-pwd")?.addEventListener("click",()=>addPwdField());
   document.getElementById("btn-save-client").onclick=saveClient;
   document.getElementById("mo-client-close").onclick=()=>closeMo("mo-client");
   document.getElementById("mo-client-cancel").onclick=()=>closeMo("mo-client");
@@ -846,8 +867,20 @@ function addSiteField(site={}) {
   <div class="fr"><div class="fg"><label class="fl">סטטוס</label><select class="fi s-status">${so}</select></div><div class="fg"><label class="fl">התקדמות 0–100</label><input class="fi s-prog" type="number" min="0" max="100" value="${site.progress||"0"}"/></div></div>
   <div class="fr"><div class="fg"><label class="fl">תאריך השקה</label><input class="fi s-launch" type="text" placeholder="01/2026" value="${site.launchDate||""}"/></div><div class="fg"><label class="fl">עדכון אחרון</label><input class="fi s-upd" type="text" value="${site.lastUpdated||""}"/></div></div>
   <div class="fr full"><div class="fg"><label class="fl">קישור לתמונה</label><input class="fi s-img" type="url" value="${site.image||""}" dir="ltr"/></div></div>
-  <div class="fr full"><div class="fg"><label class="fl">הודעה אישית ללקוח</label><input class="fi s-msg" type="text" value="${site.message||""}"/></div></div>`;
+  <div class="fr full"><div class="fg"><label class="fl">הודעה אישית ללקוח</label><input class="fi s-msg" type="text" value="${site.message||""}"/></div></div>
+  <div class="site-pwds-block"><div class="site-pwds-title">סיסמאות לאתר זה (מוצגות ללקוח)</div><div class="site-pwds-editor"></div><button class="btn-as btn-add-site-pwd" type="button">הוספת סיסמה לאתר</button></div>`;
   document.getElementById("sites-editor").appendChild(div);
+  const spEditor=div.querySelector(".site-pwds-editor");
+  div.querySelector(".btn-add-site-pwd").onclick=()=>addSitePwdField(spEditor);
+  if(site.sitePasswords)Object.values(site.sitePasswords).forEach(p=>addSitePwdField(spEditor,p));
+}
+
+function addSitePwdField(editor,pwd={}) {
+  const div=document.createElement("div");div.className="sec sp-row";
+  div.innerHTML=`<div class="sec-top"><span class="sec-n">סיסמה</span><button class="btn-rm" type="button"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>הסרה</button></div>
+  <div class="fr"><div class="fg"><label class="fl">שם / למה הסיסמה</label><input class="fi sp-label" type="text" placeholder="כניסה לדשבורד" value="${pwd.label||""}"/></div><div class="fg"><label class="fl">הסיסמה</label><input class="fi sp-value" type="text" placeholder="••••••••" value="${pwd.value||""}"/></div></div>`;
+  editor.appendChild(div);
+  div.querySelector(".btn-rm").onclick=()=>div.remove();
 }
 
 function addPwdField(pwd={}) {
@@ -875,11 +908,13 @@ async function saveClient() {
     const url=card.querySelector(".s-url").value.trim();
     if(url&&!isUrl(url)){toast(`URL לא תקין באתר ${i+1}`,"e");ok=false;return;}
     const prog=Math.max(0,Math.min(100,parseInt(card.querySelector(".s-prog").value)||0));
+    const sp={};card.querySelectorAll(".sp-row").forEach((r,j)=>{const l=r.querySelector(".sp-label").value.trim();const v=r.querySelector(".sp-value").value.trim();if(l&&v)sp[`sp_${j+1}`]={label:l,value:v};});
     sites[`site_${i+1}`]={name:card.querySelector(".s-name").value.trim()||"",url,status:card.querySelector(".s-status").value,progress:prog,
       ...(card.querySelector(".s-launch").value.trim()&&{launchDate:card.querySelector(".s-launch").value.trim()}),
       ...(card.querySelector(".s-upd").value.trim()&&{lastUpdated:card.querySelector(".s-upd").value.trim()}),
       ...(card.querySelector(".s-img").value.trim()&&{image:card.querySelector(".s-img").value.trim()}),
-      ...(card.querySelector(".s-msg").value.trim()&&{message:card.querySelector(".s-msg").value.trim()})};
+      ...(card.querySelector(".s-msg").value.trim()&&{message:card.querySelector(".s-msg").value.trim()}),
+      ...(Object.keys(sp).length>0&&{sitePasswords:sp})};
   });
   if(!ok)return;
   const pwCards=document.querySelectorAll(".sec[id^='pw-']");
@@ -917,7 +952,7 @@ function openViewModal(phone) {
     <div class="vs"><div class="vl">דירוג</div>${rHtml}</div>
     <div class="vs"><div class="vl">ניסיונות כושלים</div><div class="vv" style="color:${(c.failedAttempts||0)>0?"var(--err)":"var(--ok)"}">${c.failedAttempts||0}</div></div>
     ${pwdsHtml}
-    ${sites.length?`<div class="vs"><div class="vl">אתרים</div>${sites.map(s=>{const p=parseInt(s.progress||0);const pc=p>=100?"#22c55e":p>=75?"#8b5cf6":p>=50?"#3b82f6":p>=25?"#f59e0b":"#ef4444";return`<div class="vsc"><div style="display:flex;justify-content:space-between"><strong>${s.name||"ללא שם"}</strong><span class="tag ${s.status==="active"?"a":s.status==="building"?"bu":"pa"}">${s.status==="active"?"פעיל":s.status==="building"?"בבנייה":"מושהה"}</span></div>${s.url?`<div style="font-size:12px;color:var(--muted);margin-top:3px;direction:ltr">${s.url}</div>`:""}<div class="vp"><div class="vpf" style="width:0%;background:${pc}" data-t="${p}"></div></div><div style="font-size:12px;font-weight:700;color:${pc};margin-top:3px">${p}%</div></div>`;}).join("")}</div>`:""}
+    ${sites.length?`<div class="vs"><div class="vl">אתרים</div>${sites.map((s,si)=>{const p=parseInt(s.progress||0);const pc=p>=100?"#22c55e":p>=75?"#8b5cf6":p>=50?"#3b82f6":p>=25?"#f59e0b":"#ef4444";const spArr=s.sitePasswords?Object.values(s.sitePasswords):[];const spHtml=spArr.length?`<div class="vsc-pwds">${spArr.map((sp,k)=>`<div class="pwd-item"><span class="pwd-label">${sp.label||"סיסמה"}</span><span class="pwd-val hidden" id="vsp${si}_${k}">${sp.value||""}</span><button class="btn-pwd-show" onclick="togglePwdView('vsp${si}_${k}',this)">הצג</button><button class="btn-pwd-copy" onclick="navigator.clipboard?.writeText('${sp.value||""}').then(()=>toast('הועתק ✓','s'))">העתק</button></div>`).join("")}</div>`:"";return`<div class="vsc"><div style="display:flex;justify-content:space-between"><strong>${s.name||"ללא שם"}</strong><span class="tag ${s.status==="active"?"a":s.status==="building"?"bu":"pa"}">${s.status==="active"?"פעיל":s.status==="building"?"בבנייה":"מושהה"}</span></div>${s.url?`<div style="font-size:12px;color:var(--muted);margin-top:3px;direction:ltr">${s.url}</div>`:""}<div class="vp"><div class="vpf" style="width:0%;background:${pc}" data-t="${p}"></div></div><div style="font-size:12px;font-weight:700;color:${pc};margin-top:3px">${p}%</div>${spHtml}</div>`;}).join("")}</div>`:""}
     ${msgs.length?`<div class="vs"><div class="vl">הודעות (${msgs.length})</div><button class="bsm m" onclick="openMsgsModal('${phone}')">צפייה בהודעות</button></div>`:""}`;
   openMo("mo-view");
   setTimeout(()=>document.querySelectorAll(".vpf").forEach(el=>{el.style.width=el.getAttribute("data-t")+"%";}),100);
@@ -992,8 +1027,9 @@ function openChatModal(phone) {
   chatListener=onValue(ref(db,`clients/${phone}/messages`),snap=>renderChatMsgs(snap.val()||{}));
   onValue(ref(db,`clients/${phone}/presence`),snap=>{
     const p=snap.val();const st=document.getElementById("mo-chat-status");
-    if(p?.online){st.textContent="מחובר עכשיו";st.style.color="var(--ok)";}
-    else if(p?.lastSeen){st.textContent=`נראה ${fmtDate(p.lastSeen)}`;st.style.color="var(--muted)";}
+    if(p?.online&&p?.chatOpen){st.textContent="מחובר לצ'אט";st.style.color="var(--ok)";}
+    else if(p?.online){st.textContent="מחובר לאתר";st.style.color="var(--ok)";}
+    else if(p?.lastSeen){st.textContent=`נראה לאחרונה ${fmtSeen(p.lastSeen)}`;st.style.color="var(--muted)";}
     else st.textContent="";
   });
 }
@@ -1023,7 +1059,10 @@ function renderChatMsgs(msgs) {
     const rGroups={};
     Object.entries(m.reactions||{}).forEach(([,r])=>{if(!rGroups[r.emoji])rGroups[r.emoji]={count:0,mine:false};rGroups[r.emoji].count++;if(r.by==="agent")rGroups[r.emoji].mine=true;});
     const rHtml=Object.keys(rGroups).length?`<div class="reactions-wrap">${Object.entries(rGroups).map(([e,d])=>`<div class="rc ${d.mine?"mine":""}" onclick="toggleRC('${key}','${e}')">${e}<span class="rc-cnt">${d.count>1?d.count:""}</span></div>`).join("")}</div>`:"";
-    const bubbleTxt=m.deleted?`<em style="opacity:.6">🚫 ההודעה נמחקה</em>`:`${m.text}${m.edited?`<span style="font-size:10px;opacity:.5;margin-right:4px">(נערך)</span>`:""}`;
+    let bubbleTxt;
+    if(m.deleted){bubbleTxt=`<em style="opacity:.6">🚫 ההודעה נמחקה</em>`;}
+    else if(m.type==="image"&&m.imageUrl){bubbleTxt=`<img class="msg-img" src="${m.imageUrl}" onclick="openLightbox(this.dataset.url)" class="msg-img-clickable" alt="תמונה" loading="lazy"/>`;}
+    else{bubbleTxt=`${m.text}${m.edited?`<span style="font-size:10px;opacity:.5;margin-right:4px">(נערך)</span>`:""}`;}
     let statusHtml="";
     if(isAgent&&!m.deleted){
       if(m.clientRead){statusHtml=`<span style="color:var(--ok);font-size:10px;display:flex;align-items:center;gap:2px;padding:0 4px"><svg width="18" height="11" viewBox="0 0 18 11" fill="none"><path d="M1 5.5l3.5 3.5L11 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 5.5l3.5 3.5L16 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>${m.clientReadAt?fmtTime(m.clientReadAt):""}</span>`;}
@@ -1243,12 +1282,50 @@ function hideLoadOverlay(){document.getElementById("load-overlay").classList.rem
 function toast(msg,type="s"){const el=document.createElement("div");el.className=`toast ${type}`;const ic=type==="s"?`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;el.innerHTML=ic+msg;document.getElementById("tc").appendChild(el);setTimeout(()=>{el.style.animation="tin .3s ease reverse";setTimeout(()=>el.remove(),300);},3000);}
 function fmtPhone(p){const s=String(p).replace(/\D/g,"");return s.length===10?s.slice(0,3)+"-"+s.slice(3):s;}
 function fmtDate(ts){if(!ts)return"—";const d=new Date(ts);return d.toLocaleDateString("he-IL")+" "+d.toLocaleTimeString("he-IL",{hour:"2-digit",minute:"2-digit"});}
+/* תאריך יחסי: היום / אתמול / שלשום / תאריך מלא עם שנה (#17/#24) */
+function fmtSeen(ts){if(!ts)return"";const d=new Date(ts);const now=new Date();const tm=d.toLocaleTimeString("he-IL",{hour:"2-digit",minute:"2-digit"});const sod=x=>{const t=new Date(x);t.setHours(0,0,0,0);return t.getTime();};const days=Math.round((sod(now)-sod(d))/864e5);if(days===0)return`היום ${tm}`;if(days===1)return`אתמול ${tm}`;if(days===2)return`שלשום ${tm}`;return`${d.toLocaleDateString("he-IL",{day:"2-digit",month:"2-digit",year:"numeric"})} ${tm}`;}
 function fmtTime(ts){return new Date(ts).toLocaleTimeString("he-IL",{hour:"2-digit",minute:"2-digit"});}
 function getLL(hist){if(!hist)return"—";const t=Object.values(hist).map(h=>h.at).filter(Boolean);return t.length?fmtDate(Math.max(...t)):"—";}
 function isUrl(s){try{new URL(s);return true}catch{return false}}
 </script>
 </body>
 </html>
+
+
+  /* ══ שליחת תמונות בצ'אט נציג ══ */
+  window.openLightbox = (url) => {
+    document.getElementById("lightbox-img").src = url;
+    document.getElementById("img-lightbox").classList.add("show");
+  };
+
+  function initImgUpload() {
+    const btn = document.getElementById("admin-img-btn");
+    const input = document.getElementById("admin-file-input");
+    if (!btn || !input) return;
+    btn.onclick = () => input.click();
+    input.onchange = async (e) => {
+      const file = e.target.files[0];
+      if (!file || !chatPhone) return;
+      e.target.value = "";
+      if (file.size > 10 * 1024 * 1024) { toast("הקובץ גדול מדי — מקסימום 10MB","e"); return; }
+      const btn2 = document.getElementById("chat-send-btn");
+      if(btn2) btn2.disabled = true;
+      try {
+        const ext = file.name.split('.').pop() || 'jpg';
+        const path = "chat-images/" + chatPhone + "/" + Date.now() + "." + ext;
+        const storageRef = sRef(storage, path);
+        const snapshot = await uploadBytes(storageRef, file);
+        const url = await getDownloadURL(snapshot.ref);
+        const key = "msg_" + Date.now();
+        await set(ref(db,"clients/"+chatPhone+"/messages/"+key), {
+          text:"", imageUrl:url, at:Date.now(), sender:"agent",
+          agentRead:true, clientRead:false, agentName:currentUser.name, type:"image"
+        });
+        toast("תמונה נשלחה ✓","s");
+      } catch(err) { toast("שגיאה בהעלאה","e"); console.error(err); }
+      finally { if(btn2) btn2.disabled = false; }
+    };
+  }
 
 </script>
 </body>

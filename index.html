@@ -223,6 +223,21 @@ tr:hover td{background:#f8faff}
 .sp{width:50px;height:50px;border:4px solid rgba(255,255,255,.15);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite}
 
     .msg-img { max-width:220px; max-height:220px; border-radius:12px; object-fit:cover; cursor:pointer; display:block; margin-top:4px; }
+    .img-lightbox img { cursor:grab; transform-origin:center; will-change:transform; }
+    .ot-receive{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:13.5px;font-weight:600;color:var(--p)}
+    .ot-sent,.ot-opened{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-style:italic;opacity:.7}
+    .aimg-preview{display:none;position:fixed;inset:0;background:rgba(8,18,32,.96);z-index:9500;flex-direction:column}
+    .aimg-preview.show{display:flex}
+    .aimg-top{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;color:#fff;font-size:16px;font-weight:700}
+    .aimg-x,.aimg-ot{background:rgba(255,255,255,.12);border:none;border-radius:50%;width:40px;height:40px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center}
+    .aimg-ot.active{background:var(--p);box-shadow:0 0 0 3px rgba(14,165,233,.3)}
+    .aimg-wrap{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:10px}
+    .aimg-wrap img{max-width:100%;max-height:100%;object-fit:contain;border-radius:10px}
+    .aimg-bottom{display:flex;align-items:center;gap:10px;padding:14px 16px}
+    .aimg-caption{flex:1;background:rgba(255,255,255,.1);border:none;border-radius:22px;padding:12px 18px;color:#fff;font-family:'Heebo',sans-serif;font-size:15px;outline:none}
+    .aimg-caption::placeholder{color:rgba(255,255,255,.5)}
+    .aimg-send{background:var(--p);border:none;border-radius:50%;width:48px;height:48px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .aimg-send:disabled{opacity:.5}
     .chat-img-btn2 { background:none; border:none; cursor:pointer; color:var(--muted); padding:6px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
     .chat-img-btn2:hover { background:var(--bg); }
     .img-lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,.92); z-index:1000; align-items:center; justify-content:center; }
@@ -1126,8 +1141,14 @@ function renderChatMsgs(msgs) {
     Object.entries(m.reactions||{}).forEach(([,r])=>{if(!rGroups[r.emoji])rGroups[r.emoji]={count:0,mine:false};rGroups[r.emoji].count++;if(r.by==="agent")rGroups[r.emoji].mine=true;});
     const rHtml=Object.keys(rGroups).length?`<div class="reactions-wrap">${Object.entries(rGroups).map(([e,d])=>`<div class="rc ${d.mine?"mine":""}" onclick="toggleRC('${key}','${e}')">${e}<span class="rc-cnt">${d.count>1?d.count:""}</span></div>`).join("")}</div>`:"";
     let bubbleTxt;
-    if(m.deleted){bubbleTxt=`<em style="opacity:.6">🚫 ההודעה נמחקה</em>`;}
-    else if(m.type==="image"&&m.imageUrl){bubbleTxt=`<img class="msg-img" src="${m.imageUrl}" onclick="openLightbox(this.dataset.url)" class="msg-img-clickable" alt="תמונה" loading="lazy"/>`;}
+    if(m.deleted){bubbleTxt=`<em style="opacity:.6">🚫 ${m.type==="image"?"התמונה נמחקה":"ההודעה נמחקה"}</em>`;}
+    else if(m.type==="image"&&m.imageUrl){
+      const mineImg=isAgent;
+      if(m.oneTime&&!mineImg&&m.viewed){bubbleTxt=`<span class="ot-opened">נפתחה</span>`;}
+      else if(m.oneTime&&!mineImg&&!m.viewed){bubbleTxt=`<span class="ot-receive">🔁 תמונה חד-פעמית · הקש לצפייה</span>`;}
+      else if(m.oneTime&&mineImg){bubbleTxt=`<span class="ot-sent">🔁 ${m.viewed?"נצפתה":"תמונה חד-פעמית"}</span>`;}
+      else{bubbleTxt=`<img class="msg-img" src="${m.imageUrl}" data-url="${m.imageUrl}" alt="תמונה" loading="lazy"/>${m.text?`<div style="font-size:13px;margin-top:4px">${m.text}</div>`:""}`;}
+    }
     else{bubbleTxt=`${m.text}${m.edited?`<span style="font-size:10px;opacity:.5;margin-right:4px">(נערך)</span>`:""}`;}
     let statusHtml="";
     if(isAgent&&!m.deleted){
@@ -1135,7 +1156,18 @@ function renderChatMsgs(msgs) {
       else statusHtml=`<span style="color:var(--muted);font-size:10px;padding:0 4px"><svg width="12" height="11" viewBox="0 0 12 11" fill="none"><path d="M1 5.5l3.5 3.5L11 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
     }
     w.innerHTML=`${replyHtml}<div class="ab" data-key="${key}">${bubbleTxt}</div>${rHtml}<div style="display:flex;align-items:center;gap:4px;margin-top:3px;padding:0 2px"><span class="at">${fmtTime(m.at)} · ${isAgent?(m.agentName||"נציג"):"לקוח"}</span>${statusHtml}</div>`;
-    w.querySelector(".ab").addEventListener("click",()=>{if(!m.deleted)openCtx(key,m,isAgent);});
+    const abEl=w.querySelector(".ab");
+    const isImgMsg=m.type==="image"&&m.imageUrl&&!m.deleted;
+    if(isImgMsg){
+      let lpT=null,lpF=false;
+      const sLP=()=>{lpF=false;lpT=setTimeout(()=>{lpF=true;openCtx(key,m,isAgent);},500);};
+      const cLP=()=>{if(lpT)clearTimeout(lpT);};
+      abEl.addEventListener("click",e=>{if(lpF){e.preventDefault();return;}if(m.oneTime)openOneTimeImg(key,m,isAgent);else openLightbox(m.imageUrl);});
+      abEl.addEventListener("contextmenu",e=>{e.preventDefault();openCtx(key,m,isAgent);});
+      abEl.addEventListener("touchstart",sLP,{passive:true});abEl.addEventListener("touchend",cLP);abEl.addEventListener("touchmove",cLP);
+    } else {
+      abEl.addEventListener("click",()=>{if(!m.deleted)openCtx(key,m,isAgent);});
+    }
     cont.appendChild(w);
     if(!isAgent&&!m.agentRead)set(ref(db,`clients/${chatPhone}/messages/${key}/agentRead`),true);
   });
@@ -1165,7 +1197,7 @@ async function agentReopenConv(){if(!chatPhone)return;showSP("פותח...");try{
 function agentInitMsg(){document.getElementById("chat-ta").disabled=false;document.getElementById("chat-send-btn").disabled=false;document.getElementById("chat-ta").focus();}
 
 /* ctx */
-function openCtx(key,msg,isAgent){ctxMsgKey=key;ctxMsgData=msg;document.getElementById("ctx-prev").textContent=msg.text;document.getElementById("ctx-edit").style.display=(isAgent&&(Date.now()-msg.at)<EDIT_WIN)?"":"none";document.getElementById("ctx-mo").classList.add("show");}
+function openCtx(key,msg,isAgent){ctxMsgKey=key;ctxMsgData=msg;document.getElementById("ctx-prev").textContent=msg.type==="image"?"📷 תמונה":msg.text;document.getElementById("ctx-edit").style.display=(isAgent&&msg.type!=="image"&&(Date.now()-msg.at)<EDIT_WIN)?"":"none";document.getElementById("ctx-mo").classList.add("show");}
 function closeCtx(){document.getElementById("ctx-mo").classList.remove("show");ctxMsgKey=null;ctxMsgData=null;}
 async function addReaction(emoji){if(!ctxMsgKey||!chatPhone)return;const snap=await get(ref(db,`clients/${chatPhone}/messages/${ctxMsgKey}/reactions/r_agent`));if(snap.exists()&&snap.val().emoji===emoji)await remove(ref(db,`clients/${chatPhone}/messages/${ctxMsgKey}/reactions/r_agent`));else await set(ref(db,`clients/${chatPhone}/messages/${ctxMsgKey}/reactions/r_agent`),{emoji,by:"agent",at:Date.now()});closeCtx();}
 async function toggleRC(key,emoji){if(!chatPhone)return;const snap=await get(ref(db,`clients/${chatPhone}/messages/${key}/reactions/r_agent`));if(snap.exists()&&snap.val().emoji===emoji)await remove(ref(db,`clients/${chatPhone}/messages/${key}/reactions/r_agent`));else await set(ref(db,`clients/${chatPhone}/messages/${key}/reactions/r_agent`),{emoji,by:"agent",at:Date.now()});}
@@ -1422,47 +1454,94 @@ function isUrl(s){try{new URL(s);return true}catch{return false}}
   update();
 })();
 
-  /* ══ שליחת תמונות בצ'אט נציג ══ */
+  /* ══ שליחת תמונות בצ'אט נציג — עם זום, preview, חד-פעמי ══ */
+  let albScale=1,albX=0,albY=0,albStartDist=0,albStartScale=1,albDrag=false,albLX=0,albLY=0;
+  function albApply(){const i=document.getElementById("lightbox-img");if(i)i.style.transform=`translate(${albX}px,${albY}px) scale(${albScale})`;}
+  function albReset(){albScale=1;albX=0;albY=0;albApply();}
   window.openLightbox = (url) => {
     document.getElementById("lightbox-img").src = url;
+    albReset();
     document.getElementById("img-lightbox").classList.add("show");
   };
+  (function initAlbZoom(){
+    const lb=document.getElementById("img-lightbox"),img=document.getElementById("lightbox-img");
+    if(!lb||!img)return;
+    img.addEventListener("wheel",e=>{e.preventDefault();albScale=Math.min(5,Math.max(1,albScale*(e.deltaY<0?1.15:0.87)));if(albScale===1){albX=0;albY=0;}albApply();},{passive:false});
+    img.addEventListener("dblclick",e=>{e.stopPropagation();albScale=albScale>1?1:2.5;albX=0;albY=0;albApply();});
+    img.addEventListener("mousedown",e=>{if(albScale>1){albDrag=true;albLX=e.clientX;albLY=e.clientY;e.preventDefault();}});
+    window.addEventListener("mousemove",e=>{if(albDrag){albX+=e.clientX-albLX;albY+=e.clientY-albLY;albLX=e.clientX;albLY=e.clientY;albApply();}});
+    window.addEventListener("mouseup",()=>{albDrag=false;});
+    img.addEventListener("touchstart",e=>{if(e.touches.length===2){albStartDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);albStartScale=albScale;}else if(e.touches.length===1&&albScale>1){albLX=e.touches[0].clientX;albLY=e.touches[0].clientY;}},{passive:true});
+    img.addEventListener("touchmove",e=>{if(e.touches.length===2){e.preventDefault();const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);albScale=Math.min(5,Math.max(1,albStartScale*(d/albStartDist)));if(albScale===1){albX=0;albY=0;}albApply();}else if(e.touches.length===1&&albScale>1){e.preventDefault();albX+=e.touches[0].clientX-albLX;albY+=e.touches[0].clientY-albLY;albLX=e.touches[0].clientX;albLY=e.touches[0].clientY;albApply();}},{passive:false});
+    lb.addEventListener("click",e=>{if(e.target===lb){lb.classList.remove("show");albReset();}});
+    img.addEventListener("click",e=>e.stopPropagation());
+  })();
 
+  /* פתיחת תמונה חד-פעמית */
+  window.openOneTimeImg = async (key,m,isAgent) => {
+    if(m.viewed && !isAgent){ toast("התמונה כבר נצפתה","e"); return; }
+    openLightbox(m.imageUrl);
+    if(!isAgent && !m.viewed){
+      await set(ref(db,`clients/${chatPhone}/messages/${key}/viewed`),true);
+      await set(ref(db,`clients/${chatPhone}/messages/${key}/viewedAt`),Date.now());
+    }
+  };
+
+  let aPendingFile=null, aPendingOneTime=false;
   function initImgUpload() {
     const btn = document.getElementById("admin-img-btn");
     const input = document.getElementById("admin-file-input");
     if (!btn || !input) return;
     btn.onclick = () => input.click();
-    input.onchange = async (e) => {
+    input.onchange = (e) => {
       const file = e.target.files[0];
       if (!file || !chatPhone) return;
       e.target.value = "";
       if (!file.type.startsWith("image/")) { toast("ניתן להעלות תמונות בלבד","e"); return; }
       if (file.size > 10 * 1024 * 1024) { toast("הקובץ גדול מדי — מקסימום 10MB","e"); return; }
-      const btn2 = document.getElementById("chat-send-btn");
-      if(btn2) btn2.disabled = true;
-      try {
-        const ext = file.name.split('.').pop() || 'jpg';
-        const path = "chat-images/" + chatPhone + "/" + Date.now() + "." + ext;
-        const storageRef = sRef(storage, path);
-        const snapshot = await uploadBytes(storageRef, file);
-        const url = await getDownloadURL(snapshot.ref);
-        const key = "msg_" + Date.now();
-        await set(ref(db,"clients/"+chatPhone+"/messages/"+key), {
-          text:"", imageUrl:url, at:Date.now(), sender:"agent",
-          agentRead:true, clientRead:false, agentName:currentUser.name, type:"image"
-        });
-        toast("תמונה נשלחה ✓","s");
-      } catch(err) { toast("שגיאה בהעלאה","e"); console.error(err); }
-      finally { if(btn2) btn2.disabled = false; }
+      aPendingFile=file; aPendingOneTime=false;
+      const r=new FileReader();
+      r.onload=ev=>{document.getElementById("aimg-thumb").src=ev.target.result;document.getElementById("aimg-onetime").classList.remove("active");document.getElementById("aimg-caption").value="";document.getElementById("aimg-preview").classList.add("show");};
+      r.readAsDataURL(file);
     };
   }
+  window.aCancelPreview=()=>{aPendingFile=null;aPendingOneTime=false;document.getElementById("aimg-preview").classList.remove("show");};
+  window.aToggleOneTime=()=>{aPendingOneTime=!aPendingOneTime;document.getElementById("aimg-onetime").classList.toggle("active",aPendingOneTime);};
+  window.aSendImg=async()=>{
+    if(!aPendingFile||!chatPhone)return;
+    const file=aPendingFile, caption=document.getElementById("aimg-caption").value.trim(), oneTime=aPendingOneTime;
+    const sb=document.getElementById("aimg-send"); sb.disabled=true;
+    aCancelPreview();
+    try{
+      const ext=file.name.split('.').pop()||'jpg';
+      const snapshot=await uploadBytes(sRef(storage,"chat-images/"+chatPhone+"/"+Date.now()+"."+ext),file);
+      const url=await getDownloadURL(snapshot.ref);
+      const key="msg_"+Date.now();
+      const msg={text:caption||"",imageUrl:url,at:Date.now(),sender:"agent",agentRead:true,clientRead:false,agentName:currentUser.name,type:"image"};
+      if(oneTime){msg.oneTime=true;msg.viewed=false;}
+      await set(ref(db,"clients/"+chatPhone+"/messages/"+key),msg);
+      toast("תמונה נשלחה ✓","s");
+    }catch(err){toast("שגיאה בהעלאה","e");console.error(err);}
+    finally{sb.disabled=false;}
+  };
 
 </script>
 <div id="login-success" style="display:none;position:fixed;inset:0;z-index:99998;background:linear-gradient(145deg,#0c1a2e,#0a2540);flex-direction:column;align-items:center;justify-content:center;gap:22px">
   <div class="ls-circle"><svg viewBox="0 0 52 52" width="80" height="80"><circle class="ls-c" cx="26" cy="26" r="24" fill="none"/><path class="ls-p" fill="none" d="M14 27 L23 36 L38 18"/></svg></div>
   <div style="color:#fff;font-size:20px;font-weight:800" id="ls-name">התחברת בהצלחה</div>
   <div style="color:#7fb8e0;font-size:14px">טוען לוח בקרה...</div>
+</div>
+<div class="aimg-preview" id="aimg-preview">
+  <div class="aimg-top">
+    <button class="aimg-x" onclick="aCancelPreview()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <span>שליחת תמונה</span>
+    <button class="aimg-ot" id="aimg-onetime" onclick="aToggleOneTime()" title="צפייה חד-פעמית"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><text x="12" y="16" font-size="11" font-weight="bold" text-anchor="middle" fill="currentColor" stroke="none">1</text></svg></button>
+  </div>
+  <div class="aimg-wrap"><img id="aimg-thumb" src="" alt="תצוגה"/></div>
+  <div class="aimg-bottom">
+    <input type="text" id="aimg-caption" class="aimg-caption" placeholder="הוסף כיתוב (אופציונלי)..."/>
+    <button class="aimg-send" id="aimg-send" onclick="aSendImg()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+  </div>
 </div>
 </body>
 </html>

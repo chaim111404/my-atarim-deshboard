@@ -1288,7 +1288,7 @@ function renderChatMsgs(msgs) {
     const rHtml=Object.keys(rGroups).length?`<div class="reactions-wrap">${Object.entries(rGroups).map(([e,d])=>`<div class="rc ${d.mine?"mine":""}" onclick="toggleRC('${key}','${e}')">${e}<span class="rc-cnt">${d.count>1?d.count:""}</span></div>`).join("")}</div>`:"";
     let bubbleTxt;
     if(m.deleted){bubbleTxt=`<em style="opacity:.6">🚫 ${m.type==="image"?"התמונה נמחקה":"ההודעה נמחקה"}</em>`;}
-    else if(m.type==="image"&&m.imageUrl){
+    else if(m.type==="image"&&(m.imageUrl||(m.oneTime&&m.viewed))){
       const mineImg=isAgent;
       if(m.oneTime&&!mineImg&&m.viewed){bubbleTxt=`<span class="ot-opened">נפתחה</span>`;}
       else if(m.oneTime&&!mineImg&&!m.viewed){bubbleTxt=`<span class="ot-receive"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><text x="12" y="16" font-size="11" font-weight="bold" text-anchor="middle" fill="currentColor" stroke="none">1</text></svg> תמונה חד-פעמית · הקש לצפייה</span>`;}
@@ -1676,6 +1676,12 @@ function isUrl(s){try{new URL(s);return true}catch{return false}}
     const file=aPendingFile, caption=document.getElementById("aimg-caption").value.trim(), oneTime=aPendingOneTime;
     const sb=document.getElementById("aimg-send"); sb.disabled=true;
     aCancelPreview();
+    /* בועת העלאה זמנית — משוב מיידי (#3) */
+    const cont=document.getElementById("chat-msgs-list");
+    const pend=document.createElement("div");
+    pend.className="aw a";
+    pend.innerHTML=`<div class="ab"><div class="img-skeleton" style="animation:none"><div class="img-sk-inner"><svg class="img-gspin" width="34" height="34" viewBox="0 0 50 50"><circle class="img-gspin-track" cx="25" cy="25" r="20" fill="none" stroke-width="5"/><circle class="img-gspin-arc" cx="25" cy="25" r="20" fill="none" stroke-width="5" stroke-linecap="round"/></svg><div class="img-sk-txt" style="display:block">מעלה תמונה…</div></div></div></div>`;
+    if(cont){cont.appendChild(pend);cont.scrollTop=cont.scrollHeight;}
     try{
       const ext=file.name.split('.').pop()||'jpg';
       const snapshot=await uploadBytes(sRef(storage,"chat-images/"+chatPhone+"/"+Date.now()+"."+ext),file);
@@ -1684,8 +1690,9 @@ function isUrl(s){try{new URL(s);return true}catch{return false}}
       const msg={text:caption||"",imageUrl:url,at:Date.now(),sender:"agent",agentRead:true,clientRead:false,agentName:currentUser.name,type:"image"};
       if(oneTime){msg.oneTime=true;msg.viewed=false;}
       await set(ref(db,"clients/"+chatPhone+"/messages/"+key),msg);
+      pend.remove(); /* יוחלף בהודעה האמיתית מה-listener */
       toast("תמונה נשלחה ✓","s");
-    }catch(err){toast("שגיאה בהעלאה","e");console.error(err);}
+    }catch(err){pend.remove();toast("שגיאה בהעלאה","e");console.error(err);}
     finally{sb.disabled=false;}
   };
 

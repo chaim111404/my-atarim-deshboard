@@ -415,6 +415,7 @@ tr:hover td{background:#f8faff}
     </div>
     <div class="cb-ban" id="cv-closed-ban">השיחה סגורה</div>
     <div class="reply-bar" id="reply-bar">
+      <img id="rbar-thumb" style="display:none;width:36px;height:36px;border-radius:7px;object-fit:cover;flex-shrink:0;margin-left:8px" alt=""/>
       <div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:700;color:var(--p)" id="rbar-name"></div><div style="font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="rbar-txt"></div></div>
       <button style="background:none;border:none;cursor:pointer;color:var(--muted)" id="cancel-reply-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
@@ -1299,7 +1300,7 @@ function renderChatMsgs(msgs) {
     const isAgent=m.sender==="agent";
     const w=document.createElement("div");w.className=`aw ${isAgent?"a":"c"}`;
     let replyHtml="";
-    if(m.replyTo)replyHtml=`<div class="reply-prev-wrap"><div class="reply-prev-name">${m.replyTo.sender==="agent"?"נציג":"לקוח"}</div><div class="reply-prev-txt">${m.replyTo.text}</div></div>`;
+    if(m.replyTo)replyHtml=`<div class="reply-prev-wrap" style="display:flex;align-items:center;gap:8px">${m.replyTo.type==="image"&&m.replyTo.imageUrl?`<img src="${m.replyTo.imageUrl}" style="width:32px;height:32px;border-radius:6px;object-fit:cover;flex-shrink:0" alt=""/>`:""}<div style="min-width:0;flex:1"><div class="reply-prev-name">${m.replyTo.sender==="agent"?"נציג":"לקוח"}</div><div class="reply-prev-txt">${m.replyTo.type==="image"?(m.replyTo.text||"תמונה"):m.replyTo.text}</div></div></div>`;
     const rGroups={};
     Object.entries(m.reactions||{}).forEach(([,r])=>{if(!rGroups[r.emoji])rGroups[r.emoji]={count:0,mine:false};rGroups[r.emoji].count++;if(r.by==="agent")rGroups[r.emoji].mine=true;});
     const rHtml=Object.keys(rGroups).length?`<div class="reactions-wrap">${Object.entries(rGroups).map(([e,d])=>`<div class="rc ${d.mine?"mine":""}" onclick="toggleRC('${key}','${e}')">${e}<span class="rc-cnt">${d.count>1?d.count:""}</span></div>`).join("")}</div>`:"";
@@ -1383,7 +1384,7 @@ async function agentSend() {
   try {
     const key=`msg_${Date.now()}`;
     const msg={text,at:Date.now(),sender:"agent",agentRead:true,clientRead:false,agentName:currentUser.name};
-    if(chatReplyTo){msg.replyTo={text:chatReplyTo.text.slice(0,80),sender:chatReplyTo.sender};cancelReply();}
+    if(chatReplyTo){msg.replyTo=buildReplyMeta(chatReplyTo);cancelReply();}
     await set(ref(db,`clients/${chatPhone}/messages/${key}`),msg);
     /* #2 — סימון מי פתח (אם אין עדיין) */
     try{const ob=await get(ref(db,`clients/${chatPhone}/openedBy`));if(!ob.exists())await set(ref(db,`clients/${chatPhone}/openedBy`),{role:isAdmin?"admin":"agent",name:currentUser.name||"",at:Date.now()});}catch(_){}
@@ -1391,7 +1392,18 @@ async function agentSend() {
   } catch(e){toast("שגיאה","e");}finally{btn.disabled=false;}
 }
 
-function setReply(key,msg){chatReplyTo={...msg,key};document.getElementById("reply-bar-name").textContent=msg.sender==="agent"?"אתה":clients[chatPhone]?.name||"לקוח";document.getElementById("reply-bar-txt").textContent=msg.text.slice(0,60);document.getElementById("reply-bar").classList.add("show");document.getElementById("chat-ta").focus();}
+function setReply(key,msg){
+  chatReplyTo={...msg,key};
+  document.getElementById("rbar-name").textContent=msg.sender==="agent"?"אתה":clients[chatPhone]?.name||"לקוח";
+  const thumb=document.getElementById("rbar-thumb");
+  const isImg=msg.type==="image"&&msg.imageUrl;
+  if(isImg){thumb.src=msg.imageUrl;thumb.style.display="block";document.getElementById("rbar-txt").textContent=msg.text?msg.text.slice(0,60):"תמונה";}
+  else{thumb.style.display="none";thumb.src="";document.getElementById("rbar-txt").textContent=(msg.text||"").slice(0,60);}
+  document.getElementById("reply-bar").classList.add("show");
+  document.getElementById("chat-ta").focus();
+}
+/* בונה אובייקט reply עם תמונה ממוזערת אם רלוונטי (#reply לתמונה) */
+function buildReplyMeta(r){const meta={sender:r.sender};if(r.type==="image"&&r.imageUrl){meta.type="image";meta.imageUrl=r.imageUrl;meta.text=r.text?r.text.slice(0,80):"";}else{meta.text=(r.text||"").slice(0,80);}return meta;}
 
 /* ── מועדפים: הודעות שהנציג (צד agent) סימן בכוכב (#6) ── */
 function openAdminStarred(){
@@ -1430,7 +1442,7 @@ function showAdminPanel(title,html){
   document.getElementById("admin-panel-body").innerHTML=html;
   document.getElementById("admin-panel-overlay").style.display="flex";
 }
-function cancelReply(){chatReplyTo=null;document.getElementById("reply-bar").classList.remove("show");}
+function cancelReply(){chatReplyTo=null;document.getElementById("reply-bar").classList.remove("show");const t=document.getElementById("rbar-thumb");if(t){t.style.display="none";t.src="";}}
 
 async function agentCloseConv(){if(!chatPhone)return;showSP("סוגר...");try{await set(ref(db,`clients/${chatPhone}/messages/sys_${Date.now()}`),{type:"closed",at:Date.now(),sender:"system"});toast("שיחה נסגרה","s");}catch(e){toast("שגיאה","e");}finally{hideSP();}}
 async function agentReopenConv(){if(!chatPhone)return;showSP("פותח...");try{const snap=await get(ref(db,`clients/${chatPhone}/messages`));if(snap.exists())Object.entries(snap.val()).forEach(([key,m])=>{if(m.type==="closed")remove(ref(db,`clients/${chatPhone}/messages/${key}`));});toast("שיחה נפתחה","s");}catch(e){toast("שגיאה","e");}finally{hideSP();}}
@@ -1779,6 +1791,7 @@ function isUrl(s){try{new URL(s);return true}catch{return false}}
       const key="msg_"+Date.now();
       const msg={text:caption||"",imageUrl:url,at:Date.now(),sender:"agent",agentRead:true,clientRead:false,agentName:currentUser.name,type:"image"};
       if(oneTime){msg.oneTime=true;msg.viewed=false;}
+      if(chatReplyTo){msg.replyTo=buildReplyMeta(chatReplyTo);cancelReply();}
       await set(ref(db,"clients/"+chatPhone+"/messages/"+key),msg);
       pend.remove(); /* יוחלף בהודעה האמיתית מה-listener */
       toast("תמונה נשלחה ✓","s");

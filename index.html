@@ -455,7 +455,7 @@ tr:hover td{background:#f8faff}
 <div class="spo" id="spinner"><div class="sp"></div><div class="spt" id="sp-txt">טוען...</div></div>
 <div id="tc"></div>
 <div class="img-lightbox" id="img-lightbox" onclick="this.classList.remove('show')">
-  <button class="img-lightbox-close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  <button class="img-lightbox-close" onclick="document.getElementById('img-lightbox').classList.remove('show'); if(window.aFinalizeOneTimeClose) window.aFinalizeOneTimeClose();"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   <img id="lightbox-img" src="" alt="תמונה"/>
 </div>
 <input type="file" id="admin-file-input" accept="image/*" style="display:none"/>
@@ -1145,8 +1145,8 @@ function renderChatMsgs(msgs) {
     else if(m.type==="image"&&m.imageUrl){
       const mineImg=isAgent;
       if(m.oneTime&&!mineImg&&m.viewed){bubbleTxt=`<span class="ot-opened">נפתחה</span>`;}
-      else if(m.oneTime&&!mineImg&&!m.viewed){bubbleTxt=`<span class="ot-receive">🔁 תמונה חד-פעמית · הקש לצפייה</span>`;}
-      else if(m.oneTime&&mineImg){bubbleTxt=`<span class="ot-sent">🔁 ${m.viewed?"נצפתה":"תמונה חד-פעמית"}</span>`;}
+      else if(m.oneTime&&!mineImg&&!m.viewed){bubbleTxt=`<span class="ot-receive"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><text x="12" y="16" font-size="11" font-weight="bold" text-anchor="middle" fill="currentColor" stroke="none">1</text></svg> תמונה חד-פעמית · הקש לצפייה</span>`;}
+      else if(m.oneTime&&mineImg){bubbleTxt=`<span class="ot-sent"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><text x="12" y="16" font-size="10" font-weight="bold" text-anchor="middle" fill="currentColor" stroke="none">1</text></svg> ${m.viewed?"נצפתה":"תמונה חד-פעמית"}</span>`;}
       else{bubbleTxt=`<img class="msg-img" src="${m.imageUrl}" data-url="${m.imageUrl}" alt="תמונה" loading="lazy"/>${m.text?`<div style="font-size:13px;margin-top:4px">${m.text}</div>`:""}`;}
     }
     else{bubbleTxt=`${m.text}${m.edited?`<span style="font-size:10px;opacity:.5;margin-right:4px">(נערך)</span>`:""}`;}
@@ -1473,19 +1473,27 @@ function isUrl(s){try{new URL(s);return true}catch{return false}}
     window.addEventListener("mouseup",()=>{albDrag=false;});
     img.addEventListener("touchstart",e=>{if(e.touches.length===2){albStartDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);albStartScale=albScale;}else if(e.touches.length===1&&albScale>1){albLX=e.touches[0].clientX;albLY=e.touches[0].clientY;}},{passive:true});
     img.addEventListener("touchmove",e=>{if(e.touches.length===2){e.preventDefault();const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);albScale=Math.min(5,Math.max(1,albStartScale*(d/albStartDist)));if(albScale===1){albX=0;albY=0;}albApply();}else if(e.touches.length===1&&albScale>1){e.preventDefault();albX+=e.touches[0].clientX-albLX;albY+=e.touches[0].clientY-albLY;albLX=e.touches[0].clientX;albLY=e.touches[0].clientY;albApply();}},{passive:false});
-    lb.addEventListener("click",e=>{if(e.target===lb){lb.classList.remove("show");albReset();}});
+    lb.addEventListener("click",e=>{if(e.target===lb){lb.classList.remove("show");albReset();aFinalizeOneTime();}});
     img.addEventListener("click",e=>e.stopPropagation());
   })();
 
-  /* פתיחת תמונה חד-פעמית */
+  /* פתיחת תמונה חד-פעמית — צפייה עד סגירה, ואז חסימה + מחיקת URL מהשרת (#35) */
+  let aPendingOneTimeClose=null;
   window.openOneTimeImg = async (key,m,isAgent) => {
     if(m.viewed && !isAgent){ toast("התמונה כבר נצפתה","e"); return; }
     openLightbox(m.imageUrl);
-    if(!isAgent && !m.viewed){
-      await set(ref(db,`clients/${chatPhone}/messages/${key}/viewed`),true);
-      await set(ref(db,`clients/${chatPhone}/messages/${key}/viewedAt`),Date.now());
-    }
+    /* החסימה תתבצע בסגירת ה-lightbox, לא בפתיחה */
+    if(!isAgent && !m.viewed){ aPendingOneTimeClose=key; }
   };
+  async function aFinalizeOneTime(){
+    if(!aPendingOneTimeClose || !chatPhone) return;
+    const key=aPendingOneTimeClose; aPendingOneTimeClose=null;
+    try{
+      /* סימון כנצפתה + מחיקת ה-URL מהשרת (אבטחה + פינוי מקום) */
+      await update(ref(db,`clients/${chatPhone}/messages/${key}`),{viewed:true,viewedAt:Date.now(),imageUrl:null});
+    }catch(e){console.error(e);}
+  }
+  window.aFinalizeOneTimeClose=aFinalizeOneTime;
 
   let aPendingFile=null, aPendingOneTime=false;
   function initImgUpload() {

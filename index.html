@@ -656,7 +656,7 @@ async function doLogin() {
   e.classList.remove("show");
   showLoadOverlay("מאמת פרטים...");
   try {
-    if(u==="נתן מנדל"&&p==="12345678") {
+    if(u==="נתן מנדל"&&p==="13791379") {
       const dt=genToken();
       localStorage.setItem(SESSION_KEY,JSON.stringify({userId:ADMIN_ID,role:"admin",name:"נתן מנדל",expiry:Date.now()+MONTH_MS,deviceToken:dt}));
       set(ref(db,"sessions/"+ADMIN_ID),{deviceToken:dt,loginAt:Date.now()}).catch(()=>{});

@@ -497,7 +497,7 @@ tr:hover td{background:#f8faff}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, get, set, remove, onValue, update, onDisconnect } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, get, set, remove, onValue, update, onDisconnect, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 const _app = initializeApp({
   apiKey:"AIzaSyB9jeWAKY2UEz70V77SCPnSJ18IfwnsVV0",
@@ -648,6 +648,11 @@ let curFilter="all", searchQ="", editPhone=null, siteCount=0, pwdCount=0;
 let chatPhone=null, chatListener=null, chatReplyTo=null;
 let ctxMsgKey=null, ctxMsgData=null, editMsgKey=null;
 let currentUser=null, isAdmin=false;
+/* #136 — נעילת שיחה (מניעת שני מנהלים/נציגים באותה שיחה) + סגירה אוטומטית אחרי 15 דק' */
+const CHAT_SURFACE="dashboard";
+const LOCK_TTL_MS=60000, LOCK_HEARTBEAT_MS=25000, CHAT_IDLE_MS=15*60*1000;
+let chatLockRef=null, chatHeartbeat=null, chatIdleTimer=null, lockKnockUnsub=null, knockPopupOpen=false;
+let lockWaitUnsub=null, lockRespUnsub=null;
 
 async function doLogin() {
   const u=document.getElementById("au").value.trim();
@@ -659,7 +664,7 @@ async function doLogin() {
     if(u==="נתן מנדל"&&p==="13791379") {
       const dt=genToken();
       localStorage.setItem(SESSION_KEY,JSON.stringify({userId:ADMIN_ID,role:"admin",name:"נתן מנדל",expiry:Date.now()+MONTH_MS,deviceToken:dt}));
-      set(ref(db,"sessions/"+ADMIN_ID),{deviceToken:dt,loginAt:Date.now()}).catch(()=>{});
+      set(ref(db,"sessions/"+ADMIN_ID+"/dashboard"),{deviceToken:dt,loginAt:Date.now()}).catch(()=>{});
       hideLoadOverlay();
       showLoginSuccess("נתן מנדל",()=>showDash({userId:ADMIN_ID,role:"admin",name:"נתן מנדל"}));
       return;
@@ -670,7 +675,7 @@ async function doLogin() {
       const entry=Object.entries(td).find(([,m])=>m.username===u&&m.password===p);
       if(entry) {
         const [tid,member]=entry;
-        const sesSnap=await get(ref(db,"sessions/"+tid));
+        const sesSnap=await get(ref(db,"sessions/"+tid+"/dashboard"));
         if(sesSnap.exists()) {
           const ses=sesSnap.val();
           const saved=JSON.parse(localStorage.getItem(SESSION_KEY)||"{}");
@@ -682,7 +687,7 @@ async function doLogin() {
         }
         const dt=genToken();
         localStorage.setItem(SESSION_KEY,JSON.stringify({userId:tid,role:"agent",name:member.firstName+" "+member.lastName,expiry:Date.now()+MONTH_MS,deviceToken:dt}));
-        set(ref(db,"sessions/"+tid),{deviceToken:dt,loginAt:Date.now()}).catch(()=>{});
+        set(ref(db,"sessions/"+tid+"/dashboard"),{deviceToken:dt,loginAt:Date.now()}).catch(()=>{});
         hideLoadOverlay();
         showLoginSuccess(member.firstName+" "+member.lastName,()=>showDash({userId:tid,role:"agent",name:member.firstName+" "+member.lastName,perms:member.perms||{}}));
         return;
@@ -700,7 +705,7 @@ async function doLogin() {
 
 function doLogout() {
   localStorage.removeItem(SESSION_KEY);
-  if(currentUser) remove(ref(db,`sessions/${currentUser.userId}`)).catch(()=>{});
+  if(currentUser) remove(ref(db,`sessions/${currentUser.userId}/dashboard`)).catch(()=>{});
   location.reload();
 }
 
@@ -741,7 +746,7 @@ function showDeviceConflict(tid,member) {
   document.getElementById("force-login-btn").onclick=async()=>{
     const dt=genToken();
     localStorage.setItem(SESSION_KEY,JSON.stringify({userId:tid,role:"agent",name:member.firstName+" "+member.lastName,expiry:Date.now()+MONTH_MS,deviceToken:dt}));
-    await set(ref(db,`sessions/${tid}`),{deviceToken:dt,loginAt:Date.now()});
+    await set(ref(db,`sessions/${tid}/dashboard`),{deviceToken:dt,loginAt:Date.now()});
     div.remove();
     showDash({userId:tid,role:"agent",name:member.firstName+" "+member.lastName,perms:member.perms||{}});
   };
@@ -760,7 +765,7 @@ document.getElementById("cancel-logout-btn").onclick = ()=>closeMo("mo-logout");
 window.addEventListener("DOMContentLoaded",()=>{
   const s=checkSession();
   if(!s){ if(window.__hideBoot)window.__hideBoot(); return; }
-  get(ref(db,`sessions/${s.userId}`)).then(snap=>{
+  get(ref(db,`sessions/${s.userId}/dashboard`)).then(snap=>{
     if(snap.exists()&&snap.val().deviceToken!==s.deviceToken){localStorage.removeItem(SESSION_KEY);showAutoLogoutMsg();return;}
     if(s.role==="admin"){showDash({userId:s.userId,role:"admin",name:s.name});return;}
     get(ref(db,`team/${s.userId}`)).then(tSnap=>{
@@ -847,7 +852,7 @@ function buildSidebar() {
     const btn=document.getElementById(item.id);if(!btn)return;
     btn.onclick=()=>{
       const allowed=isAdmin||item.always||perms[item.perm];
-      if(!allowed){showPermDenied(item.title);return;}
+      if(!allowed){showPermDenied(item.perm);return;}
       showPanel(item.panel,item.id,item.title);
     };
   });
@@ -858,7 +863,7 @@ function buildSidebar() {
   document.getElementById("srch").oninput=()=>{searchQ=document.getElementById("srch").value.trim().toLowerCase();renderClientsTable();};
   document.getElementById("sort-sel").onchange=renderClientsTable;
   document.querySelectorAll(".fb").forEach(b=>b.onclick=()=>{curFilter=b.dataset.filter;document.querySelectorAll(".fb").forEach(x=>x.classList.remove("active"));b.classList.add("active");renderClientsTable();});
-  document.getElementById("btn-add-client").onclick=()=>{if(!isAdmin&&!perms.editClient){showPermDenied("הוספת לקוח");return;}openClientModal(null);};
+  document.getElementById("btn-add-client").onclick=()=>{if(!isAdmin&&!perms.editClient){showPermDenied("editClient");return;}openClientModal(null);};
   if(document.getElementById("btn-add-team"))document.getElementById("btn-add-team").onclick=()=>openTeamModal(null);
   document.getElementById("mo-chat-close").onclick=closeChatModal;
   document.getElementById("btn-close-conv").onclick=agentCloseConv;
@@ -884,7 +889,7 @@ function buildSidebar() {
   document.getElementById("edit-cancel").onclick=()=>closeMo("edit-mo");
   document.getElementById("edit-mo").onclick=e=>{if(e.target===document.getElementById("edit-mo"))closeMo("edit-mo");};
   document.getElementById("btn-gp").onclick=()=>{
-    if(!isAdmin&&!(currentUser.perms||{}).changePin){showPermDenied("החלפת קוד אישי");return;}
+    if(!isAdmin&&!(currentUser.perms||{}).changePin){showPermDenied("changePin");return;}
     generatePin();
   };
   document.getElementById("btn-add-site").onclick=()=>addSiteField();
@@ -902,7 +907,9 @@ function buildSidebar() {
   }
 }
 
-function showPermDenied(action) {
+function showPermDenied(permKey) {
+  /* permKey חייב להיות מפתח מתוך ALL_PERMS — כדי שבקשת ההרשאה תתאים בוודאות בזמן האישור */
+  const label = ALL_PERMS.find(p=>p.key===permKey)?.label || permKey;
   /* פופאפ עם 2 אפשרויות */
   const ov = document.createElement("div");
   ov.style.cssText = "position:fixed;inset:0;background:rgba(12,26,46,.7);backdrop-filter:blur(6px);z-index:600;display:flex;align-items:center;justify-content:center;padding:24px;animation:fi .2s ease";
@@ -912,7 +919,7 @@ function showPermDenied(action) {
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
       </div>
       <div style="font-size:19px;font-weight:800;margin-bottom:8px">נדרשת הרשאה</div>
-      <div style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:24px">אין לך הרשאה לבצע: <strong>${action}</strong><br/>ניתן לשלוח בקשה למנהל.</div>
+      <div style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:24px">אין לך הרשאה לבצע: <strong>${label}</strong><br/>ניתן לשלוח בקשה למנהל.</div>
       <div style="display:flex;flex-direction:column;gap:10px">
         <button id="req-perm-btn" style="background:linear-gradient(135deg,var(--p),var(--pd));border:none;border-radius:var(--rs);color:#fff;font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;padding:13px;cursor:pointer">שלח בקשת הרשאה</button>
         <button id="req-cancel-btn" style="background:var(--bg);border:1.5px solid var(--bdr);border-radius:var(--rs);color:var(--muted);font-family:'Heebo',sans-serif;font-size:14px;font-weight:600;padding:12px;cursor:pointer">ביטול</button>
@@ -925,7 +932,7 @@ function showPermDenied(action) {
     const key = `req_${Date.now()}`;
     await set(ref(db,`permRequests/${key}`),{
       userId:currentUser.userId, name:currentUser.name,
-      action, requestedAt:Date.now(), status:"pending"
+      action:label, permKey, requestedAt:Date.now(), status:"pending"
     }).catch(()=>{});
     ov.remove();
     toast("בקשת הרשאה נשלחה למנהל","s");
@@ -937,7 +944,7 @@ window.showPermDenied=showPermDenied;
 function startListening() {
   /* האזנה לשינוי session — ניתוק מרחוק */
   if(currentUser) {
-    onValue(ref(db,`sessions/${currentUser.userId}`),snap=>{
+    onValue(ref(db,`sessions/${currentUser.userId}/dashboard`),snap=>{
       if(!snap.exists()) return;
       const ses = snap.val();
       const saved = JSON.parse(localStorage.getItem(SESSION_KEY)||"{}");
@@ -1039,10 +1046,10 @@ function renderClientsTable() {
       <td>${isBlk?`<span class="tag bl">חסום</span>`:`<span class="tag a">פעיל</span>`}</td>
       <td><div class="ac">
         <button class="bsm v" onclick="openViewModal('${phone}')">צפייה</button>
-        <button class="bsm e${canEdit?'':' dp'}" onclick="${canEdit?`openClientModal('${phone}')`:`showPermDenied('עריכת לקוח')`}">עריכה</button>
-        <button class="bsm ch2${canChat?'':' dp'}" onclick="${canChat?`openChatModal('${phone}')`:`showPermDenied('צ\\'אט')`}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>צ'אט</button>
-        ${isBlk?`<button class="bsm u${canUnblock?'':' dp'}" onclick="${canUnblock?`confirmUnblock('${phone}')`:`showPermDenied('שחרור')`}">שחרור</button>`:`<button class="bsm bl${canBlock?'':' dp'}" onclick="${canBlock?`confirmBlock('${phone}')`:`showPermDenied('חסימה')`}">חסימה</button>`}
-        <button class="bsm d${canDel?'':' dp'}" onclick="${canDel?`confirmDelete('${phone}')`:`showPermDenied('מחיקה')`}">מחיקה</button>
+        <button class="bsm e${canEdit?'':' dp'}" onclick="${canEdit?`openClientModal('${phone}')`:`showPermDenied('editClient')`}">עריכה</button>
+        <button class="bsm ch2${canChat?'':' dp'}" onclick="${canChat?`openChatModal('${phone}')`:`showPermDenied('chat')`}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>צ'אט</button>
+        ${isBlk?`<button class="bsm u${canUnblock?'':' dp'}" onclick="${canUnblock?`confirmUnblock('${phone}')`:`showPermDenied('unblock')`}">שחרור</button>`:`<button class="bsm bl${canBlock?'':' dp'}" onclick="${canBlock?`confirmBlock('${phone}')`:`showPermDenied('block')`}">חסימה</button>`}
+        <button class="bsm d${canDel?'':' dp'}" onclick="${canDel?`confirmDelete('${phone}')`:`showPermDenied('deleteClient')`}">מחיקה</button>
         <button class="bsm d" style="font-size:11px" onclick="confirmDeleteChat('${phone}')"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>מחק שיחה</button>
       </div></td>
     </tr>`;
@@ -1229,6 +1236,7 @@ window.markRead=markRead;
 
 function renderMsgsList() {
   const cont=document.getElementById("msgs-list"),all=[];
+  const canChat=isAdmin||(currentUser.perms||{}).chat;
   Object.entries(clients).forEach(([phone,c])=>{if(c.messages)Object.entries(c.messages).forEach(([key,m])=>{if(m.type!=="closed")all.push({phone,name:c.name||"—",key,...m});});});
   all.sort((a,b)=>b.at-a.at);
   if(!all.length){cont.innerHTML=`<p style="color:var(--muted);text-align:center;padding:32px">אין הודעות עדיין</p>`;return;}
@@ -1244,7 +1252,7 @@ function renderMsgsList() {
       <div class="mt3">${fmtDate(m.at)}</div>
       <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
         ${unread?`<button class="btn-mk" onclick="markRead('${m.phone}','${m.key}')">סמן כנקרא</button>`:""}
-        <button class="bsm e" style="font-size:12px" onclick="openChatModal('${m.phone}')">פתח צ'אט</button>
+        <button class="bsm e${canChat?'':' dp'}" style="font-size:12px" onclick="${canChat?`openChatModal('${m.phone}')`:`showPermDenied('chat')`}">פתח צ'אט</button>
       </div>
     </div>`;
   }).join("");
@@ -1258,7 +1266,114 @@ function updateMsgBadge() {
 }
 
 /* ── Chat ── */
-function openChatModal(phone) {
+/* #136 — ניסיון לתפוס נעילה על השיחה. force=true דורס נעילה של אותו משתמש ממשטח אחר ("המשך כאן"). */
+async function acquireChatLock(phone,force){
+  const myId=currentUser?.userId||"admin", myName=currentUser?.name||"מנהל";
+  const r=ref(db,`clients/${phone}/chatLock`);
+  const res=await runTransaction(r,cur=>{
+    const now=Date.now(), fresh=cur&&(now-(cur.at||0))<LOCK_TTL_MS;
+    const mineHere=cur&&cur.id===myId&&cur.surface===CHAT_SURFACE;
+    if(!force&&fresh&&!mineHere) return; /* תפוס ע"י מישהו אחר / אותי במשטח אחר — ביטול */
+    return {id:myId,name:myName,surface:CHAT_SURFACE,at:now};
+  });
+  if(!res.committed) return {ok:false,holder:res.snapshot.val()};
+  chatLockRef=r;
+  onDisconnect(r).remove().catch(()=>{});
+  return {ok:true};
+}
+async function releaseChatLock(phone){
+  const p=phone||chatPhone; if(!p)return;
+  if(chatLockRef){onDisconnect(chatLockRef).cancel().catch(()=>{});chatLockRef=null;}
+  const myId=currentUser?.userId||"admin";
+  try{const cur=(await get(ref(db,`clients/${p}/chatLock`))).val();if(!cur||cur.id===myId)await remove(ref(db,`clients/${p}/chatLock`));}catch(_){}
+  remove(ref(db,`clients/${p}/lockKnock`)).catch(()=>{});
+}
+function startChatHeartbeat(){
+  stopChatHeartbeat();
+  chatHeartbeat=setInterval(()=>{if(!chatPhone){stopChatHeartbeat();return;}set(ref(db,`clients/${chatPhone}/chatLock/at`),Date.now()).catch(()=>{});},LOCK_HEARTBEAT_MS);
+}
+function stopChatHeartbeat(){if(chatHeartbeat){clearInterval(chatHeartbeat);chatHeartbeat=null;}}
+function resetChatIdle(){
+  if(chatIdleTimer)clearTimeout(chatIdleTimer);
+  chatIdleTimer=setTimeout(()=>{toast("השיחה נסגרה אוטומטית עקב חוסר פעילות (15 דקות)","s");closeChatModal();},CHAT_IDLE_MS);
+}
+function surfaceHeb(s){return s==="mobile"?"צ'אט מובייל":"דשבורד";}
+
+/* חלון "השיחה כבר מנוהלת" (צד המבקש) */
+function showChatLockedPopup(phone,holder){
+  const c=clients[phone]||{};
+  const myId=currentUser?.userId||"admin";
+  const isSelf=holder&&holder.id===myId;
+  const ov=document.createElement("div");
+  ov.id="chat-lock-pop";
+  ov.style.cssText="position:fixed;inset:0;background:rgba(12,26,46,.7);backdrop-filter:blur(6px);z-index:650;display:flex;align-items:center;justify-content:center;padding:24px;animation:fi .2s ease";
+  const body=isSelf
+    ? `<div style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:24px">השיחה עם <strong>${c.name||phone}</strong> כבר פתוחה על ידך ב<strong>${surfaceHeb(holder.surface)}</strong>.<br/>ניתן להמשיך אותה כאן ולסגור את החלון השני.</div>
+       <div style="display:flex;flex-direction:column;gap:10px"><button id="clk-force" style="background:linear-gradient(135deg,var(--p),var(--pd));border:none;border-radius:var(--rs);color:#fff;font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;padding:13px;cursor:pointer">המשך כאן</button><button id="clk-close" style="background:var(--bg);border:1.5px solid var(--bdr);border-radius:var(--rs);color:var(--muted);font-family:'Heebo',sans-serif;font-size:14px;font-weight:600;padding:12px;cursor:pointer">סגור</button></div>`
+    : `<div style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:24px"><strong>${holder?.name||"נציג אחר"}</strong> כבר מנהל את השיחה עם <strong>${c.name||phone}</strong> כרגע.<br/>ניתן לבקש ממנו להתנתק כדי להיכנס.</div>
+       <div style="display:flex;flex-direction:column;gap:10px"><button id="clk-knock" style="background:linear-gradient(135deg,var(--p),var(--pd));border:none;border-radius:var(--rs);color:#fff;font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;padding:13px;cursor:pointer">בקש גישה לשיחה</button><button id="clk-close" style="background:var(--bg);border:1.5px solid var(--bdr);border-radius:var(--rs);color:var(--muted);font-family:'Heebo',sans-serif;font-size:14px;font-weight:600;padding:12px;cursor:pointer">סגור</button></div>`;
+  ov.innerHTML=`<div style="background:#fff;border-radius:22px;padding:32px 28px;max-width:380px;width:100%;text-align:center;box-shadow:0 24px 64px rgba(12,26,46,.4)">
+    <div style="width:56px;height:56px;border-radius:50%;background:rgba(59,130,246,.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:var(--p)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+    <div style="font-size:19px;font-weight:800;margin-bottom:8px">השיחה בשימוש</div>${body}</div>`;
+  document.body.appendChild(ov);
+  const cleanup=()=>{if(lockWaitUnsub){lockWaitUnsub();lockWaitUnsub=null;}if(lockRespUnsub){lockRespUnsub();lockRespUnsub=null;}};
+  const closePop=()=>{cleanup();ov.remove();};
+  document.getElementById("clk-close").onclick=closePop;
+  if(isSelf){
+    document.getElementById("clk-force").onclick=()=>{closePop();openChatModal(phone,true);};
+  } else {
+    document.getElementById("clk-knock").onclick=async()=>{
+      const myName=currentUser?.name||"מנהל";
+      await set(ref(db,`clients/${phone}/lockKnock`),{fromId:myId,fromName:myName,at:Date.now()}).catch(()=>{});
+      ov.querySelector("div[style*='max-width']").innerHTML=`<div style="width:56px;height:56px;border-radius:50%;background:rgba(59,130,246,.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:var(--p)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin .9s linear infinite"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg></div><div style="font-size:19px;font-weight:800;margin-bottom:8px">ממתין לתשובה</div><div style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:24px">נשלחה בקשה ל<strong>${holder?.name||"הנציג"}</strong> להתנתק מהשיחה.</div><button id="clk-close2" style="background:var(--bg);border:1.5px solid var(--bdr);border-radius:var(--rs);color:var(--muted);font-family:'Heebo',sans-serif;font-size:14px;font-weight:600;padding:12px;cursor:pointer;width:100%">ביטול</button>`;
+      document.getElementById("clk-close2").onclick=()=>{remove(ref(db,`clients/${phone}/lockKnock`)).catch(()=>{});closePop();};
+      /* המחזיק עזב → כניסה אוטומטית */
+      lockWaitUnsub=onValue(ref(db,`clients/${phone}/chatLock`),snap=>{
+        const cur=snap.val();
+        if(!cur||(Date.now()-(cur.at||0))>=LOCK_TTL_MS){cleanup();ov.remove();openChatModal(phone);}
+      });
+      /* המחזיק בחר להישאר */
+      lockRespUnsub=onValue(ref(db,`clients/${phone}/lockResp`),snap=>{
+        const r=snap.val();
+        if(r&&r.toId===myId&&r.result==="stay"){toast(`${holder?.name||"הנציג"} בחר להמשיך בשיחה`,"e");remove(ref(db,`clients/${phone}/lockResp`)).catch(()=>{});closePop();}
+      });
+    };
+  }
+}
+
+/* מאזין לבקשות גישה בזמן שאני מחזיק בשיחה (צד המחזיק) */
+function listenLockKnock(phone){
+  stopLockKnock();
+  lockKnockUnsub=onValue(ref(db,`clients/${phone}/lockKnock`),snap=>{
+    const k=snap.val(), myId=currentUser?.userId||"admin";
+    if(k&&k.fromId!==myId&&(Date.now()-(k.at||0))<120000&&!knockPopupOpen) showKnockPopup(phone,k);
+  });
+}
+function stopLockKnock(){if(lockKnockUnsub){lockKnockUnsub();lockKnockUnsub=null;}knockPopupOpen=false;}
+function showKnockPopup(phone,k){
+  knockPopupOpen=true;
+  const c=clients[phone]||{};
+  const ov=document.createElement("div");
+  ov.style.cssText="position:fixed;inset:0;background:rgba(12,26,46,.7);backdrop-filter:blur(6px);z-index:660;display:flex;align-items:center;justify-content:center;padding:24px;animation:fi .2s ease";
+  ov.innerHTML=`<div style="background:#fff;border-radius:22px;padding:32px 28px;max-width:380px;width:100%;text-align:center;box-shadow:0 24px 64px rgba(12,26,46,.4)">
+    <div style="width:56px;height:56px;border-radius:50%;background:rgba(245,158,11,.12);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:var(--warn)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></div>
+    <div style="font-size:19px;font-weight:800;margin-bottom:8px">בקשת גישה לשיחה</div>
+    <div style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:24px"><strong>${k.fromName||"נציג"}</strong> מבקש לנהל את השיחה עם <strong>${c.name||phone}</strong>.<br/>אם תתנתק, השיחה תיפתח אצלו.</div>
+    <div style="display:flex;flex-direction:column;gap:10px"><button id="knk-leave" style="background:linear-gradient(135deg,var(--err),#dc2626);border:none;border-radius:var(--rs);color:#fff;font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;padding:13px;cursor:pointer">התנתק ופנה את השיחה</button><button id="knk-stay" style="background:var(--bg);border:1.5px solid var(--bdr);border-radius:var(--rs);color:var(--muted);font-family:'Heebo',sans-serif;font-size:14px;font-weight:600;padding:12px;cursor:pointer">הישאר בשיחה</button></div></div>`;
+  document.body.appendChild(ov);
+  const done=()=>{knockPopupOpen=false;ov.remove();};
+  document.getElementById("knk-leave").onclick=()=>{done();closeChatModal();};
+  document.getElementById("knk-stay").onclick=()=>{
+    set(ref(db,`clients/${phone}/lockResp`),{toId:k.fromId,result:"stay",at:Date.now()}).catch(()=>{});
+    remove(ref(db,`clients/${phone}/lockKnock`)).catch(()=>{});
+    done();
+  };
+}
+
+async function openChatModal(phone,force) {
+  /* #136 — תופסים נעילה לפני חשיפת תוכן. אם תפוס — לא טוענים כלום, רק חלון חסימה. */
+  const lock=await acquireChatLock(phone,force);
+  if(!lock.ok){showChatLockedPopup(phone,lock.holder);return;}
   chatPhone=phone;
   const c=clients[phone]||{};
   document.getElementById("mo-chat-t").textContent=c.name||phone;
@@ -1267,6 +1382,9 @@ function openChatModal(phone) {
   else{av.textContent=(c.name||"?")[0];av.style.padding="";}
   openMo("mo-chat");
   initImgUpload();
+  startChatHeartbeat();
+  resetChatIdle();
+  listenLockKnock(phone);
   if(chatListener){chatListener();chatListener=null;}
   chatListener=onValue(ref(db,`clients/${phone}/messages`),snap=>renderChatMsgs(snap.val()||{}));
   onValue(ref(db,`clients/${phone}/presence`),snap=>{
@@ -1279,7 +1397,16 @@ function openChatModal(phone) {
 }
 window.openChatModal=openChatModal;
 
-function closeChatModal(){closeMo("mo-chat");if(chatListener){chatListener();chatListener=null;}chatPhone=null;chatReplyTo=null;}
+function closeChatModal(){
+  const p=chatPhone;
+  closeMo("mo-chat");
+  if(chatListener){chatListener();chatListener=null;}
+  stopChatHeartbeat();
+  if(chatIdleTimer){clearTimeout(chatIdleTimer);chatIdleTimer=null;}
+  stopLockKnock();
+  if(p)releaseChatLock(p);
+  chatPhone=null;chatReplyTo=null;
+}
 
 function renderChatMsgs(msgs) {
   const entries=Object.entries(msgs).filter(([,m])=>m.type!=="closed"&&!m.hiddenForAgent);
@@ -1388,6 +1515,9 @@ async function agentSend() {
     const msg={text,at:Date.now(),sender:"agent",agentRead:true,clientRead:false,agentName:currentUser.name};
     if(chatReplyTo){msg.replyTo=buildReplyMeta(chatReplyTo);cancelReply();}
     await set(ref(db,`clients/${chatPhone}/messages/${key}`),msg);
+    /* #136 — שליחת הודעה מאפסת את מניין 15 הדקות ומרעננת את הנעילה */
+    resetChatIdle();
+    set(ref(db,`clients/${chatPhone}/chatLock/at`),Date.now()).catch(()=>{});
     /* #2 — סימון מי פתח (אם אין עדיין) */
     try{const ob=await get(ref(db,`clients/${chatPhone}/openedBy`));if(!ob.exists())await set(ref(db,`clients/${chatPhone}/openedBy`),{role:isAdmin?"admin":"agent",name:currentUser.name||"",at:Date.now()});}catch(_){}
     ta.value="";ta.style.height="";
@@ -1619,8 +1749,9 @@ async function forceLogout(id){
   showSP("מנתק...");
   try{
     await remove(ref(db,`sessions/${id}`));
-    /* כותב token שגוי כדי לנתק גם אם הדף פתוח */
-    await set(ref(db,`sessions/${id}`),{deviceToken:"REVOKED",loginAt:Date.now()});
+    /* כותב token שגוי בשני המשטחים (דשבורד + מובייל) כדי לנתק גם אם הדף פתוח */
+    await set(ref(db,`sessions/${id}/dashboard`),{deviceToken:"REVOKED",loginAt:Date.now()});
+    await set(ref(db,`sessions/${id}/mobile`),{deviceToken:"REVOKED",loginAt:Date.now()});
     toast("הנציג נותק","s");
   }catch(e){toast("שגיאה","e");}finally{hideSP();}
 }
@@ -1631,7 +1762,7 @@ function renderRequests(){
   const cont=document.getElementById("requests-list");if(!cont)return;
   const entries=Object.entries(permRequests).filter(([,r])=>r.status==="pending");
   if(!entries.length){cont.innerHTML=`<p style="color:var(--muted);text-align:center;padding:32px">אין בקשות ממתינות</p>`;return;}
-  cont.innerHTML=entries.map(([key,r])=>`<div class="mi req-item" data-key="${key}" data-uid="${r.userId||''}" data-action="${(r.action||'').replace(/"/g,'&quot;')}" style="margin-bottom:10px">
+  cont.innerHTML=entries.map(([key,r])=>`<div class="mi req-item" data-key="${key}" data-uid="${r.userId||''}" data-action="${(r.action||'').replace(/"/g,'&quot;')}" data-permkey="${r.permKey||''}" style="margin-bottom:10px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><strong>${r.name||"—"}</strong><span class="tag bu">ממתין</span></div>
     <div style="font-size:14px">מבקש גישה: <strong>${r.action||"—"}</strong></div>
     <div class="mt3">${fmtDate(r.requestedAt)}</div>
@@ -1643,16 +1774,16 @@ function renderRequests(){
   /* חיבור events אחרי render */
   cont.querySelectorAll(".req-item").forEach(item => {
     item.querySelector(".req-approve-btn").onclick = () =>
-      approveReq(item.dataset.key, item.dataset.uid, item.dataset.action);
+      approveReq(item.dataset.key, item.dataset.uid, item.dataset.action, item.dataset.permkey);
     item.querySelector(".req-deny-btn").onclick = () =>
       denyReq(item.dataset.key);
   });
 }
-async function approveReq(key,userId,action){
+async function approveReq(key,userId,action,permKey){
   showSP("מאשר...");
   try{
-    /* מוצא את מפתח ה-perm */
-    const pk = ALL_PERMS.find(p => p.label === action || p.key === action)?.key;
+    /* מפתח אמין קודם (permKey), עם נפילה-חזרה על התאמת טקסט לבקשות ישנות */
+    const pk = (permKey && ALL_PERMS.find(p=>p.key===permKey)?.key) || ALL_PERMS.find(p => p.label === action || p.key === action)?.key;
     if(pk && userId){
       await set(ref(db,`team/${userId}/perms/${pk}`),true);
       await set(ref(db,`team/${userId}/permNotify`),{action,approved:true,at:Date.now()});
@@ -1670,7 +1801,7 @@ async function approveReq(key,userId,action){
       }
     }
     await set(ref(db,`permRequests/${key}/status`),"approved");
-    toast("הרשאה אושרה ✓","s");
+    toast(pk?"הרשאה אושרה ✓":"הבקשה סומנה כמאושרת, אך ההרשאה לא זוהתה — יש להפעיל ידנית בעריכת הנציג","s");
   }
   catch(e){console.error(e);toast("שגיאה: "+e.message,"e");}finally{hideSP();}
 }
@@ -1807,6 +1938,9 @@ function isUrl(s){try{new URL(s);return true}catch{return false}}
       if(oneTime){msg.oneTime=true;msg.viewed=false;}
       if(chatReplyTo){msg.replyTo=buildReplyMeta(chatReplyTo);cancelReply();}
       await set(ref(db,"clients/"+chatPhone+"/messages/"+key),msg);
+      /* #136 — שליחת תמונה גם מאפסת את מניין 15 הדקות ומרעננת נעילה */
+      resetChatIdle();
+      set(ref(db,`clients/${chatPhone}/chatLock/at`),Date.now()).catch(()=>{});
       pend.remove(); /* יוחלף בהודעה האמיתית מה-listener */
       toast("תמונה נשלחה ✓","s");
     }catch(err){pend.remove();toast("שגיאה בהעלאה","e");console.error(err);}

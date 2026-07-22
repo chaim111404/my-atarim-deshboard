@@ -369,6 +369,47 @@ tr:hover td{background:#f8faff}
 /* קו תחתי מעט עבה יותר גם בבועה הבהירה — זיהוי קישור בלי להסתמך על צבע בלבד (נגישות) */
 .wdl-a{text-decoration-thickness:1.5px}
 .wdl-a:focus-visible{outline:2px solid var(--wdl-accent);outline-offset:2px;border-radius:3px}
+.team-sec-row td{background:#f8faff;padding:8px 14px!important;border-top:1px solid var(--bdr)}
+.team-sec{display:flex;align-items:center;gap:9px}
+.team-sec-n{font-size:11.5px;color:var(--muted);font-weight:600}
+/* שדה נעול עד שלוחצים על "שינוי" */
+.lockfield{display:flex;gap:8px;align-items:center}
+.lockfield .fi[readonly]{background:#f1f5f9;color:var(--muted);cursor:default}
+.btn-as:disabled{opacity:.45;cursor:not-allowed;border-style:solid;border-color:var(--bdr);color:var(--muted)}
+.btn-as:disabled:hover{border-color:var(--bdr)}
+/* פאנל החשבון האישי — נשלף בריחוף על בלוק המשתמש בסייד-בר */
+.sb-user{position:relative;cursor:pointer;border-radius:10px;transition:background .15s}
+.sb-user:hover{background:rgba(255,255,255,.06)}
+.sb-user-flyout{position:absolute;bottom:0;transform:translateX(8px) scale(.97);transform-origin:bottom right;
+  inset-inline-start:calc(100% + 10px);width:250px;background:var(--card);border-radius:16px;
+  box-shadow:0 18px 48px rgba(8,18,32,.34);padding:16px;opacity:0;pointer-events:none;
+  transition:opacity .18s ease,transform .18s ease;z-index:400}
+.sb-user:hover .sb-user-flyout,.sb-user-flyout:hover{opacity:1;pointer-events:auto;transform:translateX(0) scale(1)}
+.sb-user-flyout::before{content:"";position:absolute;bottom:20px;inset-inline-start:-16px;border:8px solid transparent;border-inline-end-color:var(--card)}
+.sbf-art{display:block;margin:0 auto 10px}
+.sbf-name{font-size:14.5px;font-weight:800;color:var(--txt);text-align:center}
+.sbf-role{font-size:11.5px;color:var(--muted);text-align:center;margin-top:2px}
+.sbf-hint{font-size:11.5px;color:var(--muted);text-align:center;margin:10px 0 12px;line-height:1.5}
+.sbf-btn{width:100%;background:linear-gradient(135deg,var(--p),var(--pd));border:none;border-radius:10px;color:#fff;
+  font-family:'Heebo',sans-serif;font-size:13.5px;font-weight:700;padding:11px;cursor:pointer}
+.sbf-btn:active{transform:scale(.98)}
+/* מד חוזק סיסמה */
+.pwm{margin:-2px 0 12px;opacity:0;max-height:0;overflow:hidden;transition:opacity .22s ease,max-height .22s ease}
+.pwm.show{opacity:1;max-height:90px}
+.pwm-track{height:6px;border-radius:99px;background:var(--bdr);overflow:hidden}
+.pwm-fill{height:100%;width:0;border-radius:99px;transition:width .3s cubic-bezier(.4,0,.2,1),background-color .3s ease}
+.pwm-txt{font-size:12px;font-weight:700;margin-top:6px;transition:color .3s ease}
+.pwm-sub{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.5}
+.pwm-ok{display:none;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:#16a34a;margin-top:5px}
+.pwm-ok.show{display:flex;animation:pwmOkIn .25s ease both}
+@keyframes pwmOkIn{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:translateY(0)}}
+/* התאמת סיסמה חדשה לאימות — משוב בזמן אמת */
+.fi.match-bad{border-color:var(--err)!important}
+.fi.match-ok{border-color:#22c55e!important}
+.pwmatch{font-size:11.5px;font-weight:600;margin-top:5px;display:none;align-items:center;gap:4px}
+.pwmatch.show{display:flex;animation:pwmOkIn .18s ease both}
+.pwmatch.bad{color:var(--err)}
+.pwmatch.ok{color:#16a34a}
 </style>
 </head>
 <body>
@@ -403,6 +444,7 @@ tr:hover td{background:#f8faff}
     <div class="ls">כניסה למערכת ניהול</div>
     <div class="fg"><label class="fl">שם משתמש</label><input id="au" class="fi" type="text" autocomplete="off"/></div>
     <div class="fg"><label class="fl">סיסמה</label><input id="ap" class="fi" type="password" autocomplete="off"/></div>
+    <div class="fg" id="a2fa-wrap" style="display:none"><label class="fl">קוד אימות מהאפליקציה</label><input id="a2fa" class="fi" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="6 ספרות" dir="ltr" style="text-align:center;letter-spacing:.25em;font-size:18px"/><div style="font-size:11.5px;color:var(--muted);margin-top:6px">פתח את Google Authenticator והזן את הקוד. אפשר גם קוד גיבוי.</div></div>
     <button class="bp" id="login-btn">כניסה למערכת</button>
     <div id="aerr" class="aerr"></div>
   </div>
@@ -416,9 +458,22 @@ tr:hover td{background:#f8faff}
     </div>
     <nav class="sb-nav" id="sb-nav"></nav>
     <div class="sb-foot">
-      <div class="sb-user">
+      <div class="sb-user" id="sb-user-block">
         <div class="sb-user-av" id="sb-user-av">נ</div>
         <div><div class="sb-user-name" id="sb-user-name">טוען...</div><div class="sb-user-role" id="sb-user-role">נציג</div></div>
+        <div class="sb-user-flyout" id="sb-user-flyout">
+          <svg class="sbf-art" width="88" height="70" viewBox="0 0 88 70" fill="none" aria-hidden="true">
+            <ellipse cx="44" cy="63" rx="27" ry="4.5" fill="var(--p)" opacity=".10"/>
+            <path d="M44 8l19 7v14c0 12.5-8.1 22.3-19 25.5C33.1 51.3 25 41.5 25 29V15l19-7z" fill="var(--p)" opacity=".13"/>
+            <path d="M44 8l19 7v14c0 12.5-8.1 22.3-19 25.5C33.1 51.3 25 41.5 25 29V15l19-7z" stroke="var(--p)" stroke-width="2.2" stroke-linejoin="round"/>
+            <circle cx="44" cy="26" r="6.2" stroke="var(--p)" stroke-width="2.2"/>
+            <path d="M33.5 43c1.6-5.6 5.6-8.6 10.5-8.6S52.9 37.4 54.5 43" stroke="var(--p)" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+          <div class="sbf-name" id="sbf-name"></div>
+          <div class="sbf-role" id="sbf-role"></div>
+          <div class="sbf-hint" id="sbf-hint"></div>
+          <button class="sbf-btn" type="button" id="sbf-open">עריכת החשבון שלי</button>
+        </div>
       </div>
       <button class="btn-lo" id="logout-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>יציאה</button>
     </div>
@@ -442,7 +497,7 @@ tr:hover td{background:#f8faff}
           <select class="fs" id="sort-sel"><option value="name">מיון: שם</option><option value="newest">חדש</option><option value="oldest">ישן</option><option value="deadline">יעד</option></select>
         </div>
         <div class="card"><div class="ch"><span class="ct" id="clients-lbl">לקוחות</span><button class="btn-add" id="btn-add-client"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>הוספת לקוח</button></div>
-        <div class="tw"><table><thead><tr><th>שם</th><th>טלפון</th><th>אתרים</th><th>התקדמות</th><th>יעד</th><th>כניסה אחרונה</th><th>הודעות</th><th>דירוג אחרון<th>סטטוס</th><th>פעולות</th></tr></thead><tbody id="clients-tbody"></tbody></table></div></div>
+        <div class="tw"><table><thead><tr><th>שם</th><th>טלפון</th><th>אתרים</th><th>התקדמות</th><th>יעד</th><th>כניסה אחרונה</th><th>הודעות</th><th>דירוג</th><th>סטטוס</th><th>פעולות</th></tr></thead><tbody id="clients-tbody"></tbody></table></div></div>
       </div>
       <div class="panel" id="p-blocked"><div class="card"><div class="ch"><span class="ct">לקוחות חסומים</span></div><div class="tw"><table><thead><tr><th>שם</th><th>טלפון</th><th>סיבת חסימה</th><th>חסם על ידי</th><th>ניסיונות</th><th>תאריך</th><th>פעולות</th></tr></thead><tbody id="blocked-tbody"></tbody></table></div></div></div>
       <div class="panel" id="p-history"><div class="card"><div class="ch"><span class="ct">היסטוריית כניסות</span></div><div class="tw"><table><thead><tr><th>שם</th><th>טלפון</th><th>תאריך ושעה</th><th>IP</th><th>מיקום</th><th>סוג</th></tr></thead><tbody id="history-tbody"></tbody></table></div></div></div>
@@ -511,8 +566,14 @@ tr:hover td{background:#f8faff}
   <div class="mh"><span class="mt2" id="mo-team-t">הוספת נציג</span><button class="mc" id="mo-team-close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
   <div class="mb">
     <div class="fr"><div class="fg"><label class="fl">שם פרטי</label><input id="tm-first" class="fi" type="text"/></div><div class="fg"><label class="fl">שם משפחה</label><input id="tm-last" class="fi" type="text"/></div></div>
-    <div class="fr"><div class="fg"><label class="fl">נייד</label><input id="tm-phone" class="fi" type="tel" inputmode="numeric"/></div><div class="fg"><label class="fl">שם משתמש</label><input id="tm-user" class="fi" type="text"/></div></div>
-    <div class="fr full"><div class="fg"><label class="fl">סיסמה</label><input id="tm-pass" class="fi" type="password"/></div></div>
+    <div class="fr"><div class="fg"><label class="fl">נייד</label><input id="tm-phone" class="fi" type="tel" inputmode="numeric"/></div><div class="fg"><label class="fl">שם משתמש</label><div class="lockfield"><input id="tm-user" class="fi" type="text" autocomplete="off" readonly/><button class="bsm e" type="button" id="tm-user-edit" style="flex-shrink:0">שינוי</button></div><button class="bsm u" type="button" id="tm-user-ok" style="display:none;margin-top:7px">אישור השם החדש</button><div id="tm-user-note" style="display:none;font-size:11.5px;color:var(--muted);margin-top:5px">השם אושר — יישמר בפועל רק בלחיצה על "שמירה"</div></div></div>
+    <div class="fr full" id="tm-pass-toggle-wrap"><button class="btn-as" type="button" id="tm-pass-toggle">שינוי סיסמה</button></div>
+    <div id="tm-pass-fields" style="display:none">
+      <div class="fr"><div class="fg"><label class="fl">סיסמה חדשה</label><input id="tm-pass" class="fi" type="password" autocomplete="new-password"/></div><div class="fg"><label class="fl">אימות הסיסמה החדשה</label><input id="tm-pass2" class="fi" type="password" autocomplete="new-password"/><div class="pwmatch" id="tm-match"></div></div></div>
+      <div class="pwm" id="pwm-team"><div class="pwm-track"><div class="pwm-fill"></div></div><div class="pwm-txt"></div><div class="pwm-sub"></div><div class="pwm-ok"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span>ניתן להשתמש בסיסמה הזו</span></div></div>
+      <div style="font-size:11.5px;color:var(--muted);margin:-2px 0 8px">לפחות 8 תווים, הכוללים אות וספרה. הסיסמה נשמרת מגובבת — לא ניתן לצפות בה לאחר מכן.</div>
+    </div>
+    <div class="fr full" id="tm-totp-wrap" style="display:none"><div class="fg"><label class="fl">קוד אימות מהאפליקציה (נדרש לשינוי סיסמה)</label><input id="tm-totp" class="fi" type="text" inputmode="numeric" maxlength="10" dir="ltr" style="text-align:center;letter-spacing:.25em"/></div></div>
     <div class="fst">הרשאות</div>
     <div class="perm-grid" id="perm-grid"></div>
   </div>
@@ -599,6 +660,38 @@ tr:hover td{background:#f8faff}
   <textarea class="confirm-reason" id="confirm-reason" placeholder="סיבת החסימה (חובה)..." style="display:none"></textarea>
   <div class="cbtns"><button id="confirm-ok" class="btn-d">אישור</button><button class="btn-cancel" id="confirm-cancel">ביטול</button></div>
 </div></div></div>
+
+<!-- הגדרות החשבון האישי (שם משתמש / סיסמה) -->
+<div class="mo" id="mo-self"><div class="md" style="max-width:460px">
+  <div class="mh"><span class="mt2">הגדרות החשבון שלי</span><button class="mc" id="mo-self-close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+  <div class="mb">
+    <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg);border-radius:var(--r);margin-bottom:18px">
+      <div class="sb-user-av" id="self-av" style="width:44px;height:44px;font-size:17px"></div>
+      <div><div style="font-weight:800;font-size:15px" id="self-name"></div><div style="font-size:12px;color:var(--muted)" id="self-role"></div></div>
+    </div>
+
+    <div class="sec" style="margin-bottom:14px">
+      <div class="sec-top"><span class="sec-n">שם משתמש</span></div>
+      <div class="fr"><div class="fg"><div class="lockfield"><input class="fi" id="self-username" type="text" autocomplete="off" readonly/><button class="bsm e" type="button" id="self-username-edit" style="flex-shrink:0">שינוי</button></div></div></div>
+      <button class="btn-as" type="button" id="self-username-save" style="margin-top:8px" disabled>שמירת שם המשתמש</button>
+    </div>
+
+    <div class="sec">
+      <div class="sec-top"><span class="sec-n">שינוי סיסמה</span></div>
+      <div class="fr full" id="self-cur-wrap"><div class="fg"><label class="fl">הסיסמה הנוכחית</label><input class="fi" id="self-cur" type="password" autocomplete="current-password"/></div></div>
+      <div class="fr full" id="self-admincode-wrap" style="display:none"><div class="fg"><label class="fl">קוד אימות מהמנהל</label><input class="fi" id="self-admincode" type="text" inputmode="numeric" maxlength="6" dir="ltr" placeholder="6 ספרות" style="text-align:center;letter-spacing:.3em;font-size:18px"/><div style="font-size:11.5px;color:var(--muted);margin-top:6px">בקש מהמנהל את הקוד המופיע כרגע באפליקציית האימות שלו. הקוד מתחלף כל 30 שניות.</div></div></div>
+      <div id="self-verified" style="display:none;background:#f0fdf4;border:1px solid #86efac;border-radius:var(--rs);padding:11px 13px;margin-bottom:12px;font-size:13px;color:#16a34a;font-weight:600">✓ אושר ע"י המנהל — בחר סיסמה חדשה</div>
+      <button type="button" id="self-forgot" style="background:none;border:none;color:var(--p);font-family:'Heebo',sans-serif;font-size:12.5px;cursor:pointer;padding:2px 0 10px;text-decoration:underline">שכחתי את הסיסמה הנוכחית</button>
+      <div class="fr"><div class="fg"><label class="fl">סיסמה חדשה</label><input class="fi" id="self-new" type="password" autocomplete="new-password"/></div><div class="fg"><label class="fl">אימות הסיסמה החדשה</label><input class="fi" id="self-new2" type="password" autocomplete="new-password"/><div class="pwmatch" id="self-match"></div></div></div>
+      <div class="pwm" id="pwm-self"><div class="pwm-track"><div class="pwm-fill"></div></div><div class="pwm-txt"></div><div class="pwm-sub"></div><div class="pwm-ok"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span>ניתן להשתמש בסיסמה הזו</span></div></div>
+      <div style="font-size:11.5px;color:var(--muted);margin-top:-4px;margin-bottom:8px">לפחות 8 תווים, הכוללים אות וספרה.</div>
+      <div class="fr full" id="self-totp-wrap" style="display:none"><div class="fg"><label class="fl">קוד אימות מהאפליקציה</label><input class="fi" id="self-totp" type="text" inputmode="numeric" maxlength="10" dir="ltr" style="text-align:center;letter-spacing:.25em"/></div></div>
+      <button class="btn-as" type="button" id="self-pw-save" style="margin-top:4px" disabled>עדכון הסיסמה</button>
+    </div>
+
+    <div id="self-msg" class="aerr" style="margin-top:14px"></div>
+  </div>
+</div></div>
 <!-- טולטיפ מעוצב לגרף הדירוגים -->
 <div class="rg-tip" id="rg-tip"></div>
 <div class="mo" id="mo-logout"><div class="md" style="max-width:400px"><div class="mb" style="padding:30px 26px;text-align:center">
@@ -820,7 +913,7 @@ window.WDLinks = (function () {
           ? '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
           : '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>') +
         "</div>" +
-        '<div class="wdl-title" id="wdl-dlg-title">' + (warn ? "שים לב  כדאי לוודא את הכתובת" : "מעבר לאתר חיצוני") + "</div>" +
+        '<div class="wdl-title" id="wdl-dlg-title">' + (warn ? "שים לב — כדאי לוודא את הכתובת" : "מעבר לאתר חיצוני") + "</div>" +
         '<div class="wdl-sub">' + (warn
           ? "זוהו בכתובת מאפיינים טכניים חריגים. אין בכך כדי לקבוע שהאתר מסוכן, אך מומלץ לוודא שהכתובת היא זו שהתכוונת אליה."
           : "הקישור מוביל לאתר חיצוני שאינו חלק מהמערכת.") + "</div>" +
@@ -1019,9 +1112,107 @@ window.WDLinks = (function () {
 })();
 
 </script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   WDAuth — שכבת זהות משותפת לשלושת ממשקי הצ'אט.
+
+   עד היום לא הייתה למערכת זהות Firebase: הכללים היו פתוחים לכולם, והתפקיד
+   ("מנהל"/"נציג") נקבע בדפדפן. השכבה הזו מוסיפה זהות אמיתית — הפונקציה
+   authLogin מאמתת את הפרטים בצד השרת ומחזירה Custom Token עם התפקיד
+   וההרשאות צרובים בתוכו, כך שכללי ה-RTDB יוכלו לאכוף אותם.
+
+   חשוב: חוויית ההתחברות של המשתמש לא משתנה — אותם שדות, אותה לחיצה.
+   בשלב הזה הכניסה נשארת המנגנון הקיים, וה-Auth מתווסף לצידו; לכן כשל כאן
+   לעולם לא חוסם כניסה של משתמש אמיתי.
+   ═══════════════════════════════════════════════════════════════════════════ */
+window.WDAuth = (function () {
+  var ENDPOINT = "https://us-central1-deshbord-atarim-sheli.cloudfunctions.net/authLogin";
+  var _auth = null, _signIn = null, _lastProfile = null, _onAuthChanged = null;
+
+  /* מוזרק מקובץ המודול (שם נמצאים ה-imports של Firebase) */
+  function init(opts) {
+    _auth = opts && opts.auth ? opts.auth : null;
+    _signIn = opts && opts.signInWithCustomToken ? opts.signInWithCustomToken : null;
+    _onAuthChanged = opts && opts.onAuthStateChanged ? opts.onAuthStateChanged : null;
+  }
+
+  function ready() { return !!(_auth && _signIn); }
+
+  /* ממתין לשחזור זהות Firebase (אסינכרוני) לפני שמחליטים אם המשתמש מחובר.
+     בלי זה היינו מנתקים משתמש רק מפני שה-SDK עוד לא סיים לטעון. */
+  var _authReady = null;
+  function waitForAuth() {
+    if (_authReady) return _authReady;
+    _authReady = new Promise(function (resolve) {
+      if (!_auth) { resolve(null); return; }
+      if (_auth.currentUser) { resolve(_auth.currentUser); return; }
+      var done = false;
+      var unsub = _onAuthChanged ? _onAuthChanged(_auth, function (u) {
+        if (done) return; done = true;
+        try { unsub && unsub(); } catch (e) {}
+        resolve(u || null);
+      }) : null;
+      /* רשת ביטחון — לא נתקעים אם המאזין לא נורה */
+      setTimeout(function () { if (!done) { done = true; resolve(_auth.currentUser || null); } }, 4000);
+    });
+    return _authReady;
+  }
+
+
+  /* מחזיר {ok,profile} או {ok:false,error}. לעולם לא זורק. */
+  function serverLogin(payload) {
+    return fetch(ENDPOINT, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(payload)
+    })
+      .then(function (r) { return r.json().catch(function () { return null; }); })
+      .then(function (j) {
+        /* השרת מסמן שנדרש שלב שני — זה לא כשל אימות אלא בקשה לקוד */
+        if (j && j.needTotp) return {ok: false, needTotp: true, error: "totp-required"};
+        if (!j || !j.ok || !j.token) return {ok: false, error: (j && j.error) || "server-error"};
+        _lastProfile = j.profile || null;
+        if (!ready()) return {ok: true, profile: j.profile, signedIn: false};
+        return _signIn(_auth, j.token)
+          .then(function () { return {ok: true, profile: j.profile, signedIn: true}; })
+          .catch(function () { return {ok: true, profile: j.profile, signedIn: false}; });
+      })
+      .catch(function () { return {ok: false, error: "network"}; });
+  }
+
+  function loginClient(phone, pin) { return serverLogin({mode: "client", phone: phone, pin: pin}); }
+  function loginTeam(username, password, totp) { return serverLogin({mode: "team", username: username, password: password, totp: totp || undefined}); }
+
+  function currentUser() { return _auth && _auth.currentUser ? _auth.currentUser : null; }
+  function isSignedIn() { return !!currentUser(); }
+  function profile() { return _lastProfile; }
+
+  /* התפקיד וההרשאות נקראים מהטוקן שהשרת חתם עליו — לא ממשתנה בדפדפן */
+  function claims() {
+    var u = currentUser();
+    if (!u) return Promise.resolve(null);
+    return u.getIdTokenResult().then(function (r) { return r.claims || null; }).catch(function () { return null; });
+  }
+
+  function signOut() {
+    _lastProfile = null;
+    if (_auth && _auth.signOut) { try { return _auth.signOut(); } catch (e) {} }
+    return Promise.resolve();
+  }
+
+  return {
+    init: init, ready: ready,
+    loginClient: loginClient, loginTeam: loginTeam,
+    currentUser: currentUser, isSignedIn: isSignedIn, waitForAuth: waitForAuth,
+    profile: profile, claims: claims, signOut: signOut
+  };
+})();
+
+</script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, get, set, remove, onValue, update, onDisconnect, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getAuth, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 const _app = initializeApp({
   apiKey:"AIzaSyB9jeWAKY2UEz70V77SCPnSJ18IfwnsVV0",
@@ -1033,6 +1224,9 @@ const _app = initializeApp({
   appId:"1:893227581235:web:3254c85705dfe5fe894846"
 });
 const db = getDatabase(_app);
+const _authApp = getAuth(_app);
+/* שכבת הזהות — מאמתת בשרת ומקבלת Custom Token עם התפקיד וההרשאות */
+window.WDAuth.init({ auth: _authApp, signInWithCustomToken: signInWithCustomToken, onAuthStateChanged: onAuthStateChanged });
 
 /* ════════════════════════════════════════════════════════════════
    מודול טעינת תמונות חכם (skeleton + retry + offline)
@@ -1162,7 +1356,7 @@ const db = getDatabase(_app);
 
 const storage = getStorage(_app);
 
-const ADMIN_ID = "mi0XmZ8T3nb5VmZ0tLamS25UHBw1";
+/* ADMIN_ID הוסר — המנהל מזוהה עכשיו לפי הרשומה בשרת (admin_main) */
 const SESSION_KEY = "wdc_admin_session";
 const MONTH_MS = 30 * 24 * 60 * 60 * 1000;
 const EDIT_WIN = 30 * 60 * 1000;
@@ -1182,43 +1376,59 @@ async function doLogin() {
   const u=document.getElementById("au").value.trim();
   const p=document.getElementById("ap").value;
   const e=document.getElementById("aerr");
+  const t2=document.getElementById("a2fa");
+  const totp=t2?t2.value.trim():"";
   e.classList.remove("show");
+  if(!u||!p){e.textContent="נא למלא שם משתמש וסיסמה";e.classList.add("show");return;}
   showLoadOverlay("מאמת פרטים...");
   try {
-    if(u==="נתן מנדל"&&p==="13791379") {
-      const dt=genToken();
-      localStorage.setItem(SESSION_KEY,JSON.stringify({userId:ADMIN_ID,role:"admin",name:"נתן מנדל",expiry:Date.now()+MONTH_MS,deviceToken:dt}));
-      set(ref(db,"sessions/"+ADMIN_ID+"/dashboard"),{deviceToken:dt,loginAt:Date.now()}).catch(()=>{});
+    /* האימות מתבצע בשרת: הסיסמה נבדקת מול גיבוב, והתפקיד וההרשאות
+       מוחזרים חתומים בטוקן. הדפדפן לא קובע יותר מי מנהל. */
+    const res=await window.WDAuth.loginTeam(u,p,totp);
+
+    if(res.needTotp){
       hideLoadOverlay();
-      showLoginSuccess("נתן מנדל",()=>showDash({userId:ADMIN_ID,role:"admin",name:"נתן מנדל"}));
+      document.getElementById("a2fa-wrap").style.display="";
+      if(t2){t2.value="";t2.focus();}
+      e.textContent="נדרש קוד אימות מהאפליקציה";
+      e.classList.add("show");
       return;
     }
-    const tSnap=await get(ref(db,"team"));
-    if(tSnap.exists()) {
-      const td=tSnap.val();
-      const entry=Object.entries(td).find(([,m])=>m.username===u&&m.password===p);
-      if(entry) {
-        const [tid,member]=entry;
+
+    if(res.ok&&res.profile){
+      const prof=res.profile, tid=prof.userId;
+      /* בדיקת מכשיר קיים — התנהגות שהייתה קודם, נשמרת */
+      try{
         const sesSnap=await get(ref(db,"sessions/"+tid+"/dashboard"));
-        if(sesSnap.exists()) {
+        if(sesSnap.exists()){
           const ses=sesSnap.val();
           const saved=JSON.parse(localStorage.getItem(SESSION_KEY)||"{}");
-          if(ses.deviceToken&&saved.deviceToken!==ses.deviceToken) {
+          if(ses.deviceToken&&saved.deviceToken!==ses.deviceToken){
             hideLoadOverlay();
-            showDeviceConflict(tid,member);
+            showDeviceConflict(tid,{firstName:prof.name,lastName:"",perms:prof.perms||{}});
             return;
           }
         }
-        const dt=genToken();
-        localStorage.setItem(SESSION_KEY,JSON.stringify({userId:tid,role:"agent",name:member.firstName+" "+member.lastName,expiry:Date.now()+MONTH_MS,deviceToken:dt}));
-        set(ref(db,"sessions/"+tid+"/dashboard"),{deviceToken:dt,loginAt:Date.now()}).catch(()=>{});
-        hideLoadOverlay();
-        showLoginSuccess(member.firstName+" "+member.lastName,()=>showDash({userId:tid,role:"agent",name:member.firstName+" "+member.lastName,perms:member.perms||{}}));
-        return;
-      }
+      }catch(_){ /* לא חוסם התחברות */ }
+
+      const dt=genToken();
+      localStorage.setItem(SESSION_KEY,JSON.stringify({userId:tid,role:prof.role,name:prof.name,expiry:Date.now()+MONTH_MS,deviceToken:dt}));
+      set(ref(db,"sessions/"+tid+"/dashboard"),{deviceToken:dt,loginAt:Date.now()}).catch(()=>{});
+      hideLoadOverlay();
+      showLoginSuccess(prof.name,()=>showDash({userId:tid,role:prof.role,name:prof.name,perms:prof.perms||{}}));
+      return;
     }
+
     hideLoadOverlay();
-    e.textContent="שם משתמש או סיסמה שגויים";
+    if(res.error==="totp-invalid"){
+      document.getElementById("a2fa-wrap").style.display="";
+      if(t2){t2.value="";t2.focus();}
+      e.textContent="קוד האימות שגוי או פג תוקף";
+    }
+    else if(res.error==="too-many-attempts") e.textContent="יותר מדי ניסיונות. נסה שוב בעוד מספר דקות.";
+    else if(res.error==="disabled") e.textContent="המשתמש מושבת";
+    else if(res.error==="network") e.textContent="שגיאת תקשורת. בדוק את החיבור ונסה שוב.";
+    else e.textContent="שם משתמש או סיסמה שגויים";
     e.classList.add("show");
   } catch(err) {
     hideLoadOverlay();
@@ -1233,11 +1443,20 @@ function doLogout() {
   location.reload();
 }
 
-function checkSession() {
+/* wdAuthGuard — סשן מקומי בלי זהות Firebase מאומתת אינו מספיק.
+   זו בדיוק הפרצה שנסגרה: עד היום הדפדפן "הכריז" על עצמו כמחובר וכמנהל. */
+async function checkSession() {
   try {
     const s=JSON.parse(localStorage.getItem(SESSION_KEY));
     if(!s||!s.userId||Date.now()>s.expiry) {
       if(s&&Date.now()>s.expiry) { localStorage.removeItem(SESSION_KEY); showAutoLogoutMsg(); }
+      return null;
+    }
+    const authUser=await window.WDAuth.waitForAuth();
+    if(!authUser){
+      localStorage.removeItem(SESSION_KEY);
+      const e=document.getElementById("aerr");
+      if(e){ e.textContent="לצורך שדרוג אבטחה יש להתחבר מחדש. הפרטים שלך לא השתנו."; e.classList.add("show"); }
       return null;
     }
     return s;
@@ -1270,6 +1489,8 @@ function showDeviceConflict(tid,member) {
   document.getElementById("force-login-btn").onclick=async()=>{
     const dt=genToken();
     localStorage.setItem(SESSION_KEY,JSON.stringify({userId:tid,role:"agent",name:member.firstName+" "+member.lastName,expiry:Date.now()+MONTH_MS,deviceToken:dt}));
+      /* שכבת הזהות: session אמיתי לצד ההתחברות הקיימת. כשל כאן לא חוסם כניסה. */
+      if(window._wdPendingCreds){window.WDAuth.loginTeam(window._wdPendingCreds.u,window._wdPendingCreds.p).catch(()=>{});}
     await set(ref(db,`sessions/${tid}/dashboard`),{deviceToken:dt,loginAt:Date.now()});
     div.remove();
     showDash({userId:tid,role:"agent",name:member.firstName+" "+member.lastName,perms:member.perms||{}});
@@ -1286,8 +1507,8 @@ document.getElementById("logout-btn").onclick = ()=>openMo("mo-logout");
 document.getElementById("confirm-logout-btn").onclick = doLogout;
 document.getElementById("cancel-logout-btn").onclick = ()=>closeMo("mo-logout");
 
-window.addEventListener("DOMContentLoaded",()=>{
-  const s=checkSession();
+window.addEventListener("DOMContentLoaded",async ()=>{
+  const s=await checkSession();
   if(!s){ if(window.__hideBoot)window.__hideBoot(); return; }
   get(ref(db,`sessions/${s.userId}/dashboard`)).then(snap=>{
     if(snap.exists()&&snap.val().deviceToken!==s.deviceToken){localStorage.removeItem(SESSION_KEY);showAutoLogoutMsg();return;}
@@ -1315,7 +1536,21 @@ function showDash(user) {
   listenMyPermNotify(user);
   listenChatBg(); /* #104 — טעינת רקע הצ'אט לפי המשתמש */
   if(isAdmin){wireDefaultImgControls();wireRatingsControls();}
-  wdlSetup(); /* מנגנון הקישורים — חיווט השדה וטעינת העדפת האזהרה מהשרת */
+  wdlSetup();
+  wireSelfSettings();
+  /* פאנל החשבון בסייד-בר */
+  (function(){
+    const me=team[currentUser.userId]||{};
+    const full=((me.firstName||"")+" "+(me.lastName||"")).trim()||currentUser.name||"";
+    const n=document.getElementById("sbf-name"), r=document.getElementById("sbf-role"),
+          hint=document.getElementById("sbf-hint"), btn=document.getElementById("sbf-open");
+    if(n) n.textContent=full;
+    if(r) r.textContent=isAdmin?"מנהל ראשי":"נציג";
+    if(hint) hint.textContent=isAdmin
+      ? "שינוי שם המשתמש והסיסמה שלך. שינוי סיסמה מאובטח בקוד האימות הדו-שלבי."
+      : "שינוי שם המשתמש והסיסמה שלך בלבד. ההרשאות נקבעות ע\"י המנהל.";
+    if(btn) btn.onclick=()=>openSelfSettings();
+  })(); /* מנגנון הקישורים — חיווט השדה וטעינת העדפת האזהרה מהשרת */
   if("Notification"in window&&Notification.permission==="default")Notification.requestPermission();
 }
 
@@ -1350,6 +1585,300 @@ function listenMyPermNotify(user){
       remove(myPermNotifyRef).catch(()=>{});
     }
   });
+}
+
+
+/* ── הגדרות החשבון האישי — כל פעולה מאומתת בשרת מול ה-ID Token ────────────── */
+const AUTH_BASE="https://us-central1-deshbord-atarim-sheli.cloudfunctions.net";
+
+async function authedPost(path,body){
+  const u=window.WDAuth&&window.WDAuth.currentUser?window.WDAuth.currentUser():null;
+  if(!u) return {ok:false,error:"no-session"};
+  const tok=await u.getIdToken();
+  return fetch(AUTH_BASE+"/"+path,{method:"POST",
+    headers:{"Content-Type":"application/json; charset=utf-8","Authorization":"Bearer "+tok},
+    body:JSON.stringify(body||{})}).then(r=>r.json()).catch(()=>({ok:false,error:"network"}));
+}
+
+function selfMsg(text,isErr){
+  const el=document.getElementById("self-msg");
+  el.textContent=text;
+  el.style.background=isErr?"#fef2f2":"#f0fdf4";
+  el.style.borderColor=isErr?"#fca5a5":"#86efac";
+  el.style.color=isErr?"#dc2626":"#16a34a";
+  el.classList.add("show");
+}
+
+let selfOrigUsername="";
+let selfAdminCodeOk=false;   /* הופך ל-true אחרי שקוד המנהל אומת מול השרת */
+
+function selfSyncButtons(){
+  const uInput=document.getElementById("self-username");
+  const uSave=document.getElementById("self-username-save");
+  /* נפתח רק כששם המשתמש באמת שונה מהקיים — לא מספיק למחוק ולהקליד מחדש */
+  const v=uInput.value.trim();
+  uSave.disabled = uInput.hasAttribute("readonly") || v.length<3 || v===selfOrigUsername;
+
+  const cur=document.getElementById("self-cur").value;
+  const n1=document.getElementById("self-new").value;
+  pwRenderMeter("pwm-self",n1);
+  pwMatchCheck("self-new","self-new2","self-match");
+  const n2=document.getElementById("self-new2").value;
+  const totp=(document.getElementById("self-totp")||{}).value||"";
+  /* מנהל פטור מהסיסמה הנוכחית — במקומה נדרש קוד 2FA */
+  const needCur=!isAdmin && !selfAdminCodeOk;
+  const needTotp=isAdmin;
+  document.getElementById("self-pw-save").disabled =
+    (needCur && !cur) || n1.length<8 || n1!==n2 || (needTotp && totp.replace(/\D/g,"").length<6);
+}
+
+function openSelfSettings(){
+  const me=team[currentUser.userId]||{};
+  const full=((me.firstName||"")+" "+(me.lastName||"")).trim()||currentUser.name||"";
+  document.getElementById("self-av").textContent=(full||"נ").charAt(0);
+  document.getElementById("self-name").textContent=full;
+  document.getElementById("self-role").textContent=isAdmin?"מנהל ראשי — כל ההרשאות":"נציג";
+
+  selfOrigUsername=(me.username||"").trim();
+  const uInput=document.getElementById("self-username");
+  uInput.value=selfOrigUsername;
+  uInput.setAttribute("readonly","");           /* נעול עד לחיצה על "שינוי" */
+  document.getElementById("self-username-edit").textContent="שינוי";
+
+  ["self-cur","self-new","self-new2","self-totp"].forEach(id=>{const e=document.getElementById(id);if(e)e.value="";});
+  document.getElementById("self-msg").classList.remove("show");
+
+  /* מנהל: אין סיסמה נוכחית ואין "שכחתי" — הוא הסמכות שמאפסת. יש 2FA. */
+  document.getElementById("self-cur-wrap").style.display=isAdmin?"none":"";
+  document.getElementById("self-forgot").style.display=isAdmin?"none":"";
+  document.getElementById("self-totp-wrap").style.display=isAdmin?"":"none";
+  /* איפוס מסלול "שכחתי סיסמה" */
+  selfAdminCodeOk=false;
+  const ac=document.getElementById("self-admincode"); if(ac) ac.value="";
+  document.getElementById("self-admincode-wrap").style.display="none";
+  document.getElementById("self-verified").style.display="none";
+
+  selfSyncButtons();
+  openMo("mo-self");
+}
+window.openSelfSettings=openSelfSettings;
+window.openSelfSettings=openSelfSettings;
+
+function wireSelfSettings(){
+  const c=document.getElementById("mo-self-close");
+  if(!c) return;
+  c.onclick=()=>closeMo("mo-self");
+
+  /* כל הקלדה מעדכנת את זמינות הכפתורים */
+  ["self-username","self-cur","self-new","self-new2","self-totp"].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.addEventListener("input",selfSyncButtons);
+  });
+
+  /* קוד המנהל — מאומת מול השרת ברגע שהוקלדו 6 ספרות */
+  const acEl=document.getElementById("self-admincode");
+  if(acEl) acEl.addEventListener("input",async()=>{
+    const code=acEl.value.replace(/\D/g,"");
+    if(code.length!==6||selfAdminCodeOk) return;
+    showSP("מאמת קוד...");
+    /* השרת מאמת את הקוד ומנפיק אישור זמני ל-10 דקות — כך שהחלפת הקוד
+       באמצע התהליך לא מפילה את שינוי הסיסמה */
+    const vr=await authedPost("authVerifyAdminCode",{code:code});
+    hideSP();
+    if(!vr.ok){ selfMsg("הקוד שגוי או פג תוקף. בקש מהמנהל קוד עדכני.",true); return; }
+    selfAdminCodeOk=true;
+    document.getElementById("self-cur-wrap").style.display="none";
+    document.getElementById("self-forgot").style.display="none";
+    document.getElementById("self-admincode-wrap").style.display="none";
+    document.getElementById("self-verified").style.display="";
+    document.getElementById("self-msg").classList.remove("show");
+    document.getElementById("self-new").focus();
+    selfSyncButtons();
+  });
+
+  /* פתיחת שדה שם המשתמש לעריכה */
+  document.getElementById("self-username-edit").onclick=()=>{
+    const inp=document.getElementById("self-username");
+    if(inp.hasAttribute("readonly")){
+      inp.removeAttribute("readonly"); inp.focus(); inp.select();
+      document.getElementById("self-username-edit").textContent="ביטול";
+    } else {
+      inp.setAttribute("readonly",""); inp.value=selfOrigUsername;
+      document.getElementById("self-username-edit").textContent="שינוי";
+    }
+    selfSyncButtons();
+  };
+
+  document.getElementById("self-username-save").onclick=async()=>{
+    const v=document.getElementById("self-username").value.trim();
+    if(v.length<3) return selfMsg("שם המשתמש חייב להכיל לפחות 3 תווים",true);
+    showSP("שומר...");
+    const r=await authedPost("authSetUsername",{username:v});
+    hideSP();
+    if(r.ok){
+      selfOrigUsername=v;
+      const inp=document.getElementById("self-username");
+      inp.setAttribute("readonly","");
+      document.getElementById("self-username-edit").textContent="שינוי";
+      selfSyncButtons();
+      selfMsg("שם המשתמש עודכן",false);
+    }
+    else if(r.error==="username-taken") selfMsg("שם המשתמש כבר תפוס",true);
+    else if(r.error==="no-session") selfMsg("יש להתחבר מחדש כדי לבצע שינוי",true);
+    else selfMsg("השינוי נכשל",true);
+  };
+
+  document.getElementById("self-pw-save").onclick=async()=>{
+    const cur=document.getElementById("self-cur").value;
+    const n1=document.getElementById("self-new").value;
+    const n2=document.getElementById("self-new2").value;
+    const totp=(document.getElementById("self-totp")||{}).value||"";
+    /* הסיסמה הנוכחית נדרשת רק אם אין אישור תקף מהמנהל ואינך מנהל */
+    if(!isAdmin && !selfAdminCodeOk && !cur) return selfMsg("יש להזין את הסיסמה הנוכחית",true);
+    if(n1!==n2) return selfMsg("הסיסמה החדשה ואימותה אינם זהים",true);
+    if(n1.length<8) return selfMsg("הסיסמה חייבת להכיל לפחות 8 תווים",true);
+    const cw=pwCommonReason(n1); if(cw) return selfMsg("הסיסמה נדחתה: "+cw,true);
+    showSP("מעדכן...");
+    /* אין צורך לשלוח את הקוד שוב — האישור שמור בשרת ותקף 10 דקות */
+    const r=await authedPost("authChangePassword",{current:cur,next:n1,totp:totp});
+    hideSP();
+    if(r.ok){
+      selfMsg("הסיסמה עודכנה בהצלחה",false);
+      ["self-cur","self-new","self-new2","self-totp"].forEach(id=>{const e=document.getElementById(id);if(e)e.value="";});
+      selfSyncButtons();
+    }
+    else if(r.error==="wrong-current") selfMsg("הסיסמה הנוכחית שגויה",true);
+    else if(r.error==="admin-code-invalid") selfMsg("קוד המנהל פג תוקף — בקש קוד חדש",true);
+    else if(r.error==="totp-invalid") selfMsg("קוד האימות שגוי או פג תוקף",true);
+    else if(r.error==="weak-password") selfMsg(r.message||"הסיסמה חלשה מדי",true);
+    else if(r.error==="same-password") selfMsg("הסיסמה החדשה זהה לנוכחית",true);
+    else if(r.error==="no-session") selfMsg("יש להתחבר מחדש כדי לשנות סיסמה",true);
+    else selfMsg("העדכון נכשל",true);
+  };
+
+  document.getElementById("self-forgot").onclick=()=>{
+    const me=team[currentUser.userId]||{};
+    /* פותח ישירות את שדה קוד המנהל — בלי חלון ביניים */
+    document.getElementById("self-admincode-wrap").style.display="";
+    document.getElementById("self-admincode").focus();
+    document.getElementById("self-forgot").style.display="none";
+    selfMsg("בקש מהמנהל את קוד 6 הספרות מאפליקציית האימות שלו והזן אותו כאן",false);
+    /* מיידע את המנהל שהנציג ביקש */
+    fetch(AUTH_BASE+"/authRequestReset",{method:"POST",
+      headers:{"Content-Type":"application/json; charset=utf-8"},
+      body:JSON.stringify({username:me.username||""})}).catch(()=>{});
+  };
+}
+
+
+/* ── מד חוזק סיסמה ────────────────────────────────────────────────────────────
+   אינדיקציה למשתמש בלבד. האכיפה האמיתית נעשית בשרת — כאן רק משוב מיידי. */
+const PW_COMMON=new Set(["password","password1","passw0rd","123456","1234567","12345678","123456789","1234567890","qwerty","qwertyui","qwerty123","asdfghjk","asdfghjkl","zxcvbnm","abc12345","a1234567","iloveyou","admin123","letmein1","welcome1","monkey12","dragon12","sunshine","princess","football","baseball","superman","trustno1","master12","shadow12","qazwsxedc","1qaz2wsx","aaaaaaaa","11111111","00000000","abcdefgh","87654321","987654321","123123123","112233445"]);
+const PW_ROWS=["qwertyuiop","asdfghjkl","zxcvbnm","1234567890","!@#$%^&*()"];
+
+function pwHasSequence(s,minLen){
+  const low=String(s).toLowerCase();
+  for(const row of PW_ROWS){
+    for(let i=0;i+minLen<=row.length;i++){
+      const seg=row.slice(i,i+minLen);
+      if(low.includes(seg)||low.includes(seg.split("").reverse().join("")))return true;
+    }
+  }
+  let run=1;
+  for(let i=1;i<low.length;i++){
+    if(low.charCodeAt(i)===low.charCodeAt(i-1)+1){run++;if(run>=minLen)return true;}else run=1;
+  }
+  return false;
+}
+
+function pwCommonReason(pw){
+  const low=String(pw).toLowerCase();
+  if(PW_COMMON.has(low))return "זוהי אחת הסיסמאות הנפוצות ביותר";
+  if(/^(.)\1+$/.test(low))return "תו אחד שחוזר על עצמו";
+  if(pwHasSequence(low,6))return "רצף מקלדת או רצף תווים צפוי";
+  const st=low.replace(/[0-9!@#$%^&*()_+=-]+$/,"");
+  if(st.length>=4&&PW_COMMON.has(st))return "מבוססת על סיסמה נפוצה";
+  return null;
+}
+
+/* האם הסיסמה עומדת בדרישות המינימום — תואם למדיניות שנאכפת בשרת.
+   זו בדיקה נפרדת מ"חוזק": סיסמה בינונית עדיין מותרת לשמירה. */
+function pwAcceptable(pw){
+  pw=String(pw||"");
+  if(pw.length<8||pw.length>128) return false;
+  if(!/[A-Za-z֐-׿]/.test(pw)) return false;
+  if(!/[0-9]/.test(pw)) return false;
+  if(pwCommonReason(pw)) return false;
+  return true;
+}
+
+function pwStrength(pw){
+  pw=String(pw||"");
+  if(!pw) return {score:0,pct:0,label:"",color:"",sub:"",blocked:false,ok:false};
+
+  const common=pwCommonReason(pw);
+  if(common) return {score:0,pct:12,label:"הסיסמה חלשה מדי",color:"#dc2626",sub:common,blocked:true,ok:false};
+
+  let score=0;
+  if(pw.length>=8)score+=1;
+  if(pw.length>=12)score+=1;
+  if(pw.length>=16)score+=1;
+  const hasLower=/[a-z]/.test(pw), hasUpper=/[A-Z]/.test(pw), hasDigit=/\d/.test(pw);
+  const hasSym=/[^A-Za-z0-9]/.test(pw);
+  const variety=[hasLower,hasUpper,hasDigit,hasSym].filter(Boolean).length;
+  score+=Math.max(0,variety-1);
+  if(new Set(pw).size>=pw.length*0.7)score+=1;   /* מעט תווים חוזרים */
+
+  const missing=[];
+  if(pw.length<12)missing.push("אורך רב יותר");
+  if(!hasUpper||!hasLower)missing.push("אותיות גדולות וקטנות");
+  if(!hasSym)missing.push("תו מיוחד כמו ! @ # $ %");
+
+  const levels=[
+    {max:1,label:"הסיסמה חלשה מדי",color:"#dc2626",pct:18},
+    {max:3,label:"הסיסמה חלשה",color:"#f59e0b",pct:40},
+    {max:5,label:"סיסמה בינונית",color:"#eab308",pct:62},
+    {max:6,label:"סיסמה חזקה",color:"#22c55e",pct:84},
+    {max:99,label:"סיסמה חזקה מאוד",color:"#16a34a",pct:100}
+  ];
+  const lv=levels.find(l=>score<=l.max);
+  return {
+    score:score, pct:lv.pct, label:lv.label, color:lv.color,
+    sub: missing.length&&score<6 ? ("כדאי להוסיף: "+missing.join(", ")) : "הסיסמה עומדת בכל הדרישות",
+    blocked:false, ok:pwAcceptable(pw)
+  };
+}
+
+/* מצייר את המד לתוך מיכל נתון */
+function pwRenderMeter(hostId,pw){
+  const host=document.getElementById(hostId); if(!host)return;
+  const st=pwStrength(pw);
+  if(!pw){ host.classList.remove("show"); return; }
+  host.classList.add("show");
+  host.querySelector(".pwm-fill").style.width=st.pct+"%";
+  host.querySelector(".pwm-fill").style.background=st.color;
+  const t=host.querySelector(".pwm-txt");
+  t.textContent=st.label; t.style.color=st.color;
+  host.querySelector(".pwm-sub").textContent=st.sub;
+  /* מבהיר למשתמש שגם סיסמה שאינה "חזקה מאוד" מותרת לשמירה */
+  const okEl=host.querySelector(".pwm-ok");
+  if(okEl) okEl.classList.toggle("show",st.ok);
+}
+function pwMeterHtml(id){
+  return '<div class="pwm" id="'+id+'"><div class="pwm-track"><div class="pwm-fill"></div></div><div class="pwm-txt"></div><div class="pwm-sub"></div></div>';
+}
+
+/* התאמה בין הסיסמה החדשה לאימות — משוב מיידי בכל הקלדה, לפני כל פנייה לשרת */
+function pwMatchCheck(newId,confirmId,noteId){
+  const a=document.getElementById(newId), b=document.getElementById(confirmId), n=document.getElementById(noteId);
+  if(!a||!b||!n) return false;
+  b.classList.remove('match-bad','match-ok');
+  n.classList.remove('show','bad','ok');
+  if(!b.value) return false;              /* שדה ריק — לא מציגים דבר */
+  const same=a.value===b.value;
+  b.classList.add(same?'match-ok':'match-bad');
+  n.classList.add('show',same?'ok':'bad');
+  n.innerHTML=same?"<svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\"><polyline points=\"20 6 9 17 4 12\"/></svg><span>הסיסמאות תואמות</span>":"<svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\"><line x1=\"18\" y1=\"6\" x2=\"6\" y2=\"18\"/><line x1=\"6\" y1=\"6\" x2=\"18\" y2=\"18\"/></svg><span>הסיסמאות לא תואמות</span>";
+  return same;
 }
 
 /* ── Build Sidebar ── */
@@ -1772,7 +2301,7 @@ function openViewModal(phone) {
     <div class="vs"><div class="vl">הצטרפות</div><div class="vv">${c.joinedAt?fmtDate(c.joinedAt):"—"}</div></div>
     <div class="vs"><div class="vl">יעד לסיום</div><div class="vv">${dlH}</div></div>
     ${c.note?`<div class="vs"><div class="vl">תזכורת פנימית</div><div class="vv">${c.note}</div></div>`:""}
-    <div class="vs"><div class="vl"></div>${rHtml}</div>
+    <div class="vs"><div class="vl">דירוג</div>${rHtml}</div>
     <div class="vs"><div class="vl">ניסיונות כושלים</div><div class="vv" style="color:${(c.failedAttempts||0)>0?"var(--err)":"var(--ok)"}">${c.failedAttempts||0}</div></div>
     ${pwdsHtml}
     ${sites.length?`<div class="vs"><div class="vl">אתרים</div>${sites.map((s,si)=>{const p=parseInt(s.progress||0);const pc=p>=100?"#22c55e":p>=75?"#8b5cf6":p>=50?"#3b82f6":p>=25?"#f59e0b":"#ef4444";const spArr=s.sitePasswords?Object.values(s.sitePasswords):[];const spHtml=spArr.length?`<div class="vsc-pwds">${spArr.map((sp,k)=>`<div class="pwd-item"><span class="pwd-label">${sp.label||"סיסמה"}</span><span class="pwd-val hidden" id="vsp${si}_${k}">${sp.value||""}</span><button class="btn-pwd-show" onclick="togglePwdView('vsp${si}_${k}',this)">הצג</button><button class="btn-pwd-copy" onclick="navigator.clipboard?.writeText('${sp.value||""}').then(()=>toast('הועתק ✓','s'))">העתק</button></div>`).join("")}</div>`:"";return`<div class="vsc"><div style="display:flex;justify-content:space-between"><strong>${s.name||"ללא שם"}</strong><span class="tag ${s.status==="active"?"a":s.status==="building"?"bu":"pa"}">${s.status==="active"?"פעיל":s.status==="building"?"בבנייה":"מושהה"}</span></div>${s.url?`<div style="font-size:12px;color:var(--muted);margin-top:3px;direction:ltr">${s.url}</div>`:""}<div class="vp"><div class="vpf" style="width:0%;background:${pc}" data-t="${p}"></div></div><div style="font-size:12px;font-weight:700;color:${pc};margin-top:3px">${p}%</div>${spHtml}</div>`;}).join("")}</div>`:""}
@@ -2322,6 +2851,7 @@ const ALL_PERMS=[
   {key:"deleteChat",label:"מחיקת שיחה"},
 ];
 
+let tmOrigUsername="";
 function openTeamModal(memberId){
   document.getElementById("mo-team-t").textContent=memberId?"עריכת נציג":"הוספת נציג";
   ["tm-first","tm-last","tm-phone","tm-user","tm-pass"].forEach(id=>document.getElementById(id).value="");
@@ -2329,6 +2859,59 @@ function openTeamModal(memberId){
   document.getElementById("perm-grid").innerHTML=ALL_PERMS.map(p=>`<div class="perm-item"><span class="perm-label">${p.label}</span><label class="toggle-sw"><input type="checkbox" id="perm-${p.key}" ${existPerms[p.key]?"checked":""}><span class="slider"></span></label></div>`).join("");
   if(memberId&&team[memberId]){const m=team[memberId];document.getElementById("tm-first").value=m.firstName||"";document.getElementById("tm-last").value=m.lastName||"";document.getElementById("tm-phone").value=m.phone||"";document.getElementById("tm-user").value=m.username||"";}
   document.getElementById("mo-team").dataset.editId=memberId||"";
+  /* שם משתמש נעול עד לחיצה על "שינוי"; בנציג חדש פתוח מלכתחילה */
+  tmOrigUsername=(memberId&&team[memberId]?(team[memberId].username||""):"").trim();
+  const uEl=document.getElementById("tm-user"), uBtn=document.getElementById("tm-user-edit");
+  if(uEl&&uBtn){
+    const okB=document.getElementById("tm-user-ok"), nt=document.getElementById("tm-user-note");
+    if(okB)okB.style.display="none"; if(nt)nt.style.display="none";
+    if(memberId){ uEl.setAttribute("readonly",""); uBtn.style.display=""; uBtn.textContent="שינוי"; }
+    else { uEl.removeAttribute("readonly"); uBtn.style.display="none"; }
+    if(!uBtn.dataset.wired){ uBtn.dataset.wired="1";
+      const okBtn=document.getElementById("tm-user-ok"), note=document.getElementById("tm-user-note");
+      const lock=(val,showNote)=>{
+        uEl.setAttribute("readonly",""); uEl.value=val;
+        uBtn.textContent="שינוי"; okBtn.style.display="none";
+        note.style.display=showNote?"":"none";
+      };
+      uBtn.onclick=()=>{
+        if(uEl.hasAttribute("readonly")){
+          uEl.removeAttribute("readonly"); uEl.focus(); uEl.select();
+          uBtn.textContent="ביטול"; okBtn.style.display=""; note.style.display="none";
+        } else { lock(tmOrigUsername,false); }   /* ביטול — חזרה לערך המקורי */
+      };
+      /* אישור: נועל את השדה עם הערך החדש, אך אינו כותב לשרת */
+      okBtn.onclick=()=>{
+        const v=uEl.value.trim();
+        if(v.length<3) return toast("שם המשתמש חייב להכיל לפחות 3 תווים","e");
+        if(v===tmOrigUsername) return lock(tmOrigUsername,false);
+        lock(v,true);
+      };
+      uEl.addEventListener("keydown",e=>{ if(e.key==="Enter"&&!uEl.hasAttribute("readonly")){e.preventDefault();okBtn.click();} });
+    }
+  }
+  /* שדות הסיסמה נפתחים רק בלחיצה על "שינוי סיסמה" */
+  const pt=document.getElementById("tm-pass-toggle"), pf=document.getElementById("tm-pass-fields");
+  if(pt&&pf){
+    pf.style.display="none"; pt.textContent=memberId?"שינוי סיסמה":"הגדרת סיסמה";
+    document.getElementById("tm-pass-toggle-wrap").style.display="";
+    if(!memberId){ pf.style.display=""; document.getElementById("tm-pass-toggle-wrap").style.display="none"; }
+    if(!pt.dataset.wired){ pt.dataset.wired="1";
+      pt.onclick=()=>{ pf.style.display=""; document.getElementById("tm-pass-toggle-wrap").style.display="none";
+        document.getElementById("tm-pass").focus(); };
+    }
+  }
+  const p2=document.getElementById("tm-pass2");
+  if(p2){ p2.value=""; p2.classList.remove("match-bad","match-ok"); }
+  const mN=document.getElementById("tm-match"); if(mN) mN.classList.remove("show","bad","ok");
+  /* שדה קוד ה-2FA מופיע רק כשמזינים סיסמה — שינוי סיסמה הוא פעולה רגישה */
+  const tp=document.getElementById("tm-pass"), tw=document.getElementById("tm-totp-wrap"), tt=document.getElementById("tm-totp");
+  if(tp&&tw){ tp.value=""; if(tt)tt.value=""; tw.style.display="none";
+    if(!tp.dataset.wired){ tp.dataset.wired="1";
+      tp.addEventListener("input",()=>{ tw.style.display=tp.value?"":"none"; pwRenderMeter("pwm-team",tp.value); pwMatchCheck("tm-pass","tm-pass2","tm-match"); }); }
+    const p2b=document.getElementById("tm-pass2");
+    if(p2b&&!p2b.dataset.wired){ p2b.dataset.wired="1";
+      p2b.addEventListener("input",()=>pwMatchCheck("tm-pass","tm-pass2","tm-match")); } }
   openMo("mo-team");
 }
 window.openTeamModal=openTeamModal;
@@ -2337,41 +2920,91 @@ async function saveTeamMember(){
   const first=document.getElementById("tm-first").value.trim(),last=document.getElementById("tm-last").value.trim();
   const phone=document.getElementById("tm-phone").value.replace(/\D/g,""),user=document.getElementById("tm-user").value.trim(),pass=document.getElementById("tm-pass").value;
   const editId=document.getElementById("mo-team").dataset.editId;
+  const pass2=(document.getElementById("tm-pass2")||{}).value||"";
   if(!first||!last)return toast("חסר שם","e");if(!user)return toast("חסר שם משתמש","e");if(!editId&&!pass)return toast("חסרה סיסמה","e");
+  if(pass&&pass!==pass2)return toast("הסיסמה החדשה ואימותה אינם זהים","e");
+  if(pass&&pass.length<8)return toast("הסיסמה חייבת להכיל לפחות 8 תווים","e");
+  if(pass){const cw=pwCommonReason(pass); if(cw)return toast("הסיסמה נדחתה: "+cw,"e");}
   const perms={};ALL_PERMS.forEach(p=>{perms[p.key]=document.getElementById(`perm-${p.key}`)?.checked||false;});
   showSP("שומר...");
-  try{const id=editId||`tm_${Date.now()}`;const ex=editId?team[editId]:{};await set(ref(db,`team/${id}`),{...ex,firstName:first,lastName:last,phone,username:user,...(pass&&{password:pass}),perms,createdAt:ex.createdAt||Date.now()});toast(editId?"עודכן":"נציג נוסף","s");closeMo("mo-team");}
+  try{
+    const id=editId||`tm_${Date.now()}`;const ex=editId?team[editId]:{};
+    /* פרופיל בלבד — הסיסמה לעולם לא נכתבת כאן. כתיבה גלויה כאן הייתה
+       מבטלת את הגיבוב בשרת ומחזירה את הסיסמה לנתיב שקריא לכולם. */
+    const rec={...ex,firstName:first,lastName:last,phone,username:user,perms,createdAt:ex.createdAt||Date.now()};
+    delete rec.password;
+    await set(ref(db,`team/${id}`),rec);
+    /* הסיסמה מוגדרת דרך השרת, שמגבב אותה ושומר בנתיב הפרטי */
+    if(pass){
+      const totp=(document.getElementById("tm-totp")||{}).value||"";
+      const r=await authedPost("authAdminSetPassword",{userId:id,next:pass,totp:totp});
+      if(!r.ok){
+        hideSP();
+        if(r.error==="totp-invalid")return toast("קוד האימות הדו-שלבי שגוי","e");
+        if(r.error==="weak-password")return toast(r.message||"הסיסמה חלשה מדי","e");
+        if(r.error==="no-session")return toast("יש להתחבר מחדש כדי להגדיר סיסמה","e");
+        return toast("הגדרת הסיסמה נכשלה","e");
+      }
+    }
+    toast(editId?"עודכן":"נציג נוסף","s");closeMo("mo-team");
+  }
   catch(e){toast("שגיאה","e");}finally{hideSP();}
+}
+
+function renderTeamRow(id,m){
+  /* השורה של המשתמש המחובר — אסור שיסיר או ינתק את עצמו.
+     מנהל יחיד שמסיר את עצמו נועל את המערכת לצמיתות. */
+  const isMe=currentUser&&currentUser.userId===id;
+  const pres=m.presence||{};
+  const isOn=pres.online===true;
+  const seenTs=pres.lastSeen||m.lastLogin||0;
+  const statusHtml=isOn?`<span class="tag a">מחובר</span>`
+    :seenTs?`<span class="tag pa">נראה ${fmtSeen(seenTs)}</span>`
+    :`<span class="tag pa">לא מחובר</span>`;
+  /* נציג רואה רק את עצמו ויכול רק לערוך שם משתמש וסיסמה — לא הרשאות */
+  const actions=isMe
+    ? `<button class="bsm e" onclick="openSelfSettings()">הגדרות החשבון שלי</button><span class="tag nm" style="font-size:11px">זה אתה</span>`
+    : (isAdmin
+        ? `<button class="bsm e" onclick="openTeamModal('${id}')">עריכה</button>
+           <button class="bsm d" onclick="confirmDelTeam('${id}','${((m.firstName||"")+" "+(m.lastName||"")).trim()}')">הסרה</button>
+           <button class="bsm bl" onclick="forceLogout('${id}')">נתק</button>`
+        : `<span style="font-size:12px;color:var(--muted)">—</span>`);
+  return `<tr>
+    <td class="cn">${escHtml(((m.firstName||"")+" "+(m.lastName||"")).trim()||"—")}</td>
+    <td>${escHtml(m.username||"—")}</td>
+    <td class="cp">${m.phone?fmtPhone(m.phone):"—"}</td>
+    <td style="font-size:12px;color:var(--muted)">${m.lastLogin?fmtSeen(m.lastLogin):"—"}</td>
+    <td>${statusHtml}</td>
+    <td><div class="ac">${actions}</div></td>
+  </tr>`;
 }
 
 function renderTeamTable(){
   const tbody=document.getElementById("team-tbody");if(!tbody)return;
-  const entries=Object.entries(team);
+  let entries=Object.entries(team);
+  /* נציג רגיל רואה רק את הרשומה שלו */
+  if(!isAdmin&&currentUser) entries=entries.filter(([id])=>id===currentUser.userId);
   if(!entries.length){tbody.innerHTML=`<tr><td colspan="6"><div class="et">אין נציגים עדיין</div></td></tr>`;return;}
-  tbody.innerHTML=entries.map(([id,m])=>{
-    const pres=m.presence||{};
-    const isOn=pres.online===true;
-    const seenTs=pres.lastSeen||m.lastLogin||0;
-    const statusHtml=isOn
-      ? `<span class="tag a">מחובר</span>`
-      : seenTs
-        ? `<span class="tag pa">נראה ${fmtSeen(seenTs)}</span>`
-        : `<span class="tag pa">לא מחובר</span>`;
-    return `<tr>
-    <td class="cn">${m.firstName||""} ${m.lastName||""}</td>
-    <td>${m.username||"—"}</td>
-    <td class="cp">${fmtPhone(m.phone||"")}</td>
-    <td style="font-size:12px;color:var(--muted)">${m.lastLogin?fmtSeen(m.lastLogin):"—"}</td>
-    <td>${statusHtml}</td>
-    <td><div class="ac">
-      <button class="bsm e" onclick="openTeamModal('${id}')">עריכה</button>
-      <button class="bsm d" onclick="confirmDelTeam('${id}','${(m.firstName||"")+" "+(m.lastName||"")}')">הסרה</button>
-      <button class="bsm bl" onclick="forceLogout('${id}')">נתק</button>
-    </div></td>
-  </tr>`;}).join("");
+
+  const admins=entries.filter(([,m])=>m&&m.role==="admin");
+  const agents=entries.filter(([,m])=>!m||m.role!=="admin");
+  const header=(txt,count,cls)=>`<tr class="team-sec-row"><td colspan="6"><div class="team-sec"><span class="tag ${cls}">${txt}</span><span class="team-sec-n">${count}</span></div></td></tr>`;
+
+  let html="";
+  if(admins.length){
+    html+=header("ניהול",admins.length,"nm");
+    html+=admins.map(([id,m])=>renderTeamRow(id,m)).join("");
+  }
+  if(agents.length){
+    html+=header("נציגים",agents.length,"a");
+    html+=agents.map(([id,m])=>renderTeamRow(id,m)).join("");
+  }
+  tbody.innerHTML=html;
 }
-function confirmDelTeam(id,name){document.getElementById("confirm-reason").style.display="none";showConfirm("d",`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>`,"הסרת נציג",`האם להסיר את <strong>${name}</strong>?`,async()=>{showSP("מסיר...");try{await remove(ref(db,`team/${id}`));await remove(ref(db,`sessions/${id}`));toast("הנציג הוסר","s");}catch(e){toast("שגיאה","e");}finally{hideSP();}});}
+function confirmDelTeam(id,name){
+  if(currentUser&&currentUser.userId===id){toast("לא ניתן להסיר את המשתמש שאיתו אתה מחובר","e");return;}document.getElementById("confirm-reason").style.display="none";showConfirm("d",`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>`,"הסרת נציג",`האם להסיר את <strong>${name}</strong>?`,async()=>{showSP("מסיר...");try{await remove(ref(db,`team/${id}`));await remove(ref(db,`sessions/${id}`));toast("הנציג הוסר","s");}catch(e){toast("שגיאה","e");}finally{hideSP();}});}
 async function forceLogout(id){
+  if(currentUser&&currentUser.userId===id){toast("לא ניתן לנתק את עצמך מכאן — השתמש בכפתור היציאה","e");return;}
   showSP("מנתק...");
   try{
     await remove(ref(db,`sessions/${id}`));

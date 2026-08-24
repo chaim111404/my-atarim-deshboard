@@ -429,6 +429,62 @@ tr:hover td{background:#f8faff}
 .pwmatch.show{display:flex;animation:pwmOkIn .18s ease both}
 .pwmatch.bad{color:var(--err)}
 .pwmatch.ok{color:#16a34a}
+
+/* ── פרויקטים (שלב 1) ── */
+.pj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;padding:2px}
+.pj-card{background:#fff;border:1.5px solid var(--bdr);border-radius:var(--r);box-shadow:var(--sh);padding:18px;cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s;position:relative;overflow:hidden}
+.pj-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(14,165,233,.16);border-color:var(--p)}
+.pj-card::before{content:"";position:absolute;top:0;right:0;left:0;height:4px;background:linear-gradient(90deg,var(--p),var(--acc))}
+.pj-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:4px}
+.pj-card-name{font-size:17px;font-weight:800;color:var(--txt);line-height:1.3}
+.pj-card-client{font-size:12.5px;color:var(--muted);margin-top:2px;display:flex;align-items:center;gap:5px}
+.pj-stat-tag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.pj-stat-active{background:rgba(56,189,248,.14);color:var(--pd)}
+.pj-stat-done{background:rgba(34,197,94,.14);color:#16a34a}
+.pj-stat-paused{background:rgba(100,116,139,.14);color:var(--muted)}
+.pj-prog-wrap{margin-top:14px}
+.pj-prog-labels{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.pj-prog-pct{font-size:20px;font-weight:800;color:var(--p)}
+.pj-prog-stage{font-size:12px;color:var(--muted);font-weight:600;text-align:left;max-width:60%}
+.pj-prog-bar{height:9px;background:var(--bg);border-radius:20px;overflow:hidden}
+.pj-prog-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--p),var(--acc));transition:width .5s cubic-bezier(.4,1.2,.5,1)}
+.pj-card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid var(--bdr);font-size:12px;color:var(--muted)}
+.pj-enter-btn{display:inline-flex;align-items:center;gap:5px;background:var(--p);color:#fff;border:none;border-radius:8px;font-family:'Heebo',sans-serif;font-size:12.5px;font-weight:700;padding:7px 14px;cursor:pointer}
+.pj-empty{text-align:center;padding:60px 20px;color:var(--muted)}
+.pj-empty svg{opacity:.4;margin-bottom:14px}
+.pj-empty-t{font-size:16px;font-weight:700;color:var(--txt);margin-bottom:6px}
+
+/* תצוגת פרויקט בודד */
+.pj-detail-head{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.pj-back{display:inline-flex;align-items:center;gap:6px;background:var(--bg);border:1.5px solid var(--bdr);border-radius:9px;color:var(--txt);font-family:'Heebo',sans-serif;font-size:13px;font-weight:600;padding:8px 14px;cursor:pointer}
+.pj-back:hover{border-color:var(--p);color:var(--p)}
+.pj-detail-title{font-size:22px;font-weight:800}
+.pj-detail-sub{font-size:13px;color:var(--muted);margin-top:2px}
+.pj-stage-row{display:flex;align-items:center;gap:12px;padding:13px 16px;border:1.5px solid var(--bdr);border-radius:11px;margin-bottom:9px;background:#fff;transition:border-color .15s,background .15s}
+.pj-stage-row.done{background:rgba(34,197,94,.05);border-color:rgba(34,197,94,.3)}
+.pj-stage-check{width:26px;height:26px;border-radius:50%;border:2px solid var(--bdr);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .18s;background:#fff}
+.pj-stage-check.done{background:#22c55e;border-color:#22c55e}
+.pj-stage-check svg{opacity:0;transform:scale(.5);transition:all .18s}
+.pj-stage-check.done svg{opacity:1;transform:scale(1)}
+.pj-stage-body{flex:1;min-width:0}
+.pj-stage-title{font-size:15px;font-weight:700;color:var(--txt)}
+.pj-stage-row.done .pj-stage-title{color:#16a34a}
+.pj-stage-meta{font-size:11.5px;color:var(--muted);margin-top:2px}
+.pj-stage-w{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.pj-stage-w input{width:52px;text-align:center;border:1.5px solid var(--bdr);border-radius:7px;padding:5px;font-family:'Heebo',sans-serif;font-size:13px;background:#f8faff;color:var(--txt)}
+.pj-stage-del{background:none;border:none;color:var(--muted);cursor:pointer;padding:5px;border-radius:6px;flex-shrink:0;display:flex}
+.pj-stage-del:hover{color:var(--err);background:rgba(239,68,68,.08)}
+.pj-note-item{background:var(--bg);border:1px solid var(--bdr);border-radius:10px;padding:11px 14px;margin-bottom:8px}
+.pj-note-text{font-size:14px;color:var(--txt);white-space:pre-wrap;word-break:break-word}
+.pj-note-meta{font-size:11px;color:var(--muted);margin-top:5px}
+.pj-tabs{display:flex;gap:6px;margin-bottom:16px;border-bottom:2px solid var(--bdr);flex-wrap:wrap}
+.pj-tab{background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;font-family:'Heebo',sans-serif;font-size:14px;font-weight:700;color:var(--muted);padding:10px 14px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px}
+.pj-tab.active{color:var(--p);border-bottom-color:var(--p)}
+.pj-tab-badge{background:var(--bg);color:var(--muted);font-size:11px;font-weight:700;padding:1px 7px;border-radius:10px}
+.pj-tab.active .pj-tab-badge{background:rgba(14,165,233,.14);color:var(--p)}
+.pj-subpanel{display:none}.pj-subpanel.active{display:block}
+.pj-soon{text-align:center;padding:44px 20px;color:var(--muted);font-size:14px}
+.pj-soon svg{opacity:.35;margin-bottom:12px}
 </style>
 </head>
 <body>
@@ -518,6 +574,14 @@ tr:hover td{background:#f8faff}
         <div class="card"><div class="ch"><span class="ct" id="clients-lbl">לקוחות</span><button class="btn-add" id="btn-add-client"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>הוספת לקוח</button></div>
         <div class="tw"><table><thead><tr><th>שם</th><th>טלפון</th><th>אתרים</th><th>התקדמות</th><th>יעד</th><th>כניסה אחרונה</th><th>הודעות</th><th>דירוג</th><th>סטטוס</th><th>פעולות</th></tr></thead><tbody id="clients-tbody"></tbody></table></div></div>
       </div>
+      <div class="panel" id="p-projects">
+        <div id="projects-list-view">
+          <div class="card"><div class="ch"><span class="ct" id="projects-lbl">פרויקטים</span><button class="btn-add" id="btn-add-project"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>פרויקט חדש</button></div>
+            <div style="padding:16px"><div class="pj-grid" id="projects-grid"></div></div>
+          </div>
+        </div>
+        <div id="project-detail-view" style="display:none"></div>
+      </div>
       <div class="panel" id="p-blocked"><div class="card"><div class="ch"><span class="ct">לקוחות חסומים</span></div><div class="tw"><table><thead><tr><th>שם</th><th>טלפון</th><th>סיבת חסימה</th><th>חסם על ידי</th><th>ניסיונות</th><th>תאריך</th><th>פעולות</th></tr></thead><tbody id="blocked-tbody"></tbody></table></div></div></div>
       <div class="panel" id="p-history"><div class="card"><div class="ch"><span class="ct">היסטוריית כניסות</span></div><div class="tw"><table><thead><tr><th>שם</th><th>טלפון</th><th>תאריך ושעה</th><th>IP</th><th>מיקום</th><th>סוג</th></tr></thead><tbody id="history-tbody"></tbody></table></div></div></div>
       <div class="panel" id="p-messages"><div class="card"><div class="ch"><span class="ct">הודעות מלקוחות</span></div><div id="msgs-list" style="padding:16px"></div></div></div>
@@ -597,6 +661,20 @@ tr:hover td{background:#f8faff}
     <div class="perm-grid" id="perm-grid"></div>
   </div>
   <div class="mf"><button class="bp" style="width:auto;padding:10px 26px;margin-top:0" id="btn-save-team">שמירה</button><button class="btn-cancel" id="mo-team-cancel">ביטול</button></div>
+</div></div>
+<!-- Modal פרויקט -->
+<div class="mo" id="mo-project"><div class="md">
+  <div class="mh"><span class="mt2" id="mo-project-t">פרויקט חדש</span><button class="mc" id="mo-project-close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+  <div class="mb">
+    <div class="fst">פרטי הפרויקט</div>
+    <div class="fg"><label class="fl">שם הפרויקט</label><input id="pj-name" class="fi" type="text" placeholder="לדוגמה: אתר תדמית — ישראל ישראלי"/></div>
+    <div class="fr"><div class="fg"><label class="fl">לקוח משויך</label><select id="pj-client" class="fi"></select></div><div class="fg"><label class="fl">סטטוס</label><select id="pj-status" class="fi"><option value="active">פעיל</option><option value="paused">מושהה</option><option value="done">הושלם</option></select></div></div>
+    <div class="fst">שלבי הפרויקט</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6">השלבים נטענים מתבנית ברירת המחדל. אפשר להוסיף, להסיר, ולשנות משקל לכל שלב. אחוז ההתקדמות מחושב לפי משקל השלבים שהושלמו.</div>
+    <div id="pj-stages-editor"></div>
+    <button class="btn-as" id="pj-add-stage" type="button">הוספת שלב</button>
+  </div>
+  <div class="mf"><button class="bp" style="width:auto;padding:10px 26px;margin-top:0" id="btn-save-project">שמירה</button><button class="btn-cancel" id="mo-project-cancel">ביטול</button></div>
 </div></div>
 <!-- Modal צ'אט -->
 <div class="mo" id="mo-chat"><div class="md chat-md">
@@ -1386,7 +1464,8 @@ const SESSION_KEY = "wdc_admin_session";
 const MONTH_MS = 30 * 24 * 60 * 60 * 1000;
 const EDIT_WIN = 30 * 60 * 1000;
 
-let clients={}, blocked={}, usedPins={}, team={}, permRequests={}, unknownFails={}, reports={}, ratingsData={}, settings={};
+let clients={}, blocked={}, usedPins={}, team={}, permRequests={}, unknownFails={}, reports={}, ratingsData={}, settings={}, projects={};
+let curProjectId=null, curProjectTab="stages", editProjectId=null;
 let curFilter="all", searchQ="", editPhone=null, siteCount=0, pwdCount=0;
 let chatPhone=null, chatListener=null, chatReplyTo=null;
 let ctxMsgKey=null, ctxMsgData=null, editMsgKey=null;
@@ -2086,6 +2165,7 @@ function buildSidebar() {
   const perms=currentUser.perms||{};
   const items=[
     {id:"ni-clients",panel:"p-clients",title:"ניהול לקוחות",ic:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>',always:true},
+    {id:"ni-projects",panel:"p-projects",title:"פרויקטים",ic:'<path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>',perm:"projects"},
     {id:"ni-blocked",panel:"p-blocked",title:"חסומים",ic:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>',perm:"block",badge:"blocked-badge"},
     {id:"ni-history",panel:"p-history",title:"היסטוריה",ic:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',perm:"viewHistory"},
     {id:"ni-messages",panel:"p-messages",title:"הודעות",ic:'<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>',perm:"viewMsgs",badge:"msgs-badge"},
@@ -2159,6 +2239,10 @@ function buildSidebar() {
   document.getElementById("btn-save-client").onclick=saveClient;
   document.getElementById("mo-client-close").onclick=()=>closeMo("mo-client");
   document.getElementById("mo-client-cancel").onclick=()=>closeMo("mo-client");
+  document.getElementById("btn-add-project").onclick=()=>openProjectModal(null);
+  document.getElementById("btn-save-project").onclick=saveProject;
+  document.getElementById("mo-project-close").onclick=()=>closeMo("mo-project");
+  document.getElementById("mo-project-cancel").onclick=()=>closeMo("mo-project");
   document.getElementById("mo-view-close").onclick=()=>closeMo("mo-view");
   document.getElementById("mo-msgs-close").onclick=()=>closeMo("mo-msgs");
   document.getElementById("confirm-cancel").onclick=()=>closeMo("mo-confirm");
@@ -2236,6 +2320,7 @@ function startListening() {
   if(isAdmin)onValue(ref(db,"reports"),s=>{reports=s.val()||{};renderReports();updateReportsBadge();});
   if(isAdmin)onValue(ref(db,"ratings"),s=>{ratingsData=s.val()||{};renderRatingsGraph();});
   if(isAdmin)onValue(ref(db,"settings"),s=>{settings=s.val()||{};renderDefaultImgPanel();});
+  onValue(ref(db,"projects"),s=>{projects=s.val()||{};renderProjects();if(curProjectId&&projects[curProjectId])renderProjectDetail(curProjectId);});
 }
 function renderAll(){renderStats();renderClientsTable();renderHistoryTable();renderMsgsList();updateMsgBadge();}
 
@@ -3049,6 +3134,7 @@ const ALL_PERMS=[
   {key:"changePin",label:"החלפת קוד אישי"},{key:"deleteClient",label:"מחיקת לקוח"},
   {key:"viewHistory",label:"צפייה בהיסטוריה"},{key:"viewMsgs",label:"צפייה בהודעות"},
   {key:"deleteChat",label:"מחיקת שיחה"},
+  {key:"projects",label:"ניהול פרויקטים"},{key:"quotes",label:"הצעות מחיר"},
 ];
 
 let tmOrigUsername="";
@@ -3626,6 +3712,219 @@ function showPanel(id,navId,title){document.querySelectorAll(".panel").forEach(p
 function toggleSB(f){const sb=document.getElementById("sidebar"),ov=document.getElementById("sb-ov");const o=f!==undefined?f:!sb.classList.contains("open");sb.classList.toggle("open",o);ov.classList.toggle("show",o);}
 function openMo(id){document.getElementById(id).classList.add("show");}
 function closeMo(id){document.getElementById(id).classList.remove("show");}
+
+/* ═══════════════ פרויקטים (שלב 1) ═══════════════ */
+/* תבנית שלבים ברירת מחדל — אושרה 25.8.2026 */
+const PJ_STAGE_TEMPLATE=[
+  "אפיון ודרישות","הצעת מחיר ואישור","עיצוב","פיתוח",
+  "תוכן והזנת חומרים","בדיקות QA","העלאה לאוויר","אינדוקס בגוגל"
+];
+function pjCanManage(){return isAdmin||(currentUser?.perms?.projects);}
+/* אחוז התקדמות = סכום משקלי השלבים שהושלמו / סכום כל המשקלים */
+function pjProgress(p){
+  const st=p.stages?Object.values(p.stages):[];
+  if(!st.length)return 0;
+  const total=st.reduce((s,x)=>s+(Number(x.weight)||1),0);
+  const done=st.filter(x=>x.done).reduce((s,x)=>s+(Number(x.weight)||1),0);
+  return total?Math.round(done/total*100):0;
+}
+function pjCurrentStage(p){
+  const st=p.stages?Object.values(p.stages).sort((a,b)=>(a.order||0)-(b.order||0)):[];
+  const next=st.find(x=>!x.done);
+  if(!next)return st.length?"כל השלבים הושלמו":"אין שלבים";
+  return next.title;
+}
+function pjClientName(phone){return clients[phone]?.name||phone||"—";}
+const PJ_STAT={active:{c:"pj-stat-active",t:"פעיל"},done:{c:"pj-stat-done",t:"הושלם"},paused:{c:"pj-stat-paused",t:"מושהה"}};
+
+function renderProjects(){
+  const grid=document.getElementById("projects-grid");if(!grid)return;
+  const entries=Object.entries(projects).sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0));
+  if(!entries.length){
+    grid.innerHTML=`<div class="pj-empty" style="grid-column:1/-1">
+      <svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+      <div class="pj-empty-t">אין עדיין פרויקטים</div>
+      <div>לחץ "פרויקט חדש" כדי ליצור פרויקט ולשייך אותו ללקוח.</div></div>`;
+    return;
+  }
+  grid.innerHTML=entries.map(([id,p])=>{
+    const pct=pjProgress(p);const stat=PJ_STAT[p.status]||PJ_STAT.active;
+    const stCount=p.stages?Object.keys(p.stages).length:0;
+    const stDone=p.stages?Object.values(p.stages).filter(x=>x.done).length:0;
+    return`<div class="pj-card" onclick="enterProject('${id}')">
+      <div class="pj-card-top">
+        <div><div class="pj-card-name">${esc(p.name||"ללא שם")}</div>
+          <div class="pj-card-client"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${esc(pjClientName(p.clientPhone))}</div></div>
+        <span class="pj-stat-tag ${stat.c}">${stat.t}</span>
+      </div>
+      <div class="pj-prog-wrap">
+        <div class="pj-prog-labels"><span class="pj-prog-pct">${pct}%</span><span class="pj-prog-stage">${esc(pjCurrentStage(p))}</span></div>
+        <div class="pj-prog-bar"><div class="pj-prog-fill" style="width:${pct}%"></div></div>
+      </div>
+      <div class="pj-card-foot">
+        <span>${stDone}/${stCount} שלבים</span>
+        <button class="pj-enter-btn" onclick="event.stopPropagation();enterProject('${id}')">כניסה לפרויקט<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function enterProject(id){
+  curProjectId=id;curProjectTab="stages";
+  document.getElementById("projects-list-view").style.display="none";
+  document.getElementById("project-detail-view").style.display="block";
+  renderProjectDetail(id);
+}
+window.enterProject=enterProject;
+function exitProject(){
+  curProjectId=null;
+  document.getElementById("project-detail-view").style.display="none";
+  document.getElementById("projects-list-view").style.display="block";
+}
+window.exitProject=exitProject;
+
+function renderProjectDetail(id){
+  const p=projects[id];const host=document.getElementById("project-detail-view");
+  if(!p){exitProject();return;}
+  const pct=pjProgress(p);const stat=PJ_STAT[p.status]||PJ_STAT.active;
+  const notesCount=p.notes?Object.keys(p.notes).length:0;
+  const canEdit=pjCanManage();
+  host.innerHTML=`
+    <div class="pj-detail-head">
+      <button class="pj-back" onclick="exitProject()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>חזרה לפרויקטים</button>
+      <div style="flex:1"><div class="pj-detail-title">${esc(p.name||"ללא שם")}</div><div class="pj-detail-sub">${esc(pjClientName(p.clientPhone))} · <span class="pj-stat-tag ${stat.c}" style="font-size:10px">${stat.t}</span></div></div>
+      ${canEdit?`<button class="bsm e" onclick="openProjectModal('${id}')" style="background:var(--bg);color:var(--p);border:1.5px solid var(--bdr);padding:8px 14px;font-size:13px">עריכת פרטים</button>`:""}
+      ${canEdit?`<button class="bsm" onclick="confirmDeleteProject('${id}')" style="background:rgba(239,68,68,.1);color:var(--err);padding:8px 14px;font-size:13px">מחיקה</button>`:""}
+    </div>
+    <div class="card"><div style="padding:18px">
+      <div class="pj-prog-labels" style="margin-bottom:8px"><span class="pj-prog-pct" style="font-size:26px">${pct}%</span><span class="pj-prog-stage" style="font-size:13px">השלב הנוכחי: ${esc(pjCurrentStage(p))}</span></div>
+      <div class="pj-prog-bar" style="height:12px"><div class="pj-prog-fill" style="width:${pct}%"></div></div>
+    </div></div>
+    <div class="pj-tabs">
+      <button class="pj-tab${curProjectTab==="stages"?" active":""}" onclick="switchProjectTab('stages')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>שלבים</button>
+      <button class="pj-tab${curProjectTab==="quotes"?" active":""}" onclick="switchProjectTab('quotes')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>הצעות מחיר</button>
+      <button class="pj-tab${curProjectTab==="tasks"?" active":""}" onclick="switchProjectTab('tasks')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>משימות</button>
+      <button class="pj-tab${curProjectTab==="notes"?" active":""}" onclick="switchProjectTab('notes')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4z"/></svg>הערות פנימיות<span class="pj-tab-badge">${notesCount}</span></button>
+    </div>
+    <div class="pj-subpanel${curProjectTab==="stages"?" active":""}" id="pjs-stages">${renderPjStages(id,p,canEdit)}</div>
+    <div class="pj-subpanel${curProjectTab==="quotes"?" active":""}" id="pjs-quotes">${pjSoon("הצעות המחיר של הפרויקט יופיעו כאן","שלב 2 — מערכת הצעות מחיר",'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/>')}</div>
+    <div class="pj-subpanel${curProjectTab==="tasks"?" active":""}" id="pjs-tasks">${pjSoon("קוביות המשימה של הפרויקט יופיעו כאן","שלב 4 — קוביות משימה בצ'אט",'<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>')}</div>
+    <div class="pj-subpanel${curProjectTab==="notes"?" active":""}" id="pjs-notes">${renderPjNotes(id,p,canEdit)}</div>`;
+}
+function pjSoon(txt,tag,ic){return`<div class="card"><div class="pj-soon"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">${ic}</svg><div style="font-weight:700;color:var(--txt);margin-bottom:4px">${txt}</div><div style="font-size:12.5px">${tag}</div></div></div>`;}
+
+function renderPjStages(id,p,canEdit){
+  const st=p.stages?Object.entries(p.stages).sort((a,b)=>(a[1].order||0)-(b[1].order||0)):[];
+  if(!st.length)return`<div class="card"><div class="pj-soon">אין שלבים בפרויקט. ערוך את הפרויקט כדי להוסיף שלבים.</div></div>`;
+  return`<div class="card"><div style="padding:16px">${st.map(([sid,s])=>`
+    <div class="pj-stage-row${s.done?" done":""}">
+      <div class="pj-stage-check${s.done?" done":""}" ${canEdit?`onclick="toggleStage('${id}','${sid}')"`:""} title="${canEdit?"סמן כהושלם":""}">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="pj-stage-body"><div class="pj-stage-title">${esc(s.title)}</div>
+        <div class="pj-stage-meta">${s.done?`הושלם ${fmtSeen(s.doneAt)}${s.doneBy?" · "+esc(s.doneBy):""}`:"בהמתנה"} · משקל ${Number(s.weight)||1}</div></div>
+    </div>`).join("")}</div></div>`;
+}
+async function toggleStage(pid,sid){
+  if(!pjCanManage()){showPermDenied("projects");return;}
+  const s=projects[pid]?.stages?.[sid];if(!s)return;
+  const done=!s.done;
+  await update(ref(db,`projects/${pid}/stages/${sid}`),{done,doneAt:done?Date.now():null,doneBy:done?(currentUser?.name||""):null});
+  /* סנכרון האחוז המחושב אל שדה הפרויקט — הבסיס לתצוגת הלקוח בשלב 3 */
+  const fresh=(await get(ref(db,`projects/${pid}`))).val();
+  if(fresh)await update(ref(db,`projects/${pid}`),{progress:pjProgress(fresh)});
+}
+window.toggleStage=toggleStage;
+
+function renderPjNotes(id,p,canEdit){
+  const notes=p.notes?Object.entries(p.notes).sort((a,b)=>(b[1].at||0)-(a[1].at||0)):[];
+  return`<div class="card"><div style="padding:16px">
+    ${canEdit?`<div style="display:flex;gap:8px;margin-bottom:14px"><input id="pj-note-inp" class="fi" type="text" placeholder="הוסף הערה פנימית (לא נראית ללקוח)..." style="flex:1" onkeydown="if(event.key==='Enter')addPjNote('${id}')"/><button class="btn-add" onclick="addPjNote('${id}')" style="flex-shrink:0">הוסף</button></div>`:""}
+    ${notes.length?notes.map(([nid,n])=>`<div class="pj-note-item"><div class="pj-note-text">${esc(n.text)}</div><div class="pj-note-meta">${esc(n.by||"")} · ${fmtSeen(n.at)}${canEdit?` · <span style="cursor:pointer;color:var(--err)" onclick="delPjNote('${id}','${nid}')">מחק</span>`:""}</div></div>`).join(""):`<div class="pj-soon" style="padding:24px">אין עדיין הערות פנימיות.</div>`}
+  </div></div>`;
+}
+async function addPjNote(pid){
+  const inp=document.getElementById("pj-note-inp");const text=inp.value.trim();if(!text)return;
+  await set(ref(db,`projects/${pid}/notes/note_${Date.now()}`),{text,by:currentUser?.name||"",at:Date.now()});
+  inp.value="";
+}
+window.addPjNote=addPjNote;
+async function delPjNote(pid,nid){await remove(ref(db,`projects/${pid}/notes/${nid}`));}
+window.delPjNote=delPjNote;
+
+function switchProjectTab(t){
+  curProjectTab=t;
+  document.querySelectorAll("#project-detail-view .pj-tab").forEach((b,i)=>b.classList.toggle("active",["stages","quotes","tasks","notes"][i]===t));
+  document.querySelectorAll("#project-detail-view .pj-subpanel").forEach(s=>s.classList.remove("active"));
+  document.getElementById({stages:"pjs-stages",quotes:"pjs-quotes",tasks:"pjs-tasks",notes:"pjs-notes"}[t])?.classList.add("active");
+}
+window.switchProjectTab=switchProjectTab;
+
+/* ── מודל יצירה/עריכה ── */
+let pjStageRows=[];
+function openProjectModal(id){
+  if(!pjCanManage()){showPermDenied("projects");return;}
+  editProjectId=id||null;
+  const clientOpts=Object.entries(clients).filter(([ph,c])=>c.name&&c.pin)
+    .map(([ph,c])=>`<option value="${ph}">${esc(c.name)} · ${fmtPhone(ph)}</option>`).join("");
+  document.getElementById("pj-client").innerHTML=`<option value="">— בחר לקוח —</option>`+clientOpts;
+  if(id&&projects[id]){
+    const p=projects[id];
+    document.getElementById("mo-project-t").textContent="עריכת פרויקט";
+    document.getElementById("pj-name").value=p.name||"";
+    document.getElementById("pj-client").value=p.clientPhone||"";
+    document.getElementById("pj-status").value=p.status||"active";
+    pjStageRows=(p.stages?Object.values(p.stages).sort((a,b)=>(a.order||0)-(b.order||0)):[]).map(s=>({title:s.title,weight:Number(s.weight)||1,done:!!s.done,doneAt:s.doneAt||null,doneBy:s.doneBy||null}));
+  }else{
+    document.getElementById("mo-project-t").textContent="פרויקט חדש";
+    document.getElementById("pj-name").value="";
+    document.getElementById("pj-client").value="";
+    document.getElementById("pj-status").value="active";
+    pjStageRows=PJ_STAGE_TEMPLATE.map(t=>({title:t,weight:1,done:false,doneAt:null,doneBy:null}));
+  }
+  renderStageEditor();
+  openMo("mo-project");
+}
+window.openProjectModal=openProjectModal;
+function renderStageEditor(){
+  const host=document.getElementById("pj-stages-editor");
+  host.innerHTML=pjStageRows.map((s,i)=>`
+    <div class="pj-stage-row" style="cursor:default">
+      <div class="pj-stage-body"><input class="fi" value="${esc(s.title)}" oninput="pjStageRows[${i}].title=this.value" style="padding:8px 10px;font-size:14px"/></div>
+      <div class="pj-stage-w"><span style="font-size:11px;color:var(--muted)">משקל</span><input type="number" min="1" value="${s.weight}" oninput="pjStageRows[${i}].weight=Math.max(1,parseInt(this.value)||1)"/></div>
+      <button class="pj-stage-del" onclick="pjStageRows.splice(${i},1);renderStageEditor()" title="הסר שלב"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
+    </div>`).join("")||`<div style="font-size:13px;color:var(--muted);padding:8px 0">אין שלבים — הוסף שלב כדי להתחיל.</div>`;
+}
+window.renderStageEditor=renderStageEditor;
+document.getElementById("pj-add-stage")?.addEventListener("click",()=>{pjStageRows.push({title:"",weight:1,done:false,doneAt:null,doneBy:null});renderStageEditor();});
+
+async function saveProject(){
+  if(!pjCanManage()){showPermDenied("projects");return;}
+  const name=document.getElementById("pj-name").value.trim();
+  const clientPhone=document.getElementById("pj-client").value;
+  const status=document.getElementById("pj-status").value;
+  if(!name)return toast("יש להזין שם פרויקט","e");
+  if(!clientPhone)return toast("יש לבחור לקוח","e");
+  const rows=pjStageRows.filter(s=>s.title.trim());
+  if(!rows.length)return toast("יש להוסיף לפחות שלב אחד","e");
+  const stages={};rows.forEach((s,i)=>{stages[`stage_${i+1}`]={title:s.title.trim(),order:i,weight:Number(s.weight)||1,done:!!s.done,doneAt:s.doneAt||null,doneBy:s.doneBy||null};});
+  const id=editProjectId||`pj_${Date.now()}`;
+  const base=editProjectId?projects[id]:{createdAt:Date.now(),createdBy:currentUser?.name||""};
+  const rec={...base,name,clientPhone,status,stages};
+  rec.progress=pjProgress(rec);
+  if(editProjectId&&projects[id]?.notes)rec.notes=projects[id].notes;
+  await set(ref(db,`projects/${id}`),rec);
+  closeMo("mo-project");
+  toast(editProjectId?"הפרויקט עודכן ✓":"הפרויקט נוצר ✓","s");
+  if(curProjectId===id)renderProjectDetail(id);
+}
+function confirmDeleteProject(id){
+  showConfirm("d",'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg>',"מחיקת פרויקט",`למחוק את הפרויקט "${esc(projects[id]?.name||"")}"? הפעולה אינה הפיכה.`,async()=>{
+    await remove(ref(db,`projects/${id}`));exitProject();toast("הפרויקט נמחק","s");
+  });
+}
+window.confirmDeleteProject=confirmDeleteProject;
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+
 function showConfirm(type,svg,title,text,cb){const ci=document.getElementById("confirm-icon");ci.className=`ci ${type}`;ci.innerHTML=svg;document.getElementById("confirm-title").textContent=title;document.getElementById("confirm-text").innerHTML=text;const btn=document.getElementById("confirm-ok");btn.className=type==="d"?"btn-d":"btn-w";btn.onclick=async()=>{const r=await cb();if(r===false)return;closeMo("mo-confirm");};openMo("mo-confirm");}
 function showSP(t){document.getElementById("sp-txt").textContent=t||"טוען...";document.getElementById("spinner").classList.add("show");}
 function hideSP(){document.getElementById("spinner").classList.remove("show");}

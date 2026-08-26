@@ -130,6 +130,8 @@ const app = initializeApp({
 });
 const db = getDatabase(app);
 const qid = new URLSearchParams(location.search).get("id");
+/* מצב תצוגה מקדימה (לאדמין): רק העיצוב — בלי סימון "נצפתה", בלי אזור חתימה, בלי שום פעולה */
+const IS_PREVIEW = new URLSearchParams(location.search).get("preview")==="1";
 const content = document.getElementById("content");
 const LOGO = "https://i.postimg.cc/43kbjD5D/IMG-0695.png";
 
@@ -238,6 +240,13 @@ function render(q){
     </div>
     ${stateHtml}${approveHtml}
   </div>`;
+  /* תצוגה מקדימה — מחליף את אזור החתימה בבאנר, ומוסיף רצועת "תצוגה מקדימה" למעלה. אין פעולות. */
+  if(IS_PREVIEW){
+    const zone=content.querySelector(".approve-zone");
+    if(zone)zone.outerHTML=`<div class="approve-zone"><div class="state-banner" style="background:rgba(14,165,233,.08);border:1.5px solid rgba(14,165,233,.32)"><span class="state-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span><div><div class="state-t" style="color:#0284c7">תצוגה מקדימה</div><div class="state-d">כך הלקוח יראה את ההצעה. במצב זה לא ניתן לבצע פעולות והצפייה אינה נרשמת.</div></div></div></div>`;
+    content.insertAdjacentHTML("afterbegin",`<div style="max-width:720px;margin:0 auto 14px;background:#0284c7;color:#fff;border-radius:12px;padding:11px 16px;display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:700"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>תצוגה מקדימה — אינה נרשמת ואינה מאפשרת פעולות</div>`);
+    return;
+  }
   if(st!=="approved"&&st!=="rejected"&&!expired){
     setupSignatureUI(q);
     document.getElementById("btn-approve").onclick=()=>approve(q);
@@ -344,10 +353,10 @@ else{
   onValue(ref(db,`quotes/${qid}`),snap=>{
     const q=snap.val();
     if(!q){errorView("ההצעה לא נמצאה","ייתכן שהקישור שגוי או שההצעה כבר אינה זמינה.");return;}
-    /* פג תוקף ולא טופלה → עמוד ממותג בלבד, בלי להציג שום פרט מההצעה */
-    if(isExpired(q)&&q.status!=="approved"&&q.status!=="rejected"){expiredView();return;}
+    /* פג תוקף ולא טופלה → עמוד ממותג בלבד (בתצוגה מקדימה מציגים בכל זאת את העיצוב) */
+    if(!IS_PREVIEW&&isExpired(q)&&q.status!=="approved"&&q.status!=="rejected"){expiredView();return;}
     render(q);
-    if(firstLoad){firstLoad=false;markViewed(q);}
+    if(firstLoad){firstLoad=false;if(!IS_PREVIEW)markViewed(q);}
   },err=>{errorView("לא ניתן לטעון","אירעה שגיאה בטעינת ההצעה. נסו לרענן את הדף.");});
 }
 </script>

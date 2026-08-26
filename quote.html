@@ -118,7 +118,7 @@ td.desc{font-weight:600}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, get, update, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 const app = initializeApp({
   apiKey:"AIzaSyB9jeWAKY2UEz70V77SCPnSJ18IfwnsVV0",
   authDomain:"deshbord-atarim-sheli.firebaseapp.com",
@@ -289,44 +289,53 @@ function updateApproveState(){
   btn.disabled=!ok;
   const gate=document.getElementById("appr-gate"); if(gate) gate.style.display=ok?"none":"flex";
 }
+/* ── סעיפים 2+3: כל הפעולות עוברות דרך השרת (quoteAction) ──
+   האכיפה, ה-IP, זמן החתימה וטביעת המסמך נקבעים בשרת — לא בדפדפן.
+   שינוי JS מקומי לא משנה דבר: השרת מסרב לכל בקשה שאינה עומדת בתנאים. */
+const QUOTE_FN="https://us-central1-deshbord-atarim-sheli.cloudfunctions.net/quoteAction";
+async function quoteFn(payload){
+  const r=await fetch(QUOTE_FN,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+  let j={};try{j=await r.json();}catch(_){}
+  return {status:r.status,...j};
+}
+const FN_ERR={
+  "expired":"תוקף ההצעה פג — לא ניתן לחתום.",
+  "already-signed":"ההצעה כבר נחתמה.",
+  "already-rejected":"ההצעה כבר נדחתה.",
+  "already-final":"ההצעה כבר טופלה.",
+  "not-open":"ההצעה אינה זמינה לחתימה.",
+  "name-required":"נא למלא שם מלא.",
+  "consent-required":"נא לסמן את ההסכמה.",
+  "signature-required":"נא לחתום לפני האישור.",
+  "signature-invalid":"החתימה לא נקלטה, נסו שוב.",
+  "signature-too-large":"קובץ החתימה גדול מדי.",
+  "rate-limit":"יותר מדי ניסיונות, המתינו רגע ונסו שוב."
+};
 async function approve(q){
   const name=(document.getElementById("appr-name").value||"").trim();
   const canvas=document.getElementById("sig-canvas");
-  /* אכיפה בצד לקוח (סעיף 1) — האכיפה האמיתית בשרת תיווסף בסעיף 3 */
   if(!name){toast("נא למלא שם מלא");document.getElementById("appr-name").focus();return;}
   if(!sigHasInk){toast("נא לחתום לפני האישור");return;}
   if(!sigConsent){toast("נא לסמן את ההסכמה");return;}
-  const sigData=canvas.toDataURL("image/png");
   const btn=document.getElementById("btn-approve");btn.disabled=true;btn.textContent="חותם...";
-  const at=Date.now();
   try{
-    await update(ref(db,`quotes/${qid}`),{
-      status:"approved",
-      approval:{name,at,device:navigator.userAgent.slice(0,120)},
-      signature:{imageData:sigData,method:sigMethod,signerName:name,consent:true,consentText:SIG_CONSENT_TEXT,at}
-    });
-    await set(ref(db,`quotes/${qid}/audit/${at}`),{action:`ההצעה נחתמה ואושרה על ידי ${name}`,by:name,at,device:navigator.userAgent.slice(0,120)});
-    toast("ההצעה נחתמה ואושרה — תודה!");
-  }catch(e){btn.disabled=false;btn.textContent="אני חותם/ת ומאשר/ת את ההצעה";toast("שגיאה, נסו שוב");}
+    const res=await quoteFn({action:"sign",qid,name,consent:sigConsent===true,method:sigMethod,imageData:canvas.toDataURL("image/png")});
+    if(res.ok){toast("ההצעה נחתמה ואושרה — תודה!");return;}
+    toast(FN_ERR[res.error]||"שגיאה בחתימה, נסו שוב");
+  }catch(e){console.error(e);toast("שגיאת תקשורת, נסו שוב");}
+  btn.disabled=false;
+  btn.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>אני חותם/ת ומאשר/ת את ההצעה';
 }
 async function reject(q){
-  const at=Date.now();
   try{
-    await update(ref(db,`quotes/${qid}`),{status:"rejected",rejectedAt:at});
-    await set(ref(db,`quotes/${qid}/audit/${at}`),{action:"ההצעה נדחתה על ידי הלקוח",by:q.clientName||"הלקוח",at});
-    toast("נרשם. תודה על העדכון.");
-  }catch(e){toast("שגיאה, נסה שוב");}
+    const res=await quoteFn({action:"reject",qid});
+    if(res.ok){toast("נרשם. תודה על העדכון.");return;}
+    toast(FN_ERR[res.error]||"שגיאה, נסו שוב");
+  }catch(e){toast("שגיאת תקשורת, נסו שוב");}
 }
-
 /* סימון "נצפתה" בפעם הראשונה שהלקוח פותח (רק אם נשלחה) */
 async function markViewed(q){
-  if(q.status==="sent"){
-    const at=Date.now();
-    try{
-      await update(ref(db,`quotes/${qid}`),{status:"viewed",viewedAt:at});
-      await set(ref(db,`quotes/${qid}/audit/${at}`),{action:"ההצעה נצפתה על ידי הלקוח",by:q.clientName||"הלקוח",at});
-    }catch(e){}
-  }
+  if(q.status==="sent"){try{await quoteFn({action:"view",qid});}catch(e){}}
 }
 
 if(!qid){errorView("קישור לא תקין","לא צוין מזהה הצעה.");}

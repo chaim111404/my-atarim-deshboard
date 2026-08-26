@@ -63,6 +63,26 @@ td.desc{font-weight:600}
 .btn-approve:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(34,197,94,.32)}
 .btn-approve:disabled{opacity:.6;cursor:default;transform:none;box-shadow:none}
 .btn-reject{width:100%;background:none;border:none;color:var(--muted);font-family:'Heebo',sans-serif;font-size:13.5px;font-weight:600;padding:12px;cursor:pointer;margin-top:6px;text-decoration:underline}
+.btn-approve:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none;filter:grayscale(.25)}
+/* ── חתימה (סעיף 1) ── */
+.sig-lbl{font-size:12.5px;font-weight:700;color:var(--muted);margin:2px 2px 7px}
+.sig-pad-wrap{position:relative;border:2px dashed #b9d9f2;border-radius:14px;background:linear-gradient(#fff,#fbfdff);height:170px;overflow:hidden;margin-bottom:10px;touch-action:none}
+.sig-canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair;display:block}
+.sig-line{position:absolute;left:16px;right:16px;bottom:40px;border-bottom:1.5px solid #d7e6f4;pointer-events:none}
+.sig-x{position:absolute;right:16px;bottom:44px;color:#b8cbe0;font-size:20px;font-weight:800;pointer-events:none}
+.sig-hint{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#9db8d2;font-weight:600;font-size:13.5px;pointer-events:none;transition:opacity .2s}
+.sig-hint.hide{opacity:0}
+.sig-tools{display:flex;gap:9px;margin-bottom:16px}
+.sig-btn{flex:1;border:1.5px solid var(--bdr);background:#fff;border-radius:11px;padding:12px;font-family:'Heebo',sans-serif;font-size:13.5px;font-weight:700;color:var(--txt);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;-webkit-tap-highlight-color:transparent}
+.sig-btn:active{background:var(--bg)}
+.sig-consent{display:flex;align-items:flex-start;gap:11px;background:var(--bg);border:1px solid var(--bdr);border-radius:var(--rs);padding:13px 15px;margin-bottom:16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.sig-consent .cbox{width:24px;height:24px;border-radius:7px;border:2px solid #b9d9f2;background:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:transparent;transition:.15s;margin-top:1px}
+.sig-consent.on .cbox{background:var(--ok);border-color:var(--ok);color:#fff}
+.sig-consent .ctxt{font-size:13px;color:var(--txt);line-height:1.5}
+.sig-consent .ctxt b{font-weight:800}
+.appr-gate{display:flex;align-items:center;justify-content:center;gap:7px;font-size:12px;color:var(--warn);font-weight:700;margin-top:11px;text-align:center}
+.sig-secure{display:flex;align-items:center;justify-content:center;gap:7px;font-size:11.5px;color:var(--muted);font-weight:600;margin-top:12px}
+.sig-secure svg{color:var(--ok);flex-shrink:0}
 .state-banner{display:flex;align-items:flex-start;gap:13px;padding:18px 20px;border-radius:var(--rs);margin:0}
 .state-approved{background:rgba(34,197,94,.1);border:1.5px solid rgba(34,197,94,.3)}
 .state-rejected{background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.28)}
@@ -170,11 +190,31 @@ function render(q){
       <div><div class="state-t" style="color:#b45309">תוקף ההצעה פג</div><div class="state-d">ההצעה הייתה בתוקף עד ${fmtDateStr(q.validUntil)}. ניתן לפנות אלינו לחידוש.</div></div></div></div>`;
   }else{
     approveHtml=`<div class="approve-zone">
-      <div class="appr-title">אישור ההצעה</div>
-      <div class="appr-sub">לאישור ההצעה מלא/י את שמך המלא ולחץ/י על הכפתור. האישור יתועד עם התאריך והמכשיר.</div>
-      <div class="appr-field"><label>שם מלא</label><input id="appr-name" type="text" placeholder="השם שלך" value="${esc(q.clientName||"")}"/></div>
-      <button class="btn-approve" id="btn-approve"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>אני מאשר/ת את ההצעה</button>
+      <div class="appr-title">אישור וחתימה</div>
+      <div class="appr-sub">לאישור ההצעה יש למלא שם, לחתום, ולסמן את ההסכמה. החתימה מחייבת ומתועדת.</div>
+      <div class="appr-field"><label>שם מלא</label><input id="appr-name" type="text" placeholder="השם שלך" value="${esc(q.clientName||"")}" autocomplete="name"/></div>
+      <div class="sig-lbl">חתימה</div>
+      <div class="sig-pad-wrap">
+        <canvas id="sig-canvas" class="sig-canvas"></canvas>
+        <div class="sig-line"></div><div class="sig-x">×</div>
+        <div class="sig-hint" id="sig-hint">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+          חתמו כאן — באצבע או בעכבר
+        </div>
+      </div>
+      <div class="sig-tools">
+        <button type="button" class="sig-btn" id="sig-clear"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>ניקוי</button>
+        <button type="button" class="sig-btn" id="sig-upload-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>העלאת חתימה</button>
+        <input type="file" id="sig-file" accept="image/*" hidden/>
+      </div>
+      <label class="sig-consent" id="sig-consent">
+        <span class="cbox"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span class="ctxt"><b>אני מאשר/ת שזו חתימתי המחייבת</b> ומסכים/ה לתנאי ההצעה ולסכום הכולל. ידוע לי שהחתימה מהווה הסכמה משפטית.</span>
+      </label>
+      <button class="btn-approve" id="btn-approve" disabled><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>אני חותם/ת ומאשר/ת את ההצעה</button>
+      <div class="appr-gate" id="appr-gate"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>נדרשים: שם, חתימה, וסימון ההסכמה</div>
       <button class="btn-reject" id="btn-reject">לא מעוניין/ת בהצעה זו</button>
+      <div class="sig-secure"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>החתימה מאומתת ומתועדת</div>
     </div>`;
   }
   content.innerHTML=`<div class="doc">
@@ -199,21 +239,75 @@ function render(q){
     ${stateHtml}${approveHtml}
   </div>`;
   if(st!=="approved"&&st!=="rejected"&&!expired){
+    setupSignatureUI(q);
     document.getElementById("btn-approve").onclick=()=>approve(q);
     document.getElementById("btn-reject").onclick=()=>reject(q);
   }
 }
 
+/* ── סעיף 1: חתימה — ציור (עכבר+מגע) / העלאה / הסכמה / חסימת אישור ── */
+const SIG_CONSENT_TEXT="אני מאשר/ת שזו חתימתי המחייבת ומסכים/ה לתנאי ההצעה ולסכום הכולל. ידוע לי שהחתימה מהווה הסכמה משפטית.";
+let sigHasInk=false, sigConsent=false, sigMethod="draw";
+function setupSignatureUI(q){
+  sigHasInk=false; sigConsent=false; sigMethod="draw";
+  const canvas=document.getElementById("sig-canvas"); if(!canvas) return;
+  const ctx=canvas.getContext("2d");
+  const dpr=Math.max(1,Math.min(3,window.devicePixelRatio||1));
+  function fitCanvas(keep){
+    const r=canvas.getBoundingClientRect();
+    const prev=(keep&&sigHasInk)?canvas.toDataURL():null;
+    canvas.width=Math.round(r.width*dpr); canvas.height=Math.round(r.height*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.lineJoin="round"; ctx.lineCap="round"; ctx.lineWidth=2.6; ctx.strokeStyle="#0f3d63";
+    if(prev){const img=new Image();img.onload=()=>ctx.drawImage(img,0,0,r.width,r.height);img.src=prev;}
+  }
+  function relPos(e){const r=canvas.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top};}
+  let drawing=false,last=null;
+  function down(e){e.preventDefault();drawing=true;last=relPos(e);try{canvas.setPointerCapture(e.pointerId);}catch(_){}}
+  function moveP(e){if(!drawing)return;e.preventDefault();const p=relPos(e);ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p;if(!sigHasInk){sigHasInk=true;sigMethod="draw";document.getElementById("sig-hint").classList.add("hide");updateApproveState();}}
+  function up(){drawing=false;}
+  canvas.addEventListener("pointerdown",down);
+  canvas.addEventListener("pointermove",moveP);
+  canvas.addEventListener("pointerup",up);
+  canvas.addEventListener("pointercancel",up);
+  fitCanvas(false);
+  let rt=null; window.addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(()=>fitCanvas(true),150);});
+  window._sigClear=()=>{ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,canvas.width,canvas.height);ctx.restore();sigHasInk=false;sigMethod="draw";document.getElementById("sig-hint").classList.remove("hide");updateApproveState();};
+  document.getElementById("sig-clear").onclick=window._sigClear;
+  const fileInp=document.getElementById("sig-file");
+  document.getElementById("sig-upload-btn").onclick=()=>{fileInp.value="";fileInp.click();};
+  fileInp.onchange=e=>{const f=e.target.files&&e.target.files[0];if(!f)return;const img=new Image();img.onload=()=>{const r=canvas.getBoundingClientRect();ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,canvas.width,canvas.height);ctx.restore();const scale=Math.min(r.width/img.width,r.height/img.height)*0.92;const w=img.width*scale,h=img.height*scale;ctx.drawImage(img,(r.width-w)/2,(r.height-h)/2,w,h);sigHasInk=true;sigMethod="upload";document.getElementById("sig-hint").classList.add("hide");updateApproveState();URL.revokeObjectURL(img.src);};img.src=URL.createObjectURL(f);};
+  const consentEl=document.getElementById("sig-consent");
+  consentEl.onclick=()=>{sigConsent=!sigConsent;consentEl.classList.toggle("on",sigConsent);updateApproveState();};
+  document.getElementById("appr-name").addEventListener("input",updateApproveState);
+  updateApproveState();
+}
+function updateApproveState(){
+  const btn=document.getElementById("btn-approve"); if(!btn) return;
+  const name=(document.getElementById("appr-name").value||"").trim();
+  const ok=!!name && sigHasInk && sigConsent;
+  btn.disabled=!ok;
+  const gate=document.getElementById("appr-gate"); if(gate) gate.style.display=ok?"none":"flex";
+}
 async function approve(q){
   const name=(document.getElementById("appr-name").value||"").trim();
+  const canvas=document.getElementById("sig-canvas");
+  /* אכיפה בצד לקוח (סעיף 1) — האכיפה האמיתית בשרת תיווסף בסעיף 3 */
   if(!name){toast("נא למלא שם מלא");document.getElementById("appr-name").focus();return;}
-  const btn=document.getElementById("btn-approve");btn.disabled=true;btn.textContent="שומר...";
+  if(!sigHasInk){toast("נא לחתום לפני האישור");return;}
+  if(!sigConsent){toast("נא לסמן את ההסכמה");return;}
+  const sigData=canvas.toDataURL("image/png");
+  const btn=document.getElementById("btn-approve");btn.disabled=true;btn.textContent="חותם...";
   const at=Date.now();
   try{
-    await update(ref(db,`quotes/${qid}`),{status:"approved",approval:{name,at,device:navigator.userAgent.slice(0,120)}});
-    await set(ref(db,`quotes/${qid}/audit/${at}`),{action:`ההצעה אושרה על ידי ${name}`,by:name,at,device:navigator.userAgent.slice(0,120)});
-    toast("ההצעה אושרה — תודה!");
-  }catch(e){btn.disabled=false;btn.textContent="אני מאשר/ת את ההצעה";toast("שגיאה, נסה שוב");}
+    await update(ref(db,`quotes/${qid}`),{
+      status:"approved",
+      approval:{name,at,device:navigator.userAgent.slice(0,120)},
+      signature:{imageData:sigData,method:sigMethod,signerName:name,consent:true,consentText:SIG_CONSENT_TEXT,at}
+    });
+    await set(ref(db,`quotes/${qid}/audit/${at}`),{action:`ההצעה נחתמה ואושרה על ידי ${name}`,by:name,at,device:navigator.userAgent.slice(0,120)});
+    toast("ההצעה נחתמה ואושרה — תודה!");
+  }catch(e){btn.disabled=false;btn.textContent="אני חותם/ת ומאשר/ת את ההצעה";toast("שגיאה, נסו שוב");}
 }
 async function reject(q){
   const at=Date.now();

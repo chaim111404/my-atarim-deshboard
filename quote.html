@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="robots" content="noindex, nofollow"/>
+<title>הצעת מחיר — WebDesk</title>
+<!-- תצוגה מקדימה של הקישור (Open Graph) — ממותגת וגנרית, ללא נתוני לקוח/סכום (בלי דליפת מידע) -->
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="WebDesk"/>
+<meta property="og:title" content="הצעת מחיר · WebDesk"/>
+<meta property="og:description" content="הצעה אישית מוכנה עבורך — לחצו לצפייה ולאישור."/>
+<meta property="og:image" content="https://i.postimg.cc/43kbjD5D/IMG-0695.png"/>
+<meta property="og:url" content="https://my-atarim-deshboard.vercel.app/quote.html"/>
+<meta property="og:locale" content="he_IL"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="הצעת מחיר · WebDesk"/>
+<meta name="twitter:description" content="הצעה אישית מוכנה עבורך — לחצו לצפייה ולאישור."/>
+<meta name="twitter:image" content="https://i.postimg.cc/43kbjD5D/IMG-0695.png"/>
+<meta name="theme-color" content="#0ea5e9"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--p:#0ea5e9;--pd:#0284c7;--pdd:#075985;--deep:#0c1a2e;--acc:#38bdf8;--ok:#22c55e;--err:#ef4444;--warn:#f59e0b;--bg:#f0f7ff;--card:#fff;--txt:#0c1a2e;--muted:#64748b;--bdr:#e0eefa;--r:16px;--rs:10px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Heebo',sans-serif;background:linear-gradient(160deg,#eef6ff,#f7fbff);color:var(--txt);min-height:100vh;padding:20px;line-height:1.6}
+.wrap{max-width:720px;margin:0 auto}
+.doc{background:var(--card);border-radius:var(--r);box-shadow:0 8px 40px rgba(14,165,233,.12);overflow:hidden;animation:fi .4s ease}
+@keyframes fi{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.doc-head{background:linear-gradient(135deg,var(--pd),var(--pdd));color:#fff;padding:28px 30px;position:relative}
+.doc-brand{display:flex;align-items:center;gap:13px;margin-bottom:20px}
+.doc-logo{width:52px;height:52px;border-radius:13px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
+.doc-logo img{width:100%;height:100%;object-fit:cover}
+.doc-brand-t{font-size:20px;font-weight:800;line-height:1.2}
+.doc-brand-s{font-size:12.5px;opacity:.85}
+.doc-title{font-size:25px;font-weight:800;margin-bottom:4px}
+.doc-meta{display:flex;flex-wrap:wrap;gap:16px;font-size:13px;opacity:.92;margin-top:10px}
+.doc-meta b{font-weight:700}
+.doc-num{position:absolute;top:28px;left:30px;background:rgba(255,255,255,.18);padding:5px 13px;border-radius:20px;font-size:13px;font-weight:700;font-family:monospace;direction:ltr}
+.doc-body{padding:26px 30px}
+.sec-lbl{font-size:12px;font-weight:800;color:var(--p);letter-spacing:.5px;margin-bottom:12px;text-transform:uppercase}
+table{width:100%;border-collapse:collapse;margin-bottom:6px}
+th{text-align:right;font-size:12px;font-weight:700;color:var(--muted);padding:0 4px 10px;border-bottom:2px solid var(--bdr)}
+th.num,td.num{text-align:center}
+th.tot,td.tot{text-align:left}
+td{padding:13px 4px;border-bottom:1px solid var(--bdr);font-size:14.5px;vertical-align:top}
+td.desc{font-weight:600}
+.totals{margin-top:18px;margin-right:auto;max-width:320px;margin-left:0}
+.t-row{display:flex;justify-content:space-between;font-size:14.5px;padding:7px 0}
+.t-row.discount{color:var(--err)}
+.t-grand{display:flex;justify-content:space-between;font-size:22px;font-weight:800;color:var(--p);border-top:2px solid var(--bdr);padding-top:13px;margin-top:5px}
+.terms{margin-top:26px;background:var(--bg);border-radius:var(--rs);padding:16px 18px;font-size:14px;white-space:pre-wrap;word-break:break-word}
+.terms-lbl{font-size:12px;font-weight:800;color:var(--muted);margin-bottom:7px}
+.valid-tag{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--pd);background:rgba(14,165,233,.1);padding:7px 14px;border-radius:20px;margin-top:20px}
+.approve-zone{padding:24px 30px;border-top:1px solid var(--bdr);background:#fbfdff}
+.appr-title{font-size:16px;font-weight:800;margin-bottom:6px}
+.appr-sub{font-size:13px;color:var(--muted);margin-bottom:16px}
+.appr-field{margin-bottom:14px}
+.appr-field label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px}
+.appr-field input{width:100%;border:1.5px solid var(--bdr);border-radius:var(--rs);padding:12px 14px;font-family:'Heebo',sans-serif;font-size:15px;background:#fff;color:var(--txt);outline:none}
+.appr-field input:focus{border-color:var(--p)}
+.btn-approve{width:100%;background:linear-gradient(135deg,var(--ok),#16a34a);color:#fff;border:none;border-radius:var(--rs);font-family:'Heebo',sans-serif;font-size:16px;font-weight:700;padding:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .15s,box-shadow .15s}
+.btn-approve:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(34,197,94,.32)}
+.btn-approve:disabled{opacity:.6;cursor:default;transform:none;box-shadow:none}
+.btn-reject{width:100%;background:none;border:none;color:var(--muted);font-family:'Heebo',sans-serif;font-size:13.5px;font-weight:600;padding:12px;cursor:pointer;margin-top:6px;text-decoration:underline}
+.state-banner{display:flex;align-items:flex-start;gap:13px;padding:18px 20px;border-radius:var(--rs);margin:0}
+.state-approved{background:rgba(34,197,94,.1);border:1.5px solid rgba(34,197,94,.3)}
+.state-rejected{background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.28)}
+.state-expired{background:rgba(245,158,11,.1);border:1.5px solid rgba(245,158,11,.3)}
+.state-ic{flex-shrink:0}
+.state-t{font-size:15.5px;font-weight:800}
+.state-d{font-size:13px;color:var(--muted);margin-top:3px}
+.foot{text-align:center;font-size:12px;color:var(--muted);padding:20px}
+.center-msg{text-align:center;padding:80px 20px;color:var(--muted)}
+.center-msg svg{opacity:.4;margin-bottom:16px}
+.center-msg-t{font-size:18px;font-weight:700;color:var(--txt);margin-bottom:8px}
+/* עמוד ריק ממותג — פג תוקף / לא נמצא (ללא נתונים) */
+.bp-body{text-align:center;padding:52px 30px 60px}
+.bp-ic{width:72px;height:72px;border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 22px}
+.bp-ic.warn{background:rgba(245,158,11,.12);color:var(--warn)}
+.bp-ic.neutral{background:rgba(100,116,139,.12);color:var(--muted)}
+.bp-t{font-size:21px;font-weight:800;color:var(--txt);margin-bottom:10px}
+.bp-s{font-size:14.5px;color:var(--muted);max-width:400px;margin:0 auto;line-height:1.6}
+.spin{width:44px;height:44px;border:4px solid var(--bdr);border-top-color:var(--p);border-radius:50%;animation:sp 1s linear infinite;margin:0 auto}
+@keyframes sp{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--deep);color:#fff;padding:13px 22px;border-radius:12px;font-size:14px;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.25);z-index:100;animation:tin .3s ease}
+@keyframes tin{from{opacity:0;transform:translateX(-50%) translateY(12px)}to{opacity:1;transform:translateX(-50%)}}
+@media(max-width:560px){body{padding:0}.doc{border-radius:0}.doc-num{position:static;display:inline-block;margin-bottom:14px}.doc-head,.doc-body,.approve-zone{padding-left:18px;padding-right:18px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="content">
+    <div class="center-msg"><div class="spin"></div><div style="margin-top:20px">טוען הצעה...</div></div>
+  </div>
+  <div class="foot">הצעה זו הופקה במערכת WebDesk</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, get, update, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+const app = initializeApp({
+  apiKey:"AIzaSyB9jeWAKY2UEz70V77SCPnSJ18IfwnsVV0",
+  authDomain:"deshbord-atarim-sheli.firebaseapp.com",
+  databaseURL:"https://deshbord-atarim-sheli-default-rtdb.firebaseio.com",
+  projectId:"deshbord-atarim-sheli",
+  storageBucket:"deshbord-atarim-sheli.firebasestorage.app",
+  messagingSenderId:"893227581235",
+  appId:"1:893227581235:web:3254c85705dfe5fe894846"
+});
+const db = getDatabase(app);
+const qid = new URLSearchParams(location.search).get("id");
+const content = document.getElementById("content");
+const LOGO = "https://i.postimg.cc/43kbjD5D/IMG-0695.png";
+
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function ils(n){return "₪"+Number(n||0).toLocaleString("he-IL",{maximumFractionDigits:2});}
+function fmtDate(ts){if(!ts)return"";return new Date(ts).toLocaleDateString("he-IL",{day:"2-digit",month:"2-digit",year:"numeric"});}
+function fmtDateStr(s){if(!s)return"";const d=new Date(s+"T00:00:00");return d.toLocaleDateString("he-IL",{day:"2-digit",month:"2-digit",year:"numeric"});}
+function totals(q){
+  const items=q.items?Object.values(q.items):[];
+  const sub=items.reduce((s,it)=>s+(Number(it.qty)||0)*(Number(it.price)||0),0);
+  const disc=Number(q.discount)||0;const afterDisc=Math.max(0,sub-disc);
+  const vat=afterDisc*(Number(q.vat)||0)/100;
+  return {sub,disc,vat,grand:afterDisc+vat};
+}
+function isExpired(q){return q.validUntil && new Date(q.validUntil+"T23:59:59")<new Date();}
+function toast(msg){const t=document.createElement("div");t.className="toast";t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2800);}
+
+/* עמוד ממותג ריק (לוגו + מסר, ללא שום נתוני הצעה) — לפג-תוקף / לא-נמצא / בעיה */
+function brandedPage(tone,iconSvg,title,sub){
+  content.innerHTML=`<div class="doc">
+    <div class="doc-head">
+      <div class="doc-brand"><div class="doc-logo"><img src="${LOGO}" alt="" onerror="this.parentNode.innerHTML='<svg width=26 height=26 viewBox=\\'0 0 24 24\\' fill=none stroke=white stroke-width=2><path d=\\'M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z\\'/></svg>'"/></div>
+        <div><div class="doc-brand-t">WebDesk</div><div class="doc-brand-s">בניית אתרים ואפליקציות</div></div></div>
+    </div>
+    <div class="bp-body">
+      <div class="bp-ic ${tone}">${iconSvg}</div>
+      <div class="bp-t">${esc(title)}</div>
+      <div class="bp-s">${esc(sub)}</div>
+    </div>
+  </div>`;
+}
+function errorView(title,sub){
+  brandedPage("neutral",'<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',title,sub);
+}
+function expiredView(){
+  brandedPage("warn",'<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5l3 1.6"/></svg>',"הקישור אינו בתוקף","ההצעה כבר אינה זמינה לצפייה. נשמח לחדש עבורך — פנו אלינו ונכין הצעה מעודכנת.");
+}
+
+function render(q){
+  const t=totals(q);
+  const items=q.items?Object.values(q.items):[];
+  const expired=isExpired(q);
+  const st=q.status;
+  const rowsHtml=items.map(it=>`<tr><td class="desc">${esc(it.desc||"")}</td><td class="num">${Number(it.qty)||0}</td><td class="num">${ils(it.price)}</td><td class="tot">${ils((Number(it.qty)||0)*(Number(it.price)||0))}</td></tr>`).join("");
+  let stateHtml="", approveHtml="";
+  if(st==="approved"){
+    const a=q.approval||{};
+    stateHtml=`<div class="approve-zone"><div class="state-banner state-approved">
+      <span class="state-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span>
+      <div><div class="state-t" style="color:#16a34a">ההצעה אושרה</div><div class="state-d">${a.name?"אושר על ידי "+esc(a.name)+" · ":""}${fmtDate(a.at)}</div></div></div></div>`;
+  }else if(st==="rejected"){
+    stateHtml=`<div class="approve-zone"><div class="state-banner state-rejected">
+      <span class="state-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></span>
+      <div><div class="state-t" style="color:#ef4444">ההצעה נדחתה</div><div class="state-d">${fmtDate(q.rejectedAt)}</div></div></div></div>`;
+  }else if(expired){
+    stateHtml=`<div class="approve-zone"><div class="state-banner state-expired">
+      <span class="state-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+      <div><div class="state-t" style="color:#b45309">תוקף ההצעה פג</div><div class="state-d">ההצעה הייתה בתוקף עד ${fmtDateStr(q.validUntil)}. ניתן לפנות אלינו לחידוש.</div></div></div></div>`;
+  }else{
+    approveHtml=`<div class="approve-zone">
+      <div class="appr-title">אישור ההצעה</div>
+      <div class="appr-sub">לאישור ההצעה מלא/י את שמך המלא ולחץ/י על הכפתור. האישור יתועד עם התאריך והמכשיר.</div>
+      <div class="appr-field"><label>שם מלא</label><input id="appr-name" type="text" placeholder="השם שלך" value="${esc(q.clientName||"")}"/></div>
+      <button class="btn-approve" id="btn-approve"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>אני מאשר/ת את ההצעה</button>
+      <button class="btn-reject" id="btn-reject">לא מעוניין/ת בהצעה זו</button>
+    </div>`;
+  }
+  content.innerHTML=`<div class="doc">
+    <div class="doc-head">
+      ${q.number?`<div class="doc-num">${esc(q.number)}</div>`:""}
+      <div class="doc-brand"><div class="doc-logo"><img src="${LOGO}" alt="" onerror="this.parentNode.innerHTML='<svg width=26 height=26 viewBox=\\'0 0 24 24\\' fill=none stroke=white stroke-width=2><path d=\\'M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z\\'/></svg>'"/></div>
+        <div><div class="doc-brand-t">WebDesk</div><div class="doc-brand-s">בניית אתרים ואפליקציות</div></div></div>
+      <div class="doc-title">${esc(q.title||"הצעת מחיר")}</div>
+      <div class="doc-meta">${q.clientName?`<span><b>לכבוד:</b> ${esc(q.clientName)}</span>`:""}<span><b>תאריך:</b> ${fmtDate(q.sentAt||q.createdAt)}</span>${q.validUntil?`<span><b>בתוקף עד:</b> ${fmtDateStr(q.validUntil)}</span>`:""}</div>
+    </div>
+    <div class="doc-body">
+      <div class="sec-lbl">פירוט ההצעה</div>
+      <table><thead><tr><th>תיאור</th><th class="num">כמות</th><th class="num">מחיר יח'</th><th class="tot">סה"כ</th></tr></thead><tbody>${rowsHtml||`<tr><td colspan="4" style="color:var(--muted);text-align:center;padding:20px">אין סעיפים</td></tr>`}</tbody></table>
+      <div class="totals">
+        <div class="t-row"><span>סכום ביניים</span><span>${ils(t.sub)}</span></div>
+        ${t.disc>0?`<div class="t-row discount"><span>הנחה</span><span>-${ils(t.disc)}</span></div>`:""}
+        <div class="t-row"><span>מע"מ (${Number(q.vat)||0}%)</span><span>${ils(t.vat)}</span></div>
+        <div class="t-grand"><span>סה"כ לתשלום</span><span>${ils(t.grand)}</span></div>
+      </div>
+      ${q.terms?`<div class="terms"><div class="terms-lbl">תנאי תשלום והערות</div>${esc(q.terms)}</div>`:""}
+    </div>
+    ${stateHtml}${approveHtml}
+  </div>`;
+  if(st!=="approved"&&st!=="rejected"&&!expired){
+    document.getElementById("btn-approve").onclick=()=>approve(q);
+    document.getElementById("btn-reject").onclick=()=>reject(q);
+  }
+}
+
+async function approve(q){
+  const name=(document.getElementById("appr-name").value||"").trim();
+  if(!name){toast("נא למלא שם מלא");document.getElementById("appr-name").focus();return;}
+  const btn=document.getElementById("btn-approve");btn.disabled=true;btn.textContent="שומר...";
+  const at=Date.now();
+  try{
+    await update(ref(db,`quotes/${qid}`),{status:"approved",approval:{name,at,device:navigator.userAgent.slice(0,120)}});
+    await set(ref(db,`quotes/${qid}/audit/${at}`),{action:`ההצעה אושרה על ידי ${name}`,by:name,at,device:navigator.userAgent.slice(0,120)});
+    toast("ההצעה אושרה — תודה!");
+  }catch(e){btn.disabled=false;btn.textContent="אני מאשר/ת את ההצעה";toast("שגיאה, נסה שוב");}
+}
+async function reject(q){
+  const at=Date.now();
+  try{
+    await update(ref(db,`quotes/${qid}`),{status:"rejected",rejectedAt:at});
+    await set(ref(db,`quotes/${qid}/audit/${at}`),{action:"ההצעה נדחתה על ידי הלקוח",by:q.clientName||"הלקוח",at});
+    toast("נרשם. תודה על העדכון.");
+  }catch(e){toast("שגיאה, נסה שוב");}
+}
+
+/* סימון "נצפתה" בפעם הראשונה שהלקוח פותח (רק אם נשלחה) */
+async function markViewed(q){
+  if(q.status==="sent"){
+    const at=Date.now();
+    try{
+      await update(ref(db,`quotes/${qid}`),{status:"viewed",viewedAt:at});
+      await set(ref(db,`quotes/${qid}/audit/${at}`),{action:"ההצעה נצפתה על ידי הלקוח",by:q.clientName||"הלקוח",at});
+    }catch(e){}
+  }
+}
+
+if(!qid){errorView("קישור לא תקין","לא צוין מזהה הצעה.");}
+else{
+  let firstLoad=true;
+  onValue(ref(db,`quotes/${qid}`),snap=>{
+    const q=snap.val();
+    if(!q){errorView("ההצעה לא נמצאה","ייתכן שהקישור שגוי או שההצעה כבר אינה זמינה.");return;}
+    /* פג תוקף ולא טופלה → עמוד ממותג בלבד, בלי להציג שום פרט מההצעה */
+    if(isExpired(q)&&q.status!=="approved"&&q.status!=="rejected"){expiredView();return;}
+    render(q);
+    if(firstLoad){firstLoad=false;markViewed(q);}
+  },err=>{errorView("לא ניתן לטעון","אירעה שגיאה בטעינת ההצעה. נסו לרענן את הדף.");});
+}
+</script>
+</body>
+</html>

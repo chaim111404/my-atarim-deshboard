@@ -199,9 +199,13 @@ tr:hover td{background:#f8faff}
 .mi.unread{border-color:var(--pur);background:rgba(139,92,246,.04)}
 .mt3{font-size:11px;color:var(--muted);margin-top:5px}
 .btn-mk{background:rgba(139,92,246,.1);border:none;border-radius:6px;color:var(--pur);font-family:'Heebo',sans-serif;font-size:12px;font-weight:600;padding:4px 10px;cursor:pointer;margin-top:7px}
-.chat-md{max-width:640px;display:flex;flex-direction:column;height:82vh}
+.chat-md{max-width:640px;display:flex;flex-direction:column;height:82vh;position:relative;overflow:hidden}
 .chat-body{flex:1;display:flex;flex-direction:column;overflow:hidden;padding:0;min-height:0}
-.chat-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:6px;min-height:0}
+.chat-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:6px;min-height:0;overscroll-behavior:contain}
+.tc.tc-flow{width:min(340px,88%);margin:3px 0;box-shadow:0 5px 16px rgba(12,26,46,.1)}
+.tc.tc-flow.admin{align-self:flex-start}
+.tc.tc-flow.client{align-self:flex-end}
+.tc-done.tc-flow{align-self:center;margin:4px auto}
 .aw{display:flex;flex-direction:column;max-width:78%}
 .aw.c{align-self:flex-end;align-items:flex-end}
 .aw.a{align-self:flex-start;align-items:flex-start}
@@ -431,7 +435,9 @@ tr:hover td{background:#f8faff}
 .pwmatch.ok{color:#16a34a}
 
 /* ── פרויקטים (שלב 1) ── */
-.pj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;padding:2px}
+.pj-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:2px}
+@media(max-width:1180px){.pj-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.pj-grid{grid-template-columns:1fr}}
 .pj-card{background:#fff;border:1.5px solid var(--bdr);border-radius:var(--r);box-shadow:var(--sh);padding:18px;cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s;position:relative;overflow:hidden}
 .pj-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(14,165,233,.16);border-color:var(--p)}
 .pj-card::before{content:"";position:absolute;top:0;right:0;left:0;height:4px;background:linear-gradient(90deg,var(--p),var(--acc))}
@@ -485,6 +491,196 @@ tr:hover td{background:#f8faff}
 .pj-subpanel{display:none}.pj-subpanel.active{display:block}
 .pj-soon{text-align:center;padding:44px 20px;color:var(--muted);font-size:14px}
 .pj-soon svg{opacity:.35;margin-bottom:12px}
+/* קוביות פרויקט עם תמונה 16:9 + קיבוץ לפי לקוח (שלב 3.2) */
+.pj-card-img{padding:0;overflow:hidden;display:block}
+.pj-card-banner{position:relative;aspect-ratio:16/9;background:linear-gradient(135deg,var(--p),#6366f1);overflow:hidden}
+.pj-banner-img{width:100%;height:100%;object-fit:cover;display:block}
+.pj-noimg{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.7)}
+.pj-banner-stat{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.94)}
+.pj-type-tag{position:absolute;top:10px;left:10px;font-size:10.5px;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(12,26,46,.55);color:#fff;backdrop-filter:blur(4px)}
+.pj-card-body{padding:14px 16px 16px}
+.pj-group{background:linear-gradient(165deg,#e8f4fe,#f2f9ff 55%,#e4f1fd);border:1.5px solid #b9dcf6;border-radius:var(--r);box-shadow:0 8px 24px rgba(14,165,233,.16);padding:16px;position:relative;overflow:hidden}
+.pj-group::after{content:"";position:absolute;top:-40px;left:-40px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(14,165,233,.09),transparent 70%);pointer-events:none}
+.pj-group:hover{box-shadow:0 12px 32px rgba(14,165,233,.24);border-color:var(--p)}
+.pj-group::before{content:"";position:absolute;top:0;right:0;left:0;height:4px;background:linear-gradient(90deg,var(--pur),var(--err))}
+.pj-group-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.pj-group-av{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--pur),#a78bfa);color:#fff;font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pj-group-name{font-size:16px;font-weight:800}
+.pj-group-meta{font-size:12px;color:var(--muted)}
+.pj-group-count{margin-right:auto;text-align:center}
+.pj-group-count-n{font-size:19px;font-weight:800;color:var(--pd)}
+.pj-group-count-l{font-size:10px;color:var(--muted)}
+.pj-group-grid{display:flex;gap:10px;overflow-x:auto;padding-bottom:5px;scroll-snap-type:x proximity}
+.pj-group-grid::-webkit-scrollbar{height:6px}
+.pj-group-grid::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:10px}
+.pj-group-grid .pj-inner{flex:0 0 calc(50% - 5px);scroll-snap-align:start}
+.pj-group.single .pj-group-grid{overflow:visible}
+.pj-group.single .pj-group-grid .pj-inner{flex:1 1 100%}
+.pj-inner{position:relative;border:1.5px solid var(--bdr);border-radius:13px;overflow:hidden;cursor:pointer;background:#fff;transition:border-color .15s,box-shadow .15s}
+.pj-inner:hover{border-color:var(--p)}
+.pj-inner-hover{position:absolute;bottom:0;left:0;right:0;padding:8px;display:flex;justify-content:center;background:linear-gradient(0deg,rgba(12,26,46,.55),transparent);transform:translateY(105%);transition:transform .2s cubic-bezier(.4,0,.2,1);pointer-events:none}
+.pj-inner:hover .pj-inner-hover{transform:translateY(0);pointer-events:auto}
+.pj-inner-hover .pj-enter-btn{font-size:11px;padding:6px 12px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+@media(hover:none){.pj-inner-hover{display:none}}
+.pj-inner:hover{border-color:var(--p);box-shadow:0 6px 16px rgba(14,165,233,.12)}
+.pj-inner-banner{position:relative;aspect-ratio:16/9;background:linear-gradient(135deg,var(--p),#6366f1);overflow:hidden}
+.pj-inner-img{width:100%;height:100%;object-fit:cover;display:block}
+.pj-inner-stat{position:absolute;top:7px;right:7px;font-size:9.5px;padding:2px 8px;background:rgba(255,255,255,.94)}
+.pj-inner-body{padding:10px 11px 11px}
+.pj-inner-name{font-size:13px;font-weight:800}
+.pj-inner-next{font-size:10.5px;color:var(--muted);margin-top:3px}
+.pj-inner-foot{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.pj-inner-pct{font-size:11px;font-weight:700;color:var(--muted)}
+.pj-inner-q{font-size:9.5px;font-weight:700;color:var(--warn);display:flex;align-items:center;gap:3px}
+/* פרטי אתר בתצוגת פרויקט */
+.pj-det-banner{aspect-ratio:16/9;max-height:280px;border-radius:14px;overflow:hidden;position:relative;background:linear-gradient(135deg,var(--p),#6366f1);margin-bottom:16px}
+.pj-det-banner img{width:100%;height:100%;object-fit:cover}
+.pj-det-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pj-det-field{background:var(--bg);border-radius:11px;padding:12px 14px}
+.pj-det-field-l{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:5px}
+.pj-det-field-v{font-size:14px;font-weight:600;word-break:break-word}
+.pj-det-field-v a{color:var(--p);text-decoration:none;direction:ltr;display:inline-block}
+.pmode-toggle{display:inline-flex;background:var(--bg);border:1.5px solid var(--bdr);border-radius:10px;padding:3px;gap:3px}
+.pmode-opt{padding:7px 15px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:none;color:var(--muted);font-family:'Heebo',sans-serif}
+.pmode-opt.on{background:var(--p);color:#fff}
+.pj-type-sel{display:inline-flex;background:var(--bg);border:1.5px solid var(--bdr);border-radius:10px;padding:3px;gap:3px}
+
+/* ── קוביות משימה בצ'אט (שלב 4) ── */
+.tc-pins{display:flex;flex-direction:column;gap:8px;padding:8px 12px;max-height:46vh;overflow-y:auto;flex-shrink:0}
+.tc-pins:empty{display:none;padding:0}
+.tc-pin-hint{display:flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;color:var(--muted);padding:0 2px 2px}
+.tc{background:var(--card);border:1px solid var(--bdr);border-radius:14px;overflow:hidden;flex-shrink:0;box-shadow:0 3px 12px rgba(12,26,46,.08)}
+.tc-bar{height:4px}
+.tc.admin .tc-bar{background:linear-gradient(90deg,var(--p),#6366f1)}
+.tc.client .tc-bar{background:linear-gradient(90deg,#f43f5e,#fb7185)}
+.tc-head{display:flex;align-items:center;gap:9px;padding:10px 12px 8px}
+.tc-ic{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.tc.admin .tc-ic{background:linear-gradient(135deg,var(--p),var(--pd))}
+.tc.client .tc-ic{background:linear-gradient(135deg,#f43f5e,#fb7185)}
+.tc-who{font-size:10px;font-weight:800;letter-spacing:.2px}
+.tc.admin .tc-who{color:var(--pd)}
+.tc.client .tc-who{color:#e11d48}
+.tc-title{font-size:14px;font-weight:800;color:var(--txt);margin-top:1px;line-height:1.25}
+.tc-body{padding:0 12px 12px}
+.tc-desc{font-size:12.5px;color:var(--muted);line-height:1.5;margin-bottom:10px;white-space:pre-wrap;word-break:break-word}
+.tc-status{margin-right:auto;font-size:10.5px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.tc-st-wait{background:rgba(245,158,11,.15);color:#b45309}
+.tc-st-sub{background:rgba(99,102,241,.14);color:#4f46e5}
+.tc-st-done{background:rgba(34,197,94,.15);color:#15803d}
+.tc-files{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.tc-file{width:56px;height:56px;border-radius:9px;overflow:hidden;position:relative;flex-shrink:0;border:1px solid var(--bdr);background:var(--bg)}
+.tc-file img{width:100%;height:100%;object-fit:cover;cursor:pointer}
+.tc-file-doc{display:flex;align-items:center;justify-content:center;color:var(--p);height:100%}
+.tc-file-x{position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:rgba(12,26,46,.7);color:#fff;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+.tc-file-name{position:absolute;bottom:0;left:0;right:0;font-size:8px;background:rgba(12,26,46,.65);color:#fff;padding:1px 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tc-cta{display:flex;gap:8px}
+.tc-btn{flex:1;border:none;border-radius:9px;font-family:'Heebo',sans-serif;font-size:12px;font-weight:700;padding:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px}
+.tc-btn.primary{background:linear-gradient(135deg,var(--p),var(--pd));color:#fff}
+.tc-btn.ok{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff}
+.tc-btn.ghost{background:var(--bg);color:var(--txt);border:1px solid var(--bdr);flex:0 0 auto;padding:9px 13px}
+.tc-btn.danger{background:rgba(239,68,68,.1);color:var(--err);flex:0 0 auto;padding:9px 13px}
+.tc-wait{display:flex;align-items:center;gap:9px;background:var(--bg);border-radius:10px;padding:9px 12px;margin-bottom:10px}
+.tc-dots{display:flex;gap:5px}
+.tc-dots span{width:7px;height:7px;border-radius:50%;background:var(--p);animation:tcbounce 1.3s infinite ease-in-out}
+.tc-dots span:nth-child(2){animation-delay:.18s;background:#6366f1}
+.tc-dots span:nth-child(3){animation-delay:.36s;background:var(--pur)}
+.tc-cat-l{font-size:10.5px;font-weight:700;color:var(--muted);margin-top:2px}
+.tc-pj-chip{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:800;color:var(--pd);background:rgba(14,165,233,.1);border-radius:100px;padding:2px 9px;margin-top:5px}
+.tc-answer-sent{background:var(--bg);border:1px solid var(--bdr);border-radius:10px;padding:10px 12px;font-size:12.5px;color:var(--txt);line-height:1.55;white-space:pre-wrap;word-break:break-word;margin-bottom:10px}
+.tc-answer-lbl{font-size:10px;font-weight:800;color:var(--pd);margin-bottom:5px;display:flex;align-items:center;gap:5px}
+/* ── גיליון יצירת משימה בתוך הצ'אט ── */
+.task-sheet{position:absolute;inset:0;z-index:120;display:none}
+.task-sheet.show{display:block}
+.task-sheet-scrim{position:absolute;inset:0;background:rgba(12,26,46,.5);backdrop-filter:blur(2px);animation:fi .2s ease}
+.task-sheet-card{position:absolute;left:0;right:0;bottom:0;max-height:94%;background:var(--card);border-radius:22px 22px 0 0;box-shadow:0 -14px 40px rgba(12,26,46,.32);display:flex;flex-direction:column;animation:tshUp .34s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes tshUp{from{transform:translateY(100%)}to{transform:none}}
+.tsh-grab{width:38px;height:4px;border-radius:100px;background:var(--bdr);margin:9px auto 3px;flex-shrink:0}
+.tsh-head{display:flex;align-items:center;gap:10px;padding:6px 16px 12px;border-bottom:1px solid var(--bdr);flex-shrink:0}
+.tsh-hic{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tsh-ht{font-size:15px;font-weight:800;color:var(--txt)}
+.tsh-hs{font-size:11.5px;color:var(--muted)}
+.tsh-body{padding:14px 16px;overflow-y:auto;flex:1;min-height:0}
+.tsh-l{font-size:11.5px;font-weight:800;color:var(--muted);margin:0 2px 8px;display:block}
+.tsh-l:not(:first-child){margin-top:15px}
+.tsh-cats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tsh-cat{border:1.5px solid var(--bdr);border-radius:12px;padding:10px 5px 8px;text-align:center;cursor:pointer;transition:.14s;background:var(--card)}
+.tsh-cat:hover{border-color:var(--p)}
+.tsh-cat.on{border-color:var(--p);background:rgba(14,165,233,.07);box-shadow:0 0 0 3px rgba(14,165,233,.1)}
+.tsh-cat-ic{width:32px;height:32px;border-radius:9px;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;color:#fff}
+.tsh-cat-n{font-size:10.5px;font-weight:700;line-height:1.2;color:var(--txt)}
+.tsh-projects{display:flex;flex-direction:column;gap:8px}
+.tsh-proj{display:flex;align-items:center;gap:10px;border:1.5px solid var(--bdr);border-radius:12px;padding:10px 12px;cursor:pointer;transition:.14s;background:var(--card)}
+.tsh-proj:hover{border-color:var(--p)}
+.tsh-proj.on{border-color:var(--p);background:rgba(14,165,233,.07);box-shadow:0 0 0 3px rgba(14,165,233,.1)}
+.tsh-proj-ic{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tsh-proj-n{font-size:13px;font-weight:700;color:var(--txt);line-height:1.2}
+.tsh-proj-s{font-size:11px;color:var(--muted);margin-top:1px}
+.tsh-proj-chk{margin-inline-start:auto;width:20px;height:20px;border-radius:50%;border:2px solid var(--bdr);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:transparent}
+.tsh-proj.on .tsh-proj-chk{background:var(--p);border-color:var(--p);color:#fff}
+.tsh-io{display:flex;gap:8px}
+.tsh-io-chip{flex:1;border:1.5px solid var(--bdr);border-radius:11px;padding:9px 6px;text-align:center;cursor:pointer;transition:.14s;background:var(--card);font-size:11.5px;font-weight:700;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:4px}
+.tsh-io-chip svg{opacity:.8}
+.tsh-io-chip.on{border-color:var(--p);background:rgba(14,165,233,.08);color:var(--pd)}
+.tsh-fi{width:100%;border:1.5px solid var(--bdr);border-radius:11px;font-family:'Heebo',sans-serif;font-size:14px;padding:11px 13px;outline:none;color:var(--txt);background:var(--card);box-sizing:border-box;resize:vertical}
+.tsh-fi:focus{border-color:var(--p)}
+.tsh-foot{padding:12px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--bdr);display:flex;gap:10px;flex-shrink:0}
+.tsh-foot .bp{flex:1;margin-top:0;display:flex;align-items:center;justify-content:center;gap:7px}
+.tsh-foot .btn-cancel{flex:0 0 auto}
+@keyframes tcbounce{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-5px);opacity:1}}
+.tc-wait-txt{font-size:11.5px;font-weight:600;color:var(--muted)}
+.tc-upload{border:2px dashed var(--bdr);border-radius:11px;padding:14px;text-align:center;color:var(--muted);cursor:pointer;margin-bottom:10px;transition:border-color .15s}
+.tc-upload:hover{border-color:var(--p)}
+.tc-upload-t{font-size:12px;font-weight:700;color:var(--txt);margin-top:4px}
+.tc-upload-s{font-size:10.5px}
+.tc-done{display:flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--bdr);border-radius:11px;padding:8px 11px;margin:6px auto;max-width:90%;flex-shrink:0}
+.tc-done-ic{width:24px;height:24px;border-radius:7px;background:rgba(34,197,94,.15);color:#15803d;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tc-done-t{font-size:12px;font-weight:700;color:var(--txt)}
+.tc-done-s{font-size:10px;color:var(--muted)}
+
+/* ── הצעות מחיר (שלב 2) ── */
+.md-wide{max-width:760px}
+.q-save-status{font-size:12px;font-weight:600;color:var(--muted);margin-right:auto;display:flex;align-items:center;gap:5px}
+.q-save-status.saving{color:var(--warn)}
+.q-save-status.saved{color:#16a34a}
+.q-list-row{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid var(--bdr);border-radius:12px;margin-bottom:10px;background:#fff;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.q-list-row:hover{border-color:var(--p);box-shadow:0 4px 14px rgba(14,165,233,.1)}
+.q-list-num{font-size:12px;font-weight:700;color:var(--muted);font-family:monospace;background:var(--bg);padding:4px 9px;border-radius:7px;flex-shrink:0}
+.q-list-body{flex:1;min-width:0}
+.q-list-title{font-size:15px;font-weight:700;color:var(--txt)}
+.q-list-meta{font-size:11.5px;color:var(--muted);margin-top:2px}
+.q-list-total{font-size:16px;font-weight:800;color:var(--txt);flex-shrink:0}
+.q-stat{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.q-stat-draft{background:rgba(100,116,139,.14);color:var(--muted)}
+.q-stat-sent{background:rgba(14,165,233,.14);color:var(--pd)}
+.q-stat-viewed{background:rgba(139,92,246,.14);color:#7c3aed}
+.q-stat-approved{background:rgba(34,197,94,.14);color:#16a34a}
+.q-stat-rejected{background:rgba(239,68,68,.14);color:var(--err)}
+.q-stat-expired{background:rgba(245,158,11,.16);color:#b45309}
+.q-item-row{display:grid;grid-template-columns:1fr 70px 100px 90px 32px;gap:8px;align-items:center;margin-bottom:8px}
+.q-item-row input{border:1.5px solid var(--bdr);border-radius:8px;padding:9px 10px;font-family:'Heebo',sans-serif;font-size:14px;background:#f8faff;color:var(--txt);width:100%}
+.q-item-row .q-line-total{font-size:14px;font-weight:700;color:var(--txt);text-align:center}
+.q-item-del{background:none;border:none;color:var(--muted);cursor:pointer;padding:5px;border-radius:6px;display:flex;justify-content:center}
+.q-item-del:hover{color:var(--err);background:rgba(239,68,68,.08)}
+.q-item-head{display:grid;grid-template-columns:1fr 70px 100px 90px 32px;gap:8px;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px;padding:0 2px}
+.q-totals{background:var(--bg);border-radius:12px;padding:14px 16px;margin-top:12px}
+.q-total-row{display:flex;justify-content:space-between;align-items:center;font-size:14px;margin-bottom:8px}
+.q-total-row.grand{font-size:19px;font-weight:800;color:var(--p);border-top:1.5px solid var(--bdr);padding-top:10px;margin-top:4px;margin-bottom:0}
+.q-total-row input{width:90px;text-align:left;border:1.5px solid var(--bdr);border-radius:7px;padding:6px 9px;font-family:'Heebo',sans-serif;font-size:14px;background:#fff;color:var(--txt)}
+.q-audit-item{display:flex;gap:8px;font-size:12px;color:var(--muted);padding:6px 0;border-bottom:1px solid var(--bdr)}
+.q-audit-item:last-child{border-bottom:none}
+.q-audit-ic{flex-shrink:0;color:var(--p)}
+.q-send-opt{display:flex;align-items:flex-start;gap:12px;padding:14px;border:1.5px solid var(--bdr);border-radius:12px;margin-bottom:10px;cursor:pointer;transition:border-color .15s,background .15s}
+.q-send-opt.on{border-color:var(--p);background:rgba(14,165,233,.05)}
+.q-send-opt-check{width:22px;height:22px;border-radius:6px;border:2px solid var(--bdr);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.q-send-opt.on .q-send-opt-check{background:var(--p);border-color:var(--p)}
+.q-send-opt-check svg{opacity:0}.q-send-opt.on .q-send-opt-check svg{opacity:1}
+.q-send-opt-title{font-size:14.5px;font-weight:700;color:var(--txt)}
+.q-send-opt-desc{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}
+.q-link-box{display:flex;gap:8px;margin-top:8px}
+.q-link-box input{flex:1;border:1.5px solid var(--bdr);border-radius:8px;padding:9px 11px;font-family:monospace;font-size:12px;background:#f8faff;color:var(--txt);direction:ltr}
+.q-link-copy{background:var(--p);color:#fff;border:none;border-radius:8px;padding:9px 14px;font-family:'Heebo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0}
+.q-wa{background:#25d366;color:#fff;border:none;border-radius:8px;padding:9px 14px;font-family:'Heebo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;display:inline-flex;align-items:center;gap:5px}
+@media(max-width:600px){.q-item-row,.q-item-head{grid-template-columns:1fr 52px 78px 70px 28px;gap:5px}.q-item-row input{padding:7px 6px;font-size:13px}}
 </style>
 </head>
 <body>
@@ -634,9 +830,7 @@ tr:hover td{background:#f8faff}
     <div class="fr full"><div class="fg"><label class="fl">תזכורת פנימית</label><input id="f-note" class="fi" type="text"/></div></div>
     <div class="fr full"><div class="fg"><label class="fl">הודעה אישית ללקוח</label><input id="f-message" class="fi" type="text"/></div></div>
     <div id="passwords-editor" style="display:none"></div>
-    <div class="fst">אתרים</div>
-    <div id="sites-editor"></div>
-    <button class="btn-as" id="btn-add-site">הוספת אתר</button>
+    <div style="font-size:12.5px;color:var(--muted);background:var(--bg);border-radius:10px;padding:12px 14px;margin-top:14px;line-height:1.6">האתרים והאפליקציות מנוהלים כעת בלשונית <b>פרויקטים</b> — שם מגדירים תמונה, קישור, סיסמאות, סטטוס והתקדמות. עריכת הלקוח כאן היא לפרטים האישיים בלבד.</div>
   </div>
   <div class="mf"><button class="bp" style="width:auto;padding:10px 26px;margin-top:0" id="btn-save-client">שמירה</button><button class="btn-cancel" id="mo-client-cancel">ביטול</button></div>
 </div></div>
@@ -667,15 +861,87 @@ tr:hover td{background:#f8faff}
   <div class="mh"><span class="mt2" id="mo-project-t">פרויקט חדש</span><button class="mc" id="mo-project-close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
   <div class="mb">
     <div class="fst">פרטי הפרויקט</div>
-    <div class="fg"><label class="fl">שם הפרויקט</label><input id="pj-name" class="fi" type="text" placeholder="לדוגמה: אתר תדמית — ישראל ישראלי"/></div>
-    <div class="fr"><div class="fg"><label class="fl">לקוח משויך</label><select id="pj-client" class="fi"></select></div><div class="fg"><label class="fl">סטטוס</label><select id="pj-status" class="fi"><option value="active">פעיל</option><option value="paused">מושהה</option><option value="done">הושלם</option></select></div></div>
-    <div class="fst">שלבי הפרויקט</div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6">השלבים נטענים מתבנית ברירת המחדל. אפשר להוסיף, להסיר, ולשנות משקל לכל שלב. אחוז ההתקדמות מחושב לפי משקל השלבים שהושלמו.</div>
-    <div id="pj-stages-editor"></div>
-    <button class="btn-as" id="pj-add-stage" type="button">הוספת שלב</button>
+    <div class="fg"><label class="fl">שם הפרויקט / האתר</label><input id="pj-name" class="fi" type="text" placeholder="לדוגמה: אתר תדמית — ישראל ישראלי"/></div>
+    <div class="fr"><div class="fg"><label class="fl">לקוח משויך</label><select id="pj-client" class="fi"></select></div><div class="fg"><label class="fl">סוג</label><div class="pj-type-sel" style="width:100%"><button type="button" class="pmode-opt" id="pj-type-site" onclick="setPjType('site')" style="flex:1">אתר</button><button type="button" class="pmode-opt" id="pj-type-app" onclick="setPjType('app')" style="flex:1">אפליקציה</button></div></div></div>
+    <div class="fr"><div class="fg"><label class="fl">סטטוס</label><select id="pj-status" class="fi"><option value="building">בבנייה</option><option value="active">פעיל</option><option value="paused">מושהה</option></select></div>
+      <div class="fg" id="pj-url-wrap"><label class="fl">כתובת URL</label><input id="pj-url" class="fi" type="text" dir="ltr" placeholder="https://..."/></div></div>
+    <div id="pj-applinks-wrap" style="display:none">
+      <div class="fr"><div class="fg"><label class="fl">קישור iOS / App Store</label><input id="pj-ios" class="fi" type="text" dir="ltr" placeholder="https://apps.apple.com/..."/></div><div class="fg"><label class="fl">קישור Android / Play</label><input id="pj-android" class="fi" type="text" dir="ltr" placeholder="https://play.google.com/..."/></div></div>
+      <div class="fg"><label class="fl">קישור TestFlight (בדיקות iOS)</label><input id="pj-testflight" class="fi" type="text" dir="ltr" placeholder="https://testflight.apple.com/..."/></div>
+    </div>
+    <div class="fr full"><div class="fg"><label class="fl">תמונת תצוגה (16:9)</label>
+      <div class="img-upload-box" id="pj-img-box">
+        <div class="img-upload-dz-hint">גרור ושחרר כאן</div>
+        <div class="img-upload-preview" id="pj-img-preview" style="aspect-ratio:16/9"></div>
+        <div class="img-upload-actions"><button type="button" class="btn-as" id="pj-img-change" style="margin-top:0">העלאת תמונה</button><button type="button" class="btn-as danger" id="pj-img-remove" style="margin-top:0;display:none">הסרת תמונה</button></div>
+      </div>
+      <input type="file" accept="image/*" id="pj-img-file" hidden/><input type="hidden" id="pj-img"/>
+    </div></div>
+    <div class="fr full"><div class="fg"><label class="fl">הודעה אישית ללקוח</label><input id="pj-message" class="fi" type="text"/></div></div>
+    <div class="fst">פרטי גישה (מוצגים ללקוח)</div>
+    <div id="pj-pwds-editor"></div>
+    <button class="btn-as" id="pj-add-pwd" type="button">הוספת פרטי גישה</button>
+    <div class="fst">מצב התקדמות</div>
+    <div class="pmode-toggle" style="margin-bottom:12px"><button type="button" class="pmode-opt" id="pmode-stages" onclick="setPjMode('stages')">לפי שלבים</button><button type="button" class="pmode-opt" id="pmode-manual" onclick="setPjMode('manual')">ידני</button></div>
+    <div id="pj-manual-wrap" style="display:none"><div class="fg"><label class="fl">אחוז התקדמות ידני (0–100)</label><input id="pj-manual" class="fi" type="number" min="0" max="100" value="0"/></div></div>
+    <div id="pj-stages-wrap">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6">השלבים נטענים מתבנית ברירת המחדל. אפשר להוסיף, להסיר, ולשנות משקל. האחוז מחושב לפי השלבים שהושלמו.</div>
+      <div id="pj-stages-editor"></div>
+      <button class="btn-as" id="pj-add-stage" type="button">הוספת שלב</button>
+    </div>
   </div>
   <div class="mf"><button class="bp" style="width:auto;padding:10px 26px;margin-top:0" id="btn-save-project">שמירה</button><button class="btn-cancel" id="mo-project-cancel">ביטול</button></div>
 </div></div>
+<!-- Modal הצעת מחיר -->
+<div class="mo" id="mo-quote"><div class="md md-wide">
+  <div class="mh"><span class="mt2" id="mo-quote-t">הצעת מחיר</span><span class="q-save-status" id="q-save-status"></span><button class="mc" id="mo-quote-close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+  <div class="mb">
+    <div class="fr"><div class="fg"><label class="fl">כותרת ההצעה</label><input id="q-title" class="fi" type="text" placeholder="לדוגמה: בניית אתר תדמית"/></div><div class="fg"><label class="fl">מספר הצעה</label><input id="q-number" class="fi" type="text" readonly style="background:var(--bg);font-family:monospace;direction:ltr;text-align:right"/></div></div>
+    <div class="fst">סעיפים</div>
+    <div class="q-item-head"><span>תיאור</span><span>כמות</span><span>מחיר יח'</span><span>סה"כ</span><span></span></div>
+    <div id="q-items"></div>
+    <button class="btn-as" id="q-add-item" type="button">הוספת סעיף</button>
+    <div class="q-totals">
+      <div class="q-total-row"><span>סכום ביניים</span><span id="q-subtotal">₪0</span></div>
+      <div class="q-total-row"><span>הנחה (₪)</span><input id="q-discount" type="number" min="0" value="0"/></div>
+      <div class="q-total-row"><span>מע"מ (%)</span><input id="q-vat" type="number" min="0" max="100" value="18"/></div>
+      <div class="q-total-row grand"><span>סה"כ לתשלום</span><span id="q-grand">₪0</span></div>
+    </div>
+    <div class="fst">תוקף ותנאי תשלום</div>
+    <div class="fr"><div class="fg"><label class="fl">בתוקף עד</label><input id="q-valid" class="fi" type="date"/></div><div class="fg"><label class="fl">סטטוס</label><input id="q-status-disp" class="fi" type="text" readonly style="background:var(--bg)"/></div></div>
+    <div class="fg"><label class="fl">תנאי תשלום והערות</label><textarea id="q-terms" class="fi" rows="3" style="resize:vertical;font-family:'Heebo',sans-serif" placeholder="לדוגמה: 50% מקדמה, 50% בסיום. ההצעה אינה כוללת אחסון ודומיין."></textarea></div>
+    <div class="fst">יומן פעולות</div>
+    <div id="q-audit" style="max-height:160px;overflow-y:auto"></div>
+  </div>
+  <div class="mf" style="flex-wrap:wrap">
+    <button class="bp" style="width:auto;padding:10px 22px;margin-top:0" id="q-send-btn">שליחה ללקוח</button>
+    <button class="btn-cancel" id="q-preview-btn">תצוגה מקדימה</button>
+    <button class="btn-cancel" id="mo-quote-cancel">סגירה</button>
+  </div>
+</div></div>
+<!-- Modal שליחת הצעה -->
+<div class="mo" id="mo-quote-send"><div class="md" style="max-width:480px">
+  <div class="mh"><span class="mt2">שליחת ההצעה ללקוח</span><button class="mc" id="mo-quote-send-close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+  <div class="mb">
+    <div style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6">בחר איך ההצעה תימסר ללקוח. אפשר לבחור את שתי האפשרויות.</div>
+    <div class="q-send-opt on" id="q-opt-link" data-on="1">
+      <div class="q-send-opt-check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div><div class="q-send-opt-title">קישור ציבורי</div><div class="q-send-opt-desc">נפתח ללא התחברות — מתאים לשליחה בוואטסאפ גם למי שעדיין לא לקוח רשום.</div></div>
+    </div>
+    <div class="q-send-opt on" id="q-opt-portal" data-on="1">
+      <div class="q-send-opt-check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div><div class="q-send-opt-title">האזור האישי של הלקוח</div><div class="q-send-opt-desc">ההצעה תופיע בקוביית "הצעות" של הלקוח עם התראה (מוצג אחרי שדרוג האזור האישי).</div></div>
+    </div>
+    <div id="q-link-result" style="display:none;margin-top:14px">
+      <div style="font-size:12px;font-weight:700;color:var(--ok);margin-bottom:6px">ההצעה נשלחה. הקישור:</div>
+      <div class="q-link-box"><input id="q-link-input" type="text" readonly/><button class="q-link-copy" id="q-link-copy">העתק</button></div>
+      <button class="q-wa" id="q-link-wa" style="margin-top:8px;width:100%;justify-content:center"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.5-.1-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-1.5-.8-2.5-1.4-3.5-3.1-.3-.5.3-.4.8-1.4.1-.2 0-.4 0-.5s-.7-1.6-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.2 5.1 4.5 1.9.8 2.6.9 3.5.7.6-.1 1.7-.7 1.9-1.3.2-.7.2-1.2.2-1.3-.1-.2-.3-.2-.6-.4zM12 2a10 10 0 00-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1012 2z"/></svg>שלח בוואטסאפ</button>
+    </div>
+  </div>
+  <div class="mf"><button class="bp" style="width:auto;padding:10px 24px;margin-top:0" id="q-send-confirm">שלח עכשיו</button><button class="btn-cancel" id="q-send-cancel">ביטול</button></div>
+</div></div>
+<!-- Modal פתיחת משימה -->
+<!-- מודל יצירת משימה הועבר לגיליון בתוך חלון הצ'אט (task-sheet) -->
 <!-- Modal צ'אט -->
 <div class="mo" id="mo-chat"><div class="md chat-md">
   <div class="mh" style="border-radius:22px 22px 0 0;position:relative">
@@ -708,14 +974,48 @@ tr:hover td{background:#f8faff}
       <div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:700;color:var(--p)" id="rbar-name"></div><div style="font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="rbar-txt"></div></div>
       <button style="background:none;border:none;cursor:pointer;color:var(--muted)" id="cancel-reply-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
+    <!-- קוביות משימה מוזרקות לתוך זרם ההודעות (chat-msgs-list) -->
     <div class="chat-msgs" id="chat-msgs-list"></div>
     <div class="wdl-mount" id="wdl-mount"></div>
     <div class="chat-inp">
+      <button class="chat-img-btn2" id="admin-task-btn" title="פתיחת משימה ללקוח">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      </button>
       <button class="chat-img-btn2" id="admin-img-btn" title="שלח תמונה">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
       </button>
       <textarea id="chat-ta" class="chat-ta" placeholder="כתוב תשובה..." rows="1" enterkeyhint="enter"></textarea>
       <button class="chat-sb" id="chat-send-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+    </div>
+  </div>
+  <!-- גיליון יצירת משימה — נפתח בתוך חלון הצ'אט -->
+  <div class="task-sheet" id="task-sheet">
+    <div class="task-sheet-scrim" id="task-sheet-scrim"></div>
+    <div class="task-sheet-card">
+      <div class="tsh-grab"></div>
+      <div class="tsh-head">
+        <div class="tsh-hic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+        <div style="flex:1;min-width:0"><div class="tsh-ht" id="tsh-ht">משימה חדשה ללקוח</div><div class="tsh-hs" id="tsh-hs"></div></div>
+        <button class="mc" id="task-sheet-close"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="tsh-body">
+        <div id="tsh-project-wrap" style="display:none">
+          <label class="tsh-l">פרויקט <span style="color:var(--err)">*</span> <span style="font-weight:600;color:var(--muted)">— לאיזה פרויקט שייכת המשימה</span></label>
+          <div class="tsh-projects" id="tsh-projects"></div>
+        </div>
+        <label class="tsh-l">קטגוריית המשימה</label>
+        <div class="tsh-cats" id="tsh-cats"></div>
+        <label class="tsh-l">מה הלקוח צריך לעשות</label>
+        <div class="tsh-io" id="tsh-io"></div>
+        <label class="tsh-l">כותרת המשימה</label>
+        <input id="task-title" class="tsh-fi" type="text" placeholder="לדוגמה: תמונות לגלריית האתר"/>
+        <label class="tsh-l">פירוט — מה נדרש מהלקוח</label>
+        <textarea id="task-desc" class="tsh-fi" rows="3" placeholder="תאר מה נדרש..."></textarea>
+      </div>
+      <div class="tsh-foot">
+        <button class="bp" id="task-create-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span id="task-create-lbl">פתיחת המשימה</span></button>
+        <button class="btn-cancel" id="task-sheet-cancel">ביטול</button>
+      </div>
     </div>
   </div>
 </div></div>
@@ -2234,15 +2534,31 @@ function buildSidebar() {
     if(!isAdmin&&!(currentUser.perms||{}).changePin){showPermDenied("changePin");return;}
     generatePin();
   };
-  document.getElementById("btn-add-site").onclick=()=>addSiteField();
   document.getElementById("btn-add-pwd")?.addEventListener("click",()=>addPwdField());
   document.getElementById("btn-save-client").onclick=saveClient;
   document.getElementById("mo-client-close").onclick=()=>closeMo("mo-client");
   document.getElementById("mo-client-cancel").onclick=()=>closeMo("mo-client");
+  document.getElementById("admin-task-btn").onclick=()=>{if(!chatPhone)return;openTaskModal(null);};
+  document.getElementById("task-create-btn").onclick=createAdminTask;
+  document.getElementById("task-sheet-close").onclick=closeTaskSheet;
+  document.getElementById("task-sheet-cancel").onclick=closeTaskSheet;
+  document.getElementById("task-sheet-scrim").onclick=closeTaskSheet;
   document.getElementById("btn-add-project").onclick=()=>openProjectModal(null);
   document.getElementById("btn-save-project").onclick=saveProject;
   document.getElementById("mo-project-close").onclick=()=>closeMo("mo-project");
   document.getElementById("mo-project-cancel").onclick=()=>closeMo("mo-project");
+  /* בונה ההצעה */
+  document.getElementById("q-add-item").onclick=()=>{addQuoteItemRow();recalcQuote();scheduleQuoteSave();};
+  ["q-title","q-discount","q-vat","q-valid","q-terms"].forEach(id=>document.getElementById(id).addEventListener("input",()=>{recalcQuote();scheduleQuoteSave();}));
+  document.getElementById("q-send-btn").onclick=openQuoteSend;
+  document.getElementById("q-preview-btn").onclick=()=>{if(curQuoteId)window.open(quotePublicLink(curQuoteId),"_blank");};
+  document.getElementById("mo-quote-close").onclick=()=>{doQuoteSave();closeMo("mo-quote");};
+  document.getElementById("mo-quote-cancel").onclick=()=>{doQuoteSave();closeMo("mo-quote");};
+  document.getElementById("q-send-confirm").onclick=confirmQuoteSend;
+  document.getElementById("q-send-cancel").onclick=()=>closeMo("mo-quote-send");
+  document.getElementById("mo-quote-send-close").onclick=()=>closeMo("mo-quote-send");
+  [["q-opt-link"],["q-opt-portal"]].forEach(([id])=>{const el=document.getElementById(id);el.onclick=()=>{const on=el.dataset.on==="1";el.dataset.on=on?"0":"1";el.classList.toggle("on",!on);};});
+  document.getElementById("q-link-copy").onclick=()=>{const inp=document.getElementById("q-link-input");inp.select();navigator.clipboard?.writeText(inp.value).then(()=>toast("הקישור הועתק ✓","s"));};
   document.getElementById("mo-view-close").onclick=()=>closeMo("mo-view");
   document.getElementById("mo-msgs-close").onclick=()=>closeMo("mo-msgs");
   document.getElementById("confirm-cancel").onclick=()=>closeMo("mo-confirm");
@@ -2321,6 +2637,7 @@ function startListening() {
   if(isAdmin)onValue(ref(db,"ratings"),s=>{ratingsData=s.val()||{};renderRatingsGraph();});
   if(isAdmin)onValue(ref(db,"settings"),s=>{settings=s.val()||{};renderDefaultImgPanel();});
   onValue(ref(db,"projects"),s=>{projects=s.val()||{};renderProjects();if(curProjectId&&projects[curProjectId])renderProjectDetail(curProjectId);});
+  onValue(ref(db,"quotes"),s=>{quotes=s.val()||{};if(curProjectId&&projects[curProjectId]&&curProjectTab==="quotes")renderProjectDetail(curProjectId);if(curQuoteId&&quotes[curQuoteId]&&document.getElementById("mo-quote").classList.contains("show"))renderQuoteAudit(quotes[curQuoteId]);});
 }
 function renderAll(){renderStats();renderClientsTable();renderHistoryTable();renderMsgsList();updateMsgBadge();}
 
@@ -2431,7 +2748,6 @@ async function generatePin() {
 /* ── Client Modal ── */
 function openClientModal(phone) {
   editPhone=phone;siteCount=0;pwdCount=0;
-  document.getElementById("sites-editor").innerHTML="";
   document.getElementById("passwords-editor").innerHTML="";
   document.getElementById("f-pin").value="";
   document.getElementById("pin-disp").textContent="—  —  —  —";
@@ -2448,7 +2764,6 @@ function openClientModal(phone) {
     document.getElementById("f-note").value=c.note||"";
     document.getElementById("f-message").value=c.message||"";
     if(c.pin){document.getElementById("f-pin").value=String(c.pin);document.getElementById("pin-disp").textContent=String(c.pin).split("").join("  ");document.getElementById("pin-disp").classList.add("ok");document.getElementById("gp-lbl").textContent="החלף קוד";document.getElementById("pin-hint").innerHTML=`<span style="color:var(--ok);font-weight:700">✓ קוד קיים</span>`;}
-    if(c.sites)Object.values(c.sites).forEach(s=>addSiteField(s));
     if(c.passwords)Object.values(c.passwords).forEach(p=>addPwdField(p));
   } else {
     document.getElementById("mo-client-t").textContent="הוספת לקוח";
@@ -2538,29 +2853,14 @@ async function saveClient() {
   if(!name)return toast("חסר שם מלא","e");
   if(!/^0[0-9]{8,9}$/.test(phone))return toast("טלפון לא תקין","e");
   if(!pin)return toast("יש ליצור קוד אישי","e");
-  const sc=document.querySelectorAll(".sec[id^='sc-']");
-  const sites={};let ok=true;
-  sc.forEach((card,i)=>{
-    const rawUrl=card.querySelector(".s-url").value.trim();
-    if(rawUrl&&!isUrl(rawUrl)){toast(`URL לא תקין באתר ${i+1}`,"e");ok=false;return;}
-    const url=normUrl(rawUrl); /* #120 — נשמר מנורמל כך שהקישור ללקוח תמיד עובד */
-    const prog=Math.max(0,Math.min(100,parseInt(card.querySelector(".s-prog").value)||0));
-    const sp={};card.querySelectorAll(".sp-row").forEach((r,j)=>{const l=r.querySelector(".sp-label").value.trim();const v=r.querySelector(".sp-value").value.trim();if(l&&v)sp[`sp_${j+1}`]={label:l,value:v};});
-    sites[`site_${i+1}`]={name:card.querySelector(".s-name").value.trim()||"",url,status:card.querySelector(".s-status").value,progress:prog,
-      ...(card.querySelector(".s-launch").value.trim()&&{launchDate:card.querySelector(".s-launch").value.trim()}),
-      ...(card.querySelector(".s-upd").value.trim()&&{lastUpdated:card.querySelector(".s-upd").value.trim()}),
-      ...(card.querySelector(".s-img").value.trim()&&{image:card.querySelector(".s-img").value.trim()}),
-      ...(card.querySelector(".s-msg").value.trim()&&{message:card.querySelector(".s-msg").value.trim()}),
-      ...(Object.keys(sp).length>0&&{sitePasswords:sp})};
-  });
-  if(!ok)return;
+  /* אתרים מנוהלים בפרויקטים — כאן רק פרטי הלקוח. סיסמאות ברמת לקוח נשמרות אם קיימות. */
   const pwCards=document.querySelectorAll(".sec[id^='pw-']");
   const passwords={};
   pwCards.forEach((card,i)=>{const lbl=card.querySelector(".pw-label").value.trim();const val=card.querySelector(".pw-value").value.trim();if(lbl&&val)passwords[`pwd_${i+1}`]={label:lbl,value:val};});
   showSP("שומר...");
   try {
     const ex=clients[phone]||{};
-    await set(ref(db,`clients/${phone}`),{...ex,name,pin,...(email&&{email}),...(dl&&{deadline:dl}),...(note&&{note}),...(message&&{message}),...(!ex.joinedAt&&{joinedAt:Date.now()}),sites:Object.keys(sites).length>0?sites:(ex.sites||{}),passwords:Object.keys(passwords).length>0?passwords:(ex.passwords||{})});
+    await set(ref(db,`clients/${phone}`),{...ex,name,pin,...(email&&{email}),...(dl&&{deadline:dl}),...(note&&{note}),...(message&&{message}),...(!ex.joinedAt&&{joinedAt:Date.now()}),passwords:Object.keys(passwords).length>0?passwords:(ex.passwords||{})});
     await set(ref(db,`usedPins/${pin}`),true);
     toast(editPhone?"עודכן":"נוסף","s");
     closeMo("mo-client");
@@ -2803,6 +3103,7 @@ async function openChatModal(phone,force) {
   listenLockTakeover(phone);
   if(chatListener){chatListener();chatListener=null;}
   chatListener=onValue(ref(db,`clients/${phone}/messages`),snap=>renderChatMsgs(snap.val()||{}));
+  listenChatTasks(phone);
   onValue(ref(db,`clients/${phone}/presence`),snap=>{
     const p=snap.val();const st=document.getElementById("mo-chat-status");
     if(p?.online&&p?.chatOpen){st.textContent="מחובר לצ'אט";st.style.color="var(--ok)";}
@@ -2815,8 +3116,10 @@ window.openChatModal=openChatModal;
 
 function closeChatModal(){
   const p=chatPhone;
+  document.getElementById("task-sheet")?.classList.remove("show");editTaskId=null;
   closeMo("mo-chat");
   if(chatListener){chatListener();chatListener=null;}
+  if(chatTasksListener){chatTasksListener();chatTasksListener=null;}
   stopChatHeartbeat();
   if(chatIdleTimer){clearTimeout(chatIdleTimer);chatIdleTimer=null;}
   stopLockKnock();
@@ -2834,7 +3137,7 @@ function renderChatMsgs(msgs) {
   closeBt.style.display=isClosed?"none":"";reopenBt.style.display=isClosed?"":"none";initBt.style.display=isClosed?"":"none";
   document.getElementById("chat-status-lbl").textContent=isClosed?"שיחה סגורה":"שיחה פעילה";
   const cont=document.getElementById("chat-msgs-list");cont.innerHTML="";
-  if(!entries.length){cont.innerHTML=`<div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;padding:32px;text-align:center">אין הודעות עדיין</div>`;return;}
+  if(!entries.length){cont.innerHTML=`<div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;padding:32px;text-align:center">אין הודעות עדיין</div>`;renderTaskPins();return;}
   entries.sort(([,a],[,b])=>a.at-b.at);
   /* #2 — באנר 'נפתחה על ידי' */
   const ob=clients[chatPhone]?.openedBy;
@@ -2844,7 +3147,7 @@ function renderChatMsgs(msgs) {
     const ds=new Date(m.at).toLocaleDateString("he-IL");
     if(ds!==lastDate){lastDate=ds;const d=document.createElement("div");d.className="add";d.innerHTML=`<span>${ds}</span>`;cont.appendChild(d);}
     const isAgent=m.sender==="agent";
-    const w=document.createElement("div");w.className=`aw ${isAgent?"a":"c"}`;
+    const w=document.createElement("div");w.className=`aw ${isAgent?"a":"c"}`;w.dataset.at=m.at;
     let replyHtml="";
     if(m.replyTo)replyHtml=`<div class="reply-prev-wrap" style="display:flex;align-items:center;gap:8px;cursor:pointer"${m.replyTo.key?` onclick="window.jumpToMsg('${m.replyTo.key}')"`:""}>${m.replyTo.type==="image"&&m.replyTo.imageUrl?`<img src="${m.replyTo.imageUrl}" style="width:32px;height:32px;border-radius:6px;object-fit:cover;flex-shrink:0" alt=""/>`:""}<div style="min-width:0;flex:1"><div class="reply-prev-name">${m.replyTo.sender==="agent"?"נציג":"לקוח"}</div><div class="reply-prev-txt">${m.replyTo.type==="image"?(m.replyTo.text||"תמונה"):m.replyTo.text}</div></div></div>`;
     const rGroups={};
@@ -2931,6 +3234,7 @@ function renderChatMsgs(msgs) {
     rc.innerHTML=`<div style="display:inline-flex;flex-direction:column;align-items:center;gap:5px;background:var(--bg2);border:1px solid var(--bdr);border-radius:14px;padding:10px 18px"><div style="font-size:11px;color:var(--muted);font-weight:700">דירוג הלקוח לשיחה</div><div style="display:flex;gap:3px">${starsRow}</div>${cData.ratingText?`<div style="font-size:12.5px;color:var(--txt);max-width:220px">"${escHtml(cData.ratingText)}"</div>`:""}</div>`;
     cont.appendChild(rc);
   }
+  renderTaskPins();
   cont.scrollTop=cont.scrollHeight;
 }
 
@@ -3721,25 +4025,30 @@ const PJ_STAGE_TEMPLATE=[
 ];
 function pjCanManage(){return isAdmin||(currentUser?.perms?.projects);}
 /* אחוז התקדמות = סכום משקלי השלבים שהושלמו / סכום כל המשקלים */
+/* התקדמות אפקטיבית — לפי מתג progressMode (שלבים/ידני) */
 function pjProgress(p){
+  if((p.progressMode||"stages")==="manual")return Math.max(0,Math.min(100,Number(p.manualProgress)||0));
   const st=p.stages?Object.values(p.stages):[];
-  if(!st.length)return 0;
+  if(!st.length)return Math.max(0,Math.min(100,Number(p.manualProgress)||0));
   const total=st.reduce((s,x)=>s+(Number(x.weight)||1),0);
   const done=st.filter(x=>x.done).reduce((s,x)=>s+(Number(x.weight)||1),0);
   return total?Math.round(done/total*100):0;
 }
 function pjCurrentStage(p){
+  if((p.progressMode||"stages")==="manual"){const pct=pjProgress(p);return pct>=100?"הושלם":"בעבודה";}
   const st=p.stages?Object.values(p.stages).sort((a,b)=>(a.order||0)-(b.order||0)):[];
   const next=st.find(x=>!x.done);
   if(!next)return st.length?"כל השלבים הושלמו":"אין שלבים";
   return next.title;
 }
-function pjClientName(phone){return clients[phone]?.name||phone||"—";}
-const PJ_STAT={active:{c:"pj-stat-active",t:"פעיל"},done:{c:"pj-stat-done",t:"הושלם"},paused:{c:"pj-stat-paused",t:"מושהה"}};
+function pjClientName(phone){return clients[phone]?.name||projects&&Object.values(projects).find(p=>p.clientPhone===phone)?.clientName||phone||"—";}
+function pjTypeLabel(p){return (p.type==="app")?"אפליקציה":"אתר";}
+const PJ_STAT={active:{c:"pj-stat-active",t:"פעיל"},building:{c:"pj-stat-active",t:"בבנייה"},done:{c:"pj-stat-done",t:"הושלם"},paused:{c:"pj-stat-paused",t:"מושהה"}};
+function pjImg(p,cls){return p.image?`<img src="${esc(p.image)}" alt="" class="${cls}" loading="lazy"/>`:`<div class="${cls} pj-noimg"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>`;}
 
 function renderProjects(){
   const grid=document.getElementById("projects-grid");if(!grid)return;
-  const entries=Object.entries(projects).sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0));
+  const entries=Object.entries(projects);
   if(!entries.length){
     grid.innerHTML=`<div class="pj-empty" style="grid-column:1/-1">
       <svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
@@ -3747,41 +4056,62 @@ function renderProjects(){
       <div>לחץ "פרויקט חדש" כדי ליצור פרויקט ולשייך אותו ללקוח.</div></div>`;
     return;
   }
-  grid.innerHTML=entries.map(([id,p])=>{
-    const pct=pjProgress(p);const stat=PJ_STAT[p.status]||PJ_STAT.active;
-    const stCount=p.stages?Object.keys(p.stages).length:0;
-    const stDone=p.stages?Object.values(p.stages).filter(x=>x.done).length:0;
-    return`<div class="pj-card" onclick="enterProject('${id}')">
-      <div class="pj-card-top">
-        <div><div class="pj-card-name">${esc(p.name||"ללא שם")}</div>
-          <div class="pj-card-client"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${esc(pjClientName(p.clientPhone))}</div></div>
-        <span class="pj-stat-tag ${stat.c}">${stat.t}</span>
-      </div>
-      <div class="pj-prog-wrap">
-        <div class="pj-prog-labels"><span class="pj-prog-pct">${pct}%</span><span class="pj-prog-stage">${esc(pjCurrentStage(p))}</span></div>
-        <div class="pj-prog-bar"><div class="pj-prog-fill" style="width:${pct}%"></div></div>
-      </div>
-      <div class="pj-card-foot">
-        <span>${stDone}/${stCount} שלבים</span>
-        <button class="pj-enter-btn" onclick="event.stopPropagation();enterProject('${id}')">כניסה לפרויקט<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
-      </div>
-    </div>`;
-  }).join("");
+  /* קיבוץ לפי לקוח */
+  const groups={};
+  entries.forEach(([id,p])=>{const ph=p.clientPhone||"—";(groups[ph]=groups[ph]||[]).push({id,...p});});
+  const groupArr=Object.entries(groups).map(([ph,list])=>({ph,list:list.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)),latest:Math.max(...list.map(x=>x.createdAt||0))})).sort((a,b)=>b.latest-a.latest);
+  /* כל לקוח = קובייה אחת בגודל קבוע (גם לפרויקט יחיד). 2+ = גלילה פנימית. */
+  grid.innerHTML=groupArr.map(g=>clientGroupCube(g.ph,g.list)).join("");
+}
+function clientGroupCube(ph,list){
+  const name=pjClientName(ph);const av=(name||"?").trim().charAt(0);
+  return`<div class="pj-group${list.length===1?" single":""}">
+    <div class="pj-group-head"><div class="pj-group-av">${esc(av)}</div>
+      <div style="flex:1;min-width:0"><div class="pj-group-name">${esc(name)}</div><div class="pj-group-meta">${fmtPhone(ph)}</div></div>
+      <div class="pj-group-count"><div class="pj-group-count-n">${list.length}</div><div class="pj-group-count-l">${list.length===1?"פרויקט":"פרויקטים"}</div></div></div>
+    <div class="pj-group-grid">${list.map(p=>innerProjectCube(p)).join("")}</div>
+  </div>`;
+}
+function innerProjectCube(p){
+  const pct=pjProgress(p);const stat=PJ_STAT[p.status]||PJ_STAT.active;
+  return`<div class="pj-inner" onclick="enterProject('${p.id}')">
+    <div class="pj-inner-banner">${pjImg(p,"pj-inner-img")}<span class="pj-stat-tag ${stat.c} pj-inner-stat">${stat.t}</span><span class="pj-type-tag" style="font-size:9px;padding:2px 7px">${pjTypeLabel(p)}</span></div>
+    <div class="pj-inner-body"><div class="pj-inner-name">${esc(p.name||"ללא שם")}</div><div class="pj-inner-next">${esc(pjCurrentStage(p))}</div>
+      <div class="pj-prog-bar" style="height:5px;margin-top:7px"><div class="pj-prog-fill" style="width:${pct}%"></div></div>
+      <div class="pj-inner-foot"><span class="pj-inner-pct">${pct}%</span><span style="font-size:9.5px;color:var(--muted)">${(p.progressMode||"stages")==="manual"?"ידני":"שלבים"}</span></div></div>
+    <div class="pj-inner-hover"><button class="pj-enter-btn" onclick="event.stopPropagation();enterProject('${p.id}')">כניסה לפרויקט<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button></div>
+  </div>`;
 }
 
+let pjDetailTasks={}, pjDetailTasksUnsub=null;
 function enterProject(id){
   curProjectId=id;curProjectTab="stages";
   document.getElementById("projects-list-view").style.display="none";
   document.getElementById("project-detail-view").style.display="block";
+  const proj=projects[id];
+  if(pjDetailTasksUnsub){pjDetailTasksUnsub();pjDetailTasksUnsub=null;}
+  pjDetailTasks={};
+  if(proj?.clientPhone){pjDetailTasksUnsub=onValue(ref(db,`tasks/${proj.clientPhone}`),s=>{pjDetailTasks=s.val()||{};if(curProjectId===id){const el=document.getElementById("pjs-tasks");if(el)el.innerHTML=renderPjTasks(id,projects[id]);}});}
   renderProjectDetail(id);
 }
 window.enterProject=enterProject;
 function exitProject(){
   curProjectId=null;
+  if(pjDetailTasksUnsub){pjDetailTasksUnsub();pjDetailTasksUnsub=null;}pjDetailTasks={};
   document.getElementById("project-detail-view").style.display="none";
   document.getElementById("projects-list-view").style.display="block";
 }
 window.exitProject=exitProject;
+function renderPjTasks(id,p){
+  const tasks=Object.entries(pjDetailTasks).filter(([tid,t])=>!t.projectId||t.projectId===id).sort((a,b)=>(b[1].at||0)-(a[1].at||0));
+  const allFiles=[];tasks.forEach(([tid,t])=>{if(t.files)Object.values(t.files).forEach(f=>{if(f.submitted)allFiles.push(f);});});
+  return`<div class="card"><div style="padding:16px">
+    <div style="font-weight:800;font-size:15px;margin-bottom:12px">קבצים מהלקוח <span style="font-size:12px;color:var(--muted);font-weight:600">(זרמו מהמשימות)</span></div>
+    ${allFiles.length?`<div class="tc-files">${allFiles.map(f=>tcFileThumb(f,"")).join("")}</div>`:`<div class="pj-soon" style="padding:20px">אין עדיין קבצים. פתח משימה בצ'אט כדי לבקש מהלקוח לוגו/תמונות/קבצים.</div>`}
+    <div style="font-weight:800;font-size:15px;margin:20px 0 12px">משימות הפרויקט</div>
+    ${tasks.length?tasks.map(([tid,t])=>{const isClient=t.openedBy==="client";return`<div class="tc ${isClient?"client":"admin"}" style="margin-bottom:10px"><div class="tc-bar"></div><div class="tc-head"><div class="tc-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${isClient?'<path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4z"/>':'<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>'}</svg></div><div style="flex:1;min-width:0"><div class="tc-who">${isClient?"בקשת לקוח":"משימה שפתחת"}</div><div class="tc-title">${esc(t.title)}</div></div><span class="tc-status ${t.status==="done"?"tc-st-done":"tc-st-wait"}">${t.status==="done"?"הושלמה":"פתוחה"}</span></div>${t.desc?`<div class="tc-body"><div class="tc-desc" style="margin-bottom:0">${esc(t.desc)}</div></div>`:""}</div>`;}).join(""):`<div class="pj-soon" style="padding:20px">אין עדיין משימות. פתח משימה מתוך צ'אט הלקוח.</div>`}
+  </div></div>`;
+}
 
 function renderProjectDetail(id){
   const p=projects[id];const host=document.getElementById("project-detail-view");
@@ -3797,8 +4127,15 @@ function renderProjectDetail(id){
       ${canEdit?`<button class="bsm" onclick="confirmDeleteProject('${id}')" style="background:rgba(239,68,68,.1);color:var(--err);padding:8px 14px;font-size:13px">מחיקה</button>`:""}
     </div>
     <div class="card"><div style="padding:18px">
-      <div class="pj-prog-labels" style="margin-bottom:8px"><span class="pj-prog-pct" style="font-size:26px">${pct}%</span><span class="pj-prog-stage" style="font-size:13px">השלב הנוכחי: ${esc(pjCurrentStage(p))}</span></div>
+      <div class="pj-det-banner">${pjImg(p,"pj-banner-img")}<span class="pj-stat-tag ${stat.c} pj-banner-stat">${stat.t}</span><span class="pj-type-tag">${pjTypeLabel(p)}</span></div>
+      <div class="pj-prog-labels" style="margin-bottom:8px"><span class="pj-prog-pct" style="font-size:26px">${pct}%</span><span class="pj-prog-stage" style="font-size:13px">${(p.progressMode||"stages")==="manual"?"התקדמות ידנית":"השלב הנוכחי: "+esc(pjCurrentStage(p))}</span></div>
       <div class="pj-prog-bar" style="height:12px"><div class="pj-prog-fill" style="width:${pct}%"></div></div>
+      <div class="pj-det-fields" style="margin-top:16px">
+        ${p.type==="app"?`<div class="pj-det-field"><div class="pj-det-field-l">קישורי אפליקציה</div><div class="pj-det-field-v">${p.appLinks?Object.entries(p.appLinks).filter(([k,v])=>v).map(([k,v])=>`<a href="${esc(v)}" target="_blank" rel="noopener">${k==="ios"?"iOS":k==="android"?"Android":k==="testflight"?"TestFlight":k}</a>`).join(" · ")||"—":"—"}</div></div>`:`<div class="pj-det-field"><div class="pj-det-field-l">כתובת האתר</div><div class="pj-det-field-v">${p.url?`<a href="${esc(normUrl(p.url))}" target="_blank" rel="noopener">${esc(p.url)}</a>`:"—"}</div></div>`}
+        <div class="pj-det-field"><div class="pj-det-field-l">מצב התקדמות</div><div class="pj-det-field-v">${(p.progressMode||"stages")==="manual"?"ידני":"לפי שלבים"}</div></div>
+      </div>
+      ${p.sitePasswords&&Object.keys(p.sitePasswords).length?`<div class="pj-det-field" style="margin-top:12px"><div class="pj-det-field-l">פרטי גישה (מוצגים ללקוח)</div>${Object.values(p.sitePasswords).map((sp,k)=>`<div class="pwd-item"><span class="pwd-label">${esc(sp.label||"סיסמה")}</span><span class="pwd-val hidden" id="pjsp${k}">${esc(sp.value||"")}</span><button class="btn-pwd-show" onclick="togglePwdView('pjsp${k}',this)">הצג</button><button class="btn-pwd-copy" onclick="navigator.clipboard?.writeText('${esc(sp.value||"")}').then(()=>toast('הועתק ✓','s'))">העתק</button></div>`).join("")}</div>`:""}
+      ${p.message?`<div class="pj-det-field" style="margin-top:12px"><div class="pj-det-field-l">הודעה אישית ללקוח</div><div class="pj-det-field-v">${esc(p.message)}</div></div>`:""}
     </div></div>
     <div class="pj-tabs">
       <button class="pj-tab${curProjectTab==="stages"?" active":""}" onclick="switchProjectTab('stages')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>שלבים</button>
@@ -3807,8 +4144,8 @@ function renderProjectDetail(id){
       <button class="pj-tab${curProjectTab==="notes"?" active":""}" onclick="switchProjectTab('notes')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4z"/></svg>הערות פנימיות<span class="pj-tab-badge">${notesCount}</span></button>
     </div>
     <div class="pj-subpanel${curProjectTab==="stages"?" active":""}" id="pjs-stages">${renderPjStages(id,p,canEdit)}</div>
-    <div class="pj-subpanel${curProjectTab==="quotes"?" active":""}" id="pjs-quotes">${pjSoon("הצעות המחיר של הפרויקט יופיעו כאן","שלב 2 — מערכת הצעות מחיר",'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/>')}</div>
-    <div class="pj-subpanel${curProjectTab==="tasks"?" active":""}" id="pjs-tasks">${pjSoon("קוביות המשימה של הפרויקט יופיעו כאן","שלב 4 — קוביות משימה בצ'אט",'<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>')}</div>
+    <div class="pj-subpanel${curProjectTab==="quotes"?" active":""}" id="pjs-quotes">${renderPjQuotes(id,p,canEdit)}</div>
+    <div class="pj-subpanel${curProjectTab==="tasks"?" active":""}" id="pjs-tasks">${renderPjTasks(id,p)}</div>
     <div class="pj-subpanel${curProjectTab==="notes"?" active":""}" id="pjs-notes">${renderPjNotes(id,p,canEdit)}</div>`;
 }
 function pjSoon(txt,tag,ic){return`<div class="card"><div class="pj-soon"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">${ic}</svg><div style="font-weight:700;color:var(--txt);margin-bottom:4px">${txt}</div><div style="font-size:12.5px">${tag}</div></div></div>`;}
@@ -3832,6 +4169,8 @@ async function toggleStage(pid,sid){
   /* סנכרון האחוז המחושב אל שדה הפרויקט — הבסיס לתצוגת הלקוח בשלב 3 */
   const fresh=(await get(ref(db,`projects/${pid}`))).val();
   if(fresh)await update(ref(db,`projects/${pid}`),{progress:pjProgress(fresh)});
+  /* התראה ללקוח כששלב הושלם (שלב 3) */
+  if(done&&fresh?.clientPhone)notifyClient(fresh.clientPhone,"stage",`שלב הושלם: ${s.title}`,pid);
 }
 window.toggleStage=toggleStage;
 
@@ -3853,6 +4192,7 @@ window.delPjNote=delPjNote;
 
 function switchProjectTab(t){
   curProjectTab=t;
+  if(t==="tasks"&&curProjectId){const el=document.getElementById("pjs-tasks");if(el)el.innerHTML=renderPjTasks(curProjectId,projects[curProjectId]);}
   document.querySelectorAll("#project-detail-view .pj-tab").forEach((b,i)=>b.classList.toggle("active",["stages","quotes","tasks","notes"][i]===t));
   document.querySelectorAll("#project-detail-view .pj-subpanel").forEach(s=>s.classList.remove("active"));
   document.getElementById({stages:"pjs-stages",quotes:"pjs-quotes",tasks:"pjs-tasks",notes:"pjs-notes"}[t])?.classList.add("active");
@@ -3861,27 +4201,70 @@ window.switchProjectTab=switchProjectTab;
 
 /* ── מודל יצירה/עריכה ── */
 let pjStageRows=[];
+let pjType="site", pjMode="stages";
+function setPjType(t){pjType=t;
+  document.getElementById("pj-type-site").classList.toggle("on",t==="site");
+  document.getElementById("pj-type-app").classList.toggle("on",t==="app");
+  document.getElementById("pj-url-wrap").style.display=t==="site"?"":"none";
+  document.getElementById("pj-applinks-wrap").style.display=t==="app"?"":"none";
+}
+window.setPjType=setPjType;
+function setPjMode(m){pjMode=m;
+  document.getElementById("pmode-stages").classList.toggle("on",m==="stages");
+  document.getElementById("pmode-manual").classList.toggle("on",m==="manual");
+  document.getElementById("pj-manual-wrap").style.display=m==="manual"?"":"none";
+  document.getElementById("pj-stages-wrap").style.display=m==="stages"?"":"none";
+}
+window.setPjMode=setPjMode;
+function addPjPwdField(pwd={}){
+  const ed=document.getElementById("pj-pwds-editor");
+  const div=document.createElement("div");div.className="sec sp-row";
+  div.innerHTML=`<div class="sec-top"><span class="sec-n">פרטי גישה</span><button class="btn-rm" type="button"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>הסרה</button></div>
+  <div class="fr"><div class="fg"><label class="fl">שם / למה הגישה</label><input class="fi ppw-label" type="text" placeholder="כניסה לניהול האתר" value="${esc(pwd.label||"")}"/></div><div class="fg"><label class="fl">הערך</label><input class="fi ppw-value" type="text" placeholder="הסיסמה / הקוד" value="${esc(pwd.value||"")}"/></div></div>`;
+  ed.appendChild(div);
+  div.querySelector(".btn-rm").onclick=()=>div.remove();
+}
+window.addPjPwdField=addPjPwdField;
+function wirePjImgUpload(){
+  const box=document.getElementById("pj-img-box"),preview=document.getElementById("pj-img-preview"),file=document.getElementById("pj-img-file"),hidden=document.getElementById("pj-img"),changeBtn=document.getElementById("pj-img-change"),removeBtn=document.getElementById("pj-img-remove");
+  const handle=async f=>{if(!f.type.startsWith("image/"))return toast("קובץ תמונה בלבד","e");preview.innerHTML='<div class="img-upload-spin"></div>';
+    try{const ext=(f.name.split(".").pop()||"jpg").toLowerCase();const snap=await uploadBytes(sRef(storage,"site-images/"+Date.now()+"_"+Math.random().toString(36).slice(2,8)+"."+ext),f);const url=await getDownloadURL(snap.ref);hidden.value=url;preview.innerHTML=`<img src="${url}"/>`;changeBtn.textContent="שינוי תמונה";removeBtn.style.display="flex";}
+    catch(e){toast("שגיאה בהעלאת התמונה","e");preview.innerHTML=hidden.value?`<img src="${hidden.value}"/>`:siteImgFallbackSvg();}};
+  changeBtn.onclick=()=>file.click();
+  file.onchange=e=>{const f=e.target.files[0];e.target.value="";if(f)handle(f);};
+  removeBtn.onclick=()=>{hidden.value="";preview.innerHTML=siteImgFallbackSvg();changeBtn.textContent="העלאת תמונה";removeBtn.style.display="none";};
+  wireImgDropZone(box,handle);
+}
 function openProjectModal(id){
   if(!pjCanManage()){showPermDenied("projects");return;}
   editProjectId=id||null;
   const clientOpts=Object.entries(clients).filter(([ph,c])=>c.name&&c.pin)
     .map(([ph,c])=>`<option value="${ph}">${esc(c.name)} · ${fmtPhone(ph)}</option>`).join("");
   document.getElementById("pj-client").innerHTML=`<option value="">— בחר לקוח —</option>`+clientOpts;
-  if(id&&projects[id]){
-    const p=projects[id];
-    document.getElementById("mo-project-t").textContent="עריכת פרויקט";
-    document.getElementById("pj-name").value=p.name||"";
-    document.getElementById("pj-client").value=p.clientPhone||"";
-    document.getElementById("pj-status").value=p.status||"active";
-    pjStageRows=(p.stages?Object.values(p.stages).sort((a,b)=>(a.order||0)-(b.order||0)):[]).map(s=>({title:s.title,weight:Number(s.weight)||1,done:!!s.done,doneAt:s.doneAt||null,doneBy:s.doneBy||null}));
-  }else{
-    document.getElementById("mo-project-t").textContent="פרויקט חדש";
-    document.getElementById("pj-name").value="";
-    document.getElementById("pj-client").value="";
-    document.getElementById("pj-status").value="active";
-    pjStageRows=PJ_STAGE_TEMPLATE.map(t=>({title:t,weight:1,done:false,doneAt:null,doneBy:null}));
-  }
+  const isNew=!(id&&projects[id]);
+  const p=isNew?{type:"site",status:"building",progressMode:"stages"}:projects[id];
+  document.getElementById("mo-project-t").textContent=isNew?"פרויקט חדש":"עריכת פרויקט";
+  document.getElementById("pj-name").value=p.name||"";
+  document.getElementById("pj-client").value=p.clientPhone||"";
+  document.getElementById("pj-status").value=p.status||"building";
+  document.getElementById("pj-url").value=p.url||"";
+  document.getElementById("pj-ios").value=p.appLinks?.ios||"";
+  document.getElementById("pj-android").value=p.appLinks?.android||"";
+  document.getElementById("pj-testflight").value=p.appLinks?.testflight||"";
+  document.getElementById("pj-message").value=p.message||"";
+  document.getElementById("pj-img").value=p.image||"";
+  document.getElementById("pj-img-preview").innerHTML=p.image?`<img src="${esc(p.image)}"/>`:siteImgFallbackSvg();
+  document.getElementById("pj-img-change").textContent=p.image?"שינוי תמונה":"העלאת תמונה";
+  document.getElementById("pj-img-remove").style.display=p.image?"flex":"none";
+  document.getElementById("pj-manual").value=p.manualProgress!=null?p.manualProgress:0;
+  document.getElementById("pj-pwds-editor").innerHTML="";
+  if(p.sitePasswords)Object.values(p.sitePasswords).forEach(sp=>addPjPwdField(sp));
+  pjStageRows=isNew?PJ_STAGE_TEMPLATE.map(t=>({title:t,weight:1,done:false,doneAt:null,doneBy:null}))
+    :(p.stages?Object.values(p.stages).sort((a,b)=>(a.order||0)-(b.order||0)):[]).map(s=>({title:s.title,weight:Number(s.weight)||1,done:!!s.done,doneAt:s.doneAt||null,doneBy:s.doneBy||null}));
+  setPjType(p.type||"site");
+  setPjMode(p.progressMode||"stages");
   renderStageEditor();
+  wirePjImgUpload();
   openMo("mo-project");
 }
 window.openProjectModal=openProjectModal;
@@ -3896,6 +4279,7 @@ function renderStageEditor(){
 }
 window.renderStageEditor=renderStageEditor;
 document.getElementById("pj-add-stage")?.addEventListener("click",()=>{pjStageRows.push({title:"",weight:1,done:false,doneAt:null,doneBy:null});renderStageEditor();});
+document.getElementById("pj-add-pwd")?.addEventListener("click",()=>addPjPwdField());
 
 async function saveProject(){
   if(!pjCanManage()){showPermDenied("projects");return;}
@@ -3904,12 +4288,18 @@ async function saveProject(){
   const status=document.getElementById("pj-status").value;
   if(!name)return toast("יש להזין שם פרויקט","e");
   if(!clientPhone)return toast("יש לבחור לקוח","e");
-  const rows=pjStageRows.filter(s=>s.title.trim());
-  if(!rows.length)return toast("יש להוסיף לפחות שלב אחד","e");
-  const stages={};rows.forEach((s,i)=>{stages[`stage_${i+1}`]={title:s.title.trim(),order:i,weight:Number(s.weight)||1,done:!!s.done,doneAt:s.doneAt||null,doneBy:s.doneBy||null};});
+  if(pjMode==="stages"&&!pjStageRows.filter(s=>s.title.trim()).length)return toast("במצב שלבים יש להוסיף לפחות שלב אחד","e");
+  const stages={};pjStageRows.filter(s=>s.title.trim()).forEach((s,i)=>{stages[`stage_${i+1}`]={title:s.title.trim(),order:i,weight:Number(s.weight)||1,done:!!s.done,doneAt:s.doneAt||null,doneBy:s.doneBy||null};});
+  const sitePasswords={};let pi=0;
+  document.querySelectorAll("#pj-pwds-editor .sp-row").forEach(r=>{const l=r.querySelector(".ppw-label").value.trim();const v=r.querySelector(".ppw-value").value.trim();if(l||v){pi++;sitePasswords[`sp_${pi}`]={label:l,value:v};}});
   const id=editProjectId||`pj_${Date.now()}`;
   const base=editProjectId?projects[id]:{createdAt:Date.now(),createdBy:currentUser?.name||""};
-  const rec={...base,name,clientPhone,status,stages};
+  const rec={...base,name,clientPhone,clientName:clients[clientPhone]?.name||base.clientName||"",type:pjType,status,progressMode:pjMode,
+    image:document.getElementById("pj-img").value.trim()||"",message:document.getElementById("pj-message").value.trim()||"",
+    manualProgress:Math.max(0,Math.min(100,parseInt(document.getElementById("pj-manual").value)||0)),
+    stages, sitePasswords:Object.keys(sitePasswords).length?sitePasswords:null};
+  if(pjType==="app"){rec.appLinks={ios:document.getElementById("pj-ios").value.trim(),android:document.getElementById("pj-android").value.trim(),testflight:document.getElementById("pj-testflight").value.trim()};rec.url="";}
+  else{rec.url=document.getElementById("pj-url").value.trim();rec.appLinks=null;}
   rec.progress=pjProgress(rec);
   if(editProjectId&&projects[id]?.notes)rec.notes=projects[id].notes;
   await set(ref(db,`projects/${id}`),rec);
@@ -3924,6 +4314,376 @@ function confirmDeleteProject(id){
 }
 window.confirmDeleteProject=confirmDeleteProject;
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+
+/* ═══════════════ קוביות משימה בצ'אט (שלב 4) ═══════════════ */
+let chatTasks={}, chatTasksListener=null, editTaskId=null;
+/* מטא-דאטה של קטגוריות משימה — זהה ב-3 הקבצים */
+const TASK_CATS={
+  photos:{l:"תמונות לאתר",t:"תמונות לאתר",io:"upload",g:"#8b5cf6,#6366f1",ic:'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/>'},
+  logo:{l:"לוגו ומיתוג",t:"קובצי לוגו ומיתוג",io:"upload",g:"#f59e0b,#f97316",ic:'<circle cx="12" cy="12" r="9"/><path d="M12 8.2l1.15 2.55 2.75.28-2.05 1.85.57 2.72L12 16.2l-2.42 1.4.57-2.72-2.05-1.85 2.75-.28z" fill="currentColor" stroke="none"/>'},
+  docs:{l:"מסמכים רשמיים",t:"מסמכים (ח.פ / רישיון)",io:"upload",g:"#0ea5e9,#0284c7",ic:'<path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/>'},
+  content:{l:"טקסטים ותוכן",t:"טקסטים לאתר",io:"text",g:"#0ea5e9,#0284c7",ic:'<path d="M4 7h16M4 12h10M4 17h13"/>'},
+  contact:{l:"פרטי קשר ומיקום",t:"פרטי קשר וכתובת",io:"text",g:"#10b981,#059669",ic:'<path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>'},
+  hours:{l:"שעות פעילות",t:"שעות פעילות",io:"text",g:"#14b8a6,#0d9488",ic:'<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5l3 1.6"/>'},
+  social:{l:"רשתות חברתיות",t:"קישורי רשתות חברתיות",io:"text",g:"#ec4899,#db2777",ic:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.6" x2="15.4" y2="6.4"/><line x1="8.6" y1="13.4" x2="15.4" y2="17.6"/>'},
+  approve:{l:"אישור / הגהה",t:"אישור תוכן",io:"ack",g:"#10b981,#059669",ic:'<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>'},
+  other:{l:"אחר",t:"",io:"upload",g:"#64748b,#475569",ic:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="8" cy="12" r="1.3" fill="currentColor"/><circle cx="16" cy="12" r="1.3" fill="currentColor"/>'}
+};
+const TASK_IO={upload:{l:"העלאת מדיה",ic:'<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>'},text:{l:"תשובת טקסט",ic:'<path d="M4 7h16M4 12h10M4 17h13"/>'},ack:{l:"אישור בלבד",ic:'<polyline points="20 6 9 17 4 12"/>'}};
+function tcCatMeta(t){return TASK_CATS[t&&t.category]||null;}
+function tcInputType(t){return (t&&t.input)||(tcCatMeta(t)?tcCatMeta(t).io:"upload");}
+function tcCatIconSvg(t){const c=tcCatMeta(t);return c?c.ic:'<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>';}
+function tcCatGrad(t){const c=tcCatMeta(t);return c?c.g:"#0ea5e9,#0284c7";}
+let taskCat="", taskIO="upload", taskProject="";
+function projectsForClient(phone){return Object.entries(projects).filter(([id,p])=>p.clientPhone===phone).sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0));}
+function pjTypeIcon(p){return (p&&p.type==="app")?'<rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/>':'<rect x="2" y="4" width="20" height="14" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/>';}
+function listenChatTasks(phone){
+  if(chatTasksListener){chatTasksListener();chatTasksListener=null;}
+  chatTasks={};renderTaskPins();
+  if(!phone)return;
+  chatTasksListener=onValue(ref(db,`tasks/${phone}`),s=>{chatTasks=s.val()||{};renderTaskPins();});
+}
+function tcIsImg(f){return (f.type||"").startsWith("image")||/\.(png|jpe?g|gif|webp|bmp|heic)$/i.test(f.name||"");}
+function tcFileThumb(f,delAttr){
+  const img=tcIsImg(f);
+  return`<div class="tc-file">${img?`<img src="${esc(f.url)}" onclick="window.open('${esc(f.url)}','_blank')"/>`:`<div class="tc-file-doc"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg></div>`}${delAttr||""}<span class="tc-file-name">${esc(f.name||"קובץ")}</span></div>`;
+}
+/* מזריק את קוביות המשימה לתוך זרם ההודעות (chat-msgs-list), משולב לפי זמן */
+function renderTaskPins(){
+  const container=document.getElementById("chat-msgs-list");if(!container)return;
+  container.querySelectorAll(".tc-flow").forEach(el=>el.remove());
+  const entries=Object.entries(chatTasks).sort((a,b)=>(a[1].at||0)-(b[1].at||0));
+  entries.forEach(([id,t])=>{
+    const isDone=t.status==="done";
+    const at=isDone?(t.doneAt||t.at||0):(t.at||0);
+    const html=isDone
+      ? `<div class="tc-done"><div class="tc-done-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><div style="flex:1;min-width:0"><div class="tc-done-t">הושלמה: ${esc(t.title)}</div><div class="tc-done-s">${t.doneBy?"סומן ע\"י "+esc(t.doneBy)+" · ":""}${fmtSeen(t.doneAt)}</div></div></div>`
+      : adminTaskCube(id,t);
+    const tmp=document.createElement("div");tmp.innerHTML=html.trim();
+    const el=tmp.firstElementChild;if(!el)return;
+    el.classList.add("tc-flow");el.dataset.at=at;
+    let refNode=null;
+    for(const child of container.children){
+      if(!child.dataset||child.dataset.at==null)continue;
+      if(Number(child.dataset.at)>at){refNode=child;break;}
+    }
+    container.insertBefore(el, refNode||null);
+  });
+}
+function adminTaskCube(id,t){
+  const isClient=t.openedBy==="client";
+  const input=tcInputType(t);
+  const meta=tcCatMeta(t);
+  const files=t.files?Object.entries(t.files).filter(([fid,f])=>f.submitted):[];
+  let statusHtml=`<span class="tc-status tc-st-wait">ממתין ללקוח</span>`;
+  if(input==="text"&&t.response&&t.response.submitted)statusHtml=`<span class="tc-status tc-st-sub">נענתה</span>`;
+  else if(input==="ack")statusHtml=`<span class="tc-status tc-st-wait">ממתין לאישור</span>`;
+  else if(files.length)statusHtml=`<span class="tc-status tc-st-sub">${files.length} קבצים</span>`;
+  else if(t.clientSubmittedAt)statusHtml=`<span class="tc-status tc-st-sub">נשלח</span>`;
+  const icon=isClient?'<path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4z"/>':tcCatIconSvg(t);
+  const icStyle=isClient?"":`style="background:linear-gradient(135deg,${tcCatGrad(t)})"`;
+  const multiPj=projectsForClient(chatPhone).length>1;
+  const pjName=(multiPj&&t.projectId&&projects[t.projectId])?projects[t.projectId].name:"";
+  let body=t.desc?`<div class="tc-desc">${esc(t.desc)}</div>`:"";
+  if(input==="text"&&t.response&&t.response.submitted){
+    body+=`<div class="tc-answer-lbl"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>תשובת הלקוח</div><div class="tc-answer-sent">${esc(t.response.text||"")}</div>`;
+  }
+  if(files.length)body+=`<div class="tc-files">${files.map(([fid,f])=>tcFileThumb(f,"")).join("")}</div>`;
+  body+=`<div class="tc-cta"><button class="tc-btn ok" onclick="markTaskDone('${id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>סמן כהושלמה</button>${!isClient?`<button class="tc-btn ghost" onclick="openTaskModal('${id}')">עריכה</button>`:""}<button class="tc-btn danger" onclick="confirmDeleteTask('${id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg></button></div>`;
+  return`<div class="tc ${isClient?"client":"admin"}">
+    <div class="tc-head"><div class="tc-ic" ${icStyle}><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">${icon}</svg></div>
+      <div style="flex:1;min-width:0"><div class="tc-who">${isClient?"בקשה מהלקוח":"משימה שפתחת"}</div><div class="tc-title">${esc(t.title)}</div>${(!isClient&&meta)?`<div class="tc-cat-l">${esc(meta.l)} · ${esc((TASK_IO[input]||{}).l||"")}</div>`:""}${pjName?`<div class="tc-pj-chip"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="14" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/></svg>${esc(pjName)}</div>`:""}</div>
+      ${statusHtml}</div>
+    <div class="tc-body">${body}</div></div>`;
+}
+function pjForClient(phone){const p=Object.entries(projects).filter(([id,p])=>p.clientPhone===phone).sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0));return p.length?p[0][0]:"";}
+function renderTaskSheetCats(){
+  const host=document.getElementById("tsh-cats");if(!host)return;
+  host.innerHTML=Object.entries(TASK_CATS).map(([k,c])=>`<div class="tsh-cat ${taskCat===k?"on":""}" onclick="selectTaskCat('${k}')"><div class="tsh-cat-ic" style="background:linear-gradient(135deg,${c.g})"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">${c.ic}</svg></div><div class="tsh-cat-n">${c.l}</div></div>`).join("");
+  const ioHost=document.getElementById("tsh-io");
+  ioHost.innerHTML=Object.entries(TASK_IO).map(([k,o])=>`<div class="tsh-io-chip ${taskIO===k?"on":""}" onclick="selectTaskIO('${k}')"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">${o.ic}</svg>${o.l}</div>`).join("");
+}
+window.selectTaskCat=(k)=>{
+  taskCat=k;const c=TASK_CATS[k];if(c){taskIO=c.io;const ti=document.getElementById("task-title");if(c.t&&(!ti.value.trim()||ti.dataset.auto==="1")){ti.value=c.t;ti.dataset.auto="1";}}
+  renderTaskSheetCats();
+};
+window.selectTaskIO=(k)=>{taskIO=k;renderTaskSheetCats();};
+function renderTaskSheetProjects(){
+  const wrap=document.getElementById("tsh-project-wrap"),host=document.getElementById("tsh-projects");
+  if(!wrap||!host)return;
+  const list=projectsForClient(chatPhone);
+  /* בורר פרויקט חובה רק כשיש יותר מפרויקט אחד ללקוח */
+  if(list.length<2){wrap.style.display="none";host.innerHTML="";return;}
+  wrap.style.display="";
+  host.innerHTML=list.map(([id,p])=>`<div class="tsh-proj ${taskProject===id?"on":""}" onclick="selectTaskProject('${id}')">
+    <div class="tsh-proj-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">${pjTypeIcon(p)}</svg></div>
+    <div style="flex:1;min-width:0"><div class="tsh-proj-n">${esc(p.name||"פרויקט")}</div><div class="tsh-proj-s">${p.type==="app"?"אפליקציה":"אתר"}${p.status?" · "+({building:"בבנייה",active:"פעיל",paused:"מושהה"}[p.status]||p.status):""}</div></div>
+    <div class="tsh-proj-chk"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+  </div>`).join("");
+}
+window.selectTaskProject=(id)=>{taskProject=id;renderTaskSheetProjects();};
+function openTaskSheet(){document.getElementById("task-sheet").classList.add("show");}
+function closeTaskSheet(){document.getElementById("task-sheet").classList.remove("show");editTaskId=null;}
+window.closeTaskSheet=closeTaskSheet;
+function openTaskModal(id){
+  editTaskId=id||null;
+  const ti=document.getElementById("task-title"),td=document.getElementById("task-desc");
+  const hs=document.getElementById("tsh-hs"),ht=document.getElementById("tsh-ht"),lbl=document.getElementById("task-create-lbl");
+  hs.textContent=(clients[chatPhone]?.name||"")||"";
+  const list=projectsForClient(chatPhone);
+  if(id&&chatTasks[id]){
+    const t=chatTasks[id];
+    taskCat=t.category||"";taskIO=tcInputType(t);taskProject=t.projectId||"";
+    ti.value=t.title||"";ti.dataset.auto="0";td.value=t.desc||"";
+    ht.textContent="עריכת משימה";lbl.textContent="שמירת שינויים";
+  }else{
+    taskCat="";taskIO="upload";
+    /* פרויקט יחיד → בחירה אוטומטית; יותר מאחד → חובה לבחור ידנית */
+    taskProject=list.length===1?list[0][0]:"";
+    ti.value="";ti.dataset.auto="1";td.value="";
+    ht.textContent="משימה חדשה ללקוח";lbl.textContent="פתיחת המשימה";
+  }
+  renderTaskSheetCats();renderTaskSheetProjects();openTaskSheet();
+}
+window.openTaskModal=openTaskModal;
+async function createAdminTask(){
+  const title=document.getElementById("task-title").value.trim();
+  const desc=document.getElementById("task-desc").value.trim();
+  if(!title)return toast("יש להזין כותרת למשימה","e");
+  if(!chatPhone)return;
+  const list=projectsForClient(chatPhone);
+  /* יותר מפרויקט אחד → חובה לבחור לאיזה פרויקט שייכת המשימה */
+  if(list.length>1&&!taskProject)return toast("יש לבחור פרויקט למשימה","e");
+  const projectId=taskProject||pjForClient(chatPhone);
+  if(editTaskId&&chatTasks[editTaskId]){
+    await update(ref(db,`tasks/${chatPhone}/${editTaskId}`),{title,desc,category:taskCat||null,input:taskIO,projectId});
+    toast("המשימה עודכנה ✓","s");
+  }else{
+    const id=`task_${Date.now()}`;
+    await set(ref(db,`tasks/${chatPhone}/${id}`),{title,desc,category:taskCat||null,input:taskIO,openedBy:"admin",openedByName:currentUser?.name||"",status:"open",at:Date.now(),projectId,clientName:clients[chatPhone]?.name||""});
+    notifyClient(chatPhone,"task","נפתחה עבורך משימה חדשה בצ'אט: "+title,id);
+    toast("המשימה נפתחה ✓","s");
+  }
+  closeTaskSheet();editTaskId=null;
+}
+async function markTaskDone(id){
+  if(!chatPhone)return;
+  await update(ref(db,`tasks/${chatPhone}/${id}`),{status:"done",doneAt:Date.now(),doneBy:currentUser?.name||""});
+  toast("המשימה סומנה כהושלמה ✓","s");
+}
+window.markTaskDone=markTaskDone;
+function confirmDeleteTask(id){
+  showConfirm("d",'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg>',"מחיקת משימה",`למחוק את המשימה "${esc(chatTasks[id]?.title||"")}"?`,async()=>{await remove(ref(db,`tasks/${chatPhone}/${id}`));toast("המשימה נמחקה","s");});
+}
+window.confirmDeleteTask=confirmDeleteTask;
+/* התראה ללקוח באזור האישי (שלב 3) */
+async function notifyClient(phone,type,text,refId){
+  if(!phone)return;const ts=Date.now();
+  try{await set(ref(db,`notifications/${phone}/${ts}`),{type,text,at:ts,seen:false,refId:refId||""});}catch(e){}
+}
+
+/* ═══════════════ הצעות מחיר (שלב 2) ═══════════════ */
+let quotes={}, curQuoteId=null, curQuotePid=null, quoteSaveTimer=null;
+function quotesCanManage(){return isAdmin||(currentUser?.perms?.quotes);}
+const Q_STAT={draft:{c:"q-stat-draft",t:"טיוטה"},sent:{c:"q-stat-sent",t:"נשלחה"},viewed:{c:"q-stat-viewed",t:"נצפתה"},approved:{c:"q-stat-approved",t:"אושרה"},rejected:{c:"q-stat-rejected",t:"נדחתה"},expired:{c:"q-stat-expired",t:"פג תוקף"}};
+function ils(n){return "₪"+Number(n||0).toLocaleString("he-IL",{maximumFractionDigits:2});}
+/* חישוב סכומי הצעה מרשומה */
+function quoteTotals(q){
+  const items=q.items?Object.values(q.items):[];
+  const sub=items.reduce((s,it)=>s+(Number(it.qty)||0)*(Number(it.price)||0),0);
+  const disc=Number(q.discount)||0;
+  const afterDisc=Math.max(0,sub-disc);
+  const vat=afterDisc*(Number(q.vat)||0)/100;
+  return {sub,disc,vat,grand:afterDisc+vat};
+}
+/* פג תוקף? (לתצוגה בלבד — לא משנה סטטוס שמור) */
+function quoteEffStatus(q){
+  if(q.status==="sent"||q.status==="viewed"){
+    if(q.validUntil){const d=new Date(q.validUntil+"T23:59:59");if(d<new Date())return"expired";}
+  }
+  return q.status||"draft";
+}
+
+/* רשימת ההצעות בתוך פרויקט */
+function renderPjQuotes(pid,p,canEdit){
+  const list=Object.entries(quotes).filter(([id,q])=>q.projectId===pid).sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0));
+  return`<div class="card"><div style="padding:16px">
+    ${canEdit?`<button class="btn-add" onclick="openQuoteBuilder('${pid}',null)" style="margin-bottom:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>הצעה חדשה</button>`:""}
+    ${list.length?list.map(([id,q])=>{const st=Q_STAT[quoteEffStatus(q)]||Q_STAT.draft;const t=quoteTotals(q);return`
+      <div class="q-list-row" onclick="openQuoteBuilder('${pid}','${id}')">
+        <span class="q-list-num">${esc(q.number||"—")}</span>
+        <div class="q-list-body"><div class="q-list-title">${esc(q.title||"הצעה ללא כותרת")}</div>
+          <div class="q-list-meta">${q.items?Object.keys(q.items).length:0} סעיפים · עודכן ${fmtSeen(q.updatedAt||q.createdAt)}</div></div>
+        <span class="q-list-total">${ils(t.grand)}</span>
+        <span class="q-stat ${st.c}">${st.t}</span>
+      </div>`;}).join(""):`<div class="pj-soon" style="padding:30px">אין עדיין הצעות מחיר בפרויקט זה.</div>`}
+  </div></div>`;
+}
+
+/* ── בונה ההצעה ── */
+async function openQuoteBuilder(pid,quoteId){
+  if(!quotesCanManage()){showPermDenied("quotes");return;}
+  curQuotePid=pid;
+  let q;
+  if(quoteId&&quotes[quoteId]){curQuoteId=quoteId;q=quotes[quoteId];}
+  else{
+    const num=await genQuoteNumber();
+    curQuoteId=genQuoteId();
+    const cph=projects[pid]?.clientPhone||"";
+    q={projectId:pid,clientPhone:cph,clientName:clients[cph]?.name||"",projectName:projects[pid]?.name||"",number:num,title:"",status:"draft",items:{item_1:{desc:"",qty:1,price:0}},discount:0,vat:18,terms:"",validUntil:"",createdAt:Date.now(),createdBy:currentUser?.name||"",updatedAt:Date.now(),audit:{}};
+    await set(ref(db,`quotes/${curQuoteId}`),q);
+    await addQuoteAudit(curQuoteId,"נוצרה טיוטה");
+  }
+  fillQuoteForm(q);
+  document.getElementById("q-save-status").textContent="";
+  openMo("mo-quote");
+}
+window.openQuoteBuilder=openQuoteBuilder;
+
+function fillQuoteForm(q){
+  document.getElementById("mo-quote-t").textContent=q.number?`הצעה ${q.number}`:"הצעת מחיר";
+  document.getElementById("q-title").value=q.title||"";
+  document.getElementById("q-number").value=q.number||"";
+  document.getElementById("q-discount").value=q.discount||0;
+  document.getElementById("q-vat").value=q.vat!=null?q.vat:18;
+  document.getElementById("q-valid").value=q.validUntil||"";
+  document.getElementById("q-terms").value=q.terms||"";
+  const st=Q_STAT[quoteEffStatus(q)]||Q_STAT.draft;
+  document.getElementById("q-status-disp").value=st.t;
+  const items=q.items?Object.values(q.items):[];
+  document.getElementById("q-items").innerHTML="";
+  if(!items.length)addQuoteItemRow({desc:"",qty:1,price:0});
+  else items.forEach(it=>addQuoteItemRow(it));
+  recalcQuote();
+  renderQuoteAudit(q);
+}
+function addQuoteItemRow(it){
+  it=it||{desc:"",qty:1,price:0};
+  const row=document.createElement("div");
+  row.className="q-item-row";
+  row.innerHTML=`<input class="q-desc" type="text" placeholder="תיאור השירות" value="${esc(it.desc||"")}"/>
+    <input class="q-qty" type="number" min="0" step="1" value="${it.qty!=null?it.qty:1}"/>
+    <input class="q-price" type="number" min="0" step="0.01" value="${it.price!=null?it.price:0}"/>
+    <span class="q-line-total">₪0</span>
+    <button class="q-item-del" type="button" title="הסר"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`;
+  row.querySelectorAll("input").forEach(inp=>inp.addEventListener("input",()=>{recalcQuote();scheduleQuoteSave();}));
+  row.querySelector(".q-item-del").addEventListener("click",()=>{row.remove();recalcQuote();scheduleQuoteSave();});
+  document.getElementById("q-items").appendChild(row);
+}
+function collectQuoteItems(){
+  const items={};let i=0;
+  document.querySelectorAll("#q-items .q-item-row").forEach(row=>{
+    const desc=row.querySelector(".q-desc").value.trim();
+    const qty=Number(row.querySelector(".q-qty").value)||0;
+    const price=Number(row.querySelector(".q-price").value)||0;
+    if(desc||price){i++;items[`item_${i}`]={desc,qty,price};}
+  });
+  return items;
+}
+function recalcQuote(){
+  let sub=0;
+  document.querySelectorAll("#q-items .q-item-row").forEach(row=>{
+    const qty=Number(row.querySelector(".q-qty").value)||0;
+    const price=Number(row.querySelector(".q-price").value)||0;
+    const lt=qty*price;sub+=lt;
+    row.querySelector(".q-line-total").textContent=ils(lt);
+  });
+  const disc=Number(document.getElementById("q-discount").value)||0;
+  const vatPct=Number(document.getElementById("q-vat").value)||0;
+  const afterDisc=Math.max(0,sub-disc);
+  const vat=afterDisc*vatPct/100;
+  document.getElementById("q-subtotal").textContent=ils(sub);
+  document.getElementById("q-grand").textContent=ils(afterDisc+vat);
+}
+function buildQuoteFromForm(){
+  return{
+    title:document.getElementById("q-title").value.trim(),
+    items:collectQuoteItems(),
+    discount:Number(document.getElementById("q-discount").value)||0,
+    vat:Number(document.getElementById("q-vat").value)||0,
+    validUntil:document.getElementById("q-valid").value||"",
+    terms:document.getElementById("q-terms").value.trim(),
+    updatedAt:Date.now()
+  };
+}
+function scheduleQuoteSave(){
+  const el=document.getElementById("q-save-status");
+  el.className="q-save-status saving";el.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 11-6.2-8.5"/></svg>שומר...';
+  clearTimeout(quoteSaveTimer);
+  quoteSaveTimer=setTimeout(doQuoteSave,700);
+}
+async function doQuoteSave(){
+  if(!curQuoteId)return;
+  try{
+    await update(ref(db,`quotes/${curQuoteId}`),buildQuoteFromForm());
+    const el=document.getElementById("q-save-status");
+    el.className="q-save-status saved";el.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>נשמר';
+  }catch(e){const el=document.getElementById("q-save-status");el.className="q-save-status";el.textContent="שגיאת שמירה";}
+}
+/* מספר רץ שנתי — אטומי, מונע התנגשות */
+async function genQuoteNumber(){
+  const year=new Date().getFullYear();
+  const res=await runTransaction(ref(db,`quoteSeq/${year}`),cur=>(cur||0)+1);
+  const n=res.snapshot.val()||1;
+  return `${year}-${String(n).padStart(3,"0")}`;
+}
+async function addQuoteAudit(qid,action,extra){
+  const ts=Date.now();
+  await set(ref(db,`quotes/${qid}/audit/${ts}`),{action,by:currentUser?.name||"מערכת",at:ts,...(extra||{})});
+}
+function renderQuoteAudit(q){
+  const host=document.getElementById("q-audit");if(!host)return;
+  const a=q.audit?Object.values(q.audit).sort((x,y)=>(y.at||0)-(x.at||0)):[];
+  host.innerHTML=a.length?a.map(e=>`<div class="q-audit-item"><span class="q-audit-ic"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span><span>${esc(e.action)}${e.by?" · "+esc(e.by):""} · ${fmtSeen(e.at)}</span></div>`).join(""):`<div style="font-size:12px;color:var(--muted);padding:6px 0">אין עדיין פעולות מתועדות.</div>`;
+}
+
+/* ── שליחה ── */
+function openQuoteSend(){
+  document.getElementById("q-link-result").style.display="none";
+  document.getElementById("q-opt-link").classList.add("on");document.getElementById("q-opt-link").dataset.on="1";
+  document.getElementById("q-opt-portal").classList.add("on");document.getElementById("q-opt-portal").dataset.on="1";
+  openMo("mo-quote-send");
+}
+async function confirmQuoteSend(){
+  if(!curQuoteId)return;
+  const linkOn=document.getElementById("q-opt-link").dataset.on==="1";
+  const portalOn=document.getElementById("q-opt-portal").dataset.on==="1";
+  if(!linkOn&&!portalOn)return toast("בחר לפחות ערוץ מסירה אחד","e");
+  await doQuoteSave();
+  const upd={status:"sent",sentAt:Date.now(),deliveredLink:linkOn,deliveredPortal:portalOn};
+  await update(ref(db,`quotes/${curQuoteId}`),upd);
+  await addQuoteAudit(curQuoteId,`ההצעה נשלחה (${[linkOn?"קישור":null,portalOn?"אזור אישי":null].filter(Boolean).join(" + ")})`);
+  /* התראה ללקוח באזור האישי (שלב 3) */
+  const qClientPhone=quotes[curQuoteId]?.clientPhone||projects[curQuotePid]?.clientPhone;
+  if(portalOn&&qClientPhone)notifyClient(qClientPhone,"quote","הצעת מחיר חדשה ממתינה לאישורך",curQuoteId);
+  document.getElementById("q-status-disp").value=Q_STAT.sent.t;
+  if(linkOn){
+    const link=quotePublicLink(curQuoteId);
+    document.getElementById("q-link-input").value=link;
+    document.getElementById("q-link-result").style.display="block";
+    const phone=projects[curQuotePid]?.clientPhone||"";
+    const num=quotes[curQuoteId]?.number||document.getElementById("q-number").value;
+    const msg=`שלום, הכנתי עבורך הצעת מחיר${num?" (מס' "+num+")":""}. לצפייה ואישור: ${link}`;
+    document.getElementById("q-link-wa").onclick=()=>{const wa=phone?`https://wa.me/972${phone.replace(/^0/,"")}?text=${encodeURIComponent(msg)}`:`https://wa.me/?text=${encodeURIComponent(msg)}`;window.open(wa,"_blank");};
+  }else{
+    toast("ההצעה נשלחה לאזור האישי ✓","s");
+    closeMo("mo-quote-send");
+  }
+}
+/* כתובת האתר הציבורי (Vercel) — ממנה נבנים קישורי ההצעה החיצוניים.
+   חובה להשתמש בבסיס קבוע ולא ב-location.href, כי admin עשוי לרוץ מ-file:// (נתיב מקומי שבור). */
+const PUBLIC_BASE_URL = "https://my-atarim-deshboard.vercel.app";
+function quotePublicLink(qid){
+  return `${PUBLIC_BASE_URL}/quote.html?id=${encodeURIComponent(qid)}`;
+}
+/* מזהה בלתי-ניחוש להצעה ציבורית — מונע מנייה/ניחוש של הצעות אחרות */
+function genQuoteId(){
+  try{ if(window.crypto&&crypto.randomUUID) return "q_"+crypto.randomUUID().replace(/-/g,""); }catch(_){}
+  const a="abcdefghijklmnopqrstuvwxyz0123456789";let s="";
+  try{ const arr=crypto.getRandomValues(new Uint8Array(24));for(const b of arr)s+=a[b%a.length];return "q_"+s; }catch(_){}
+  for(let i=0;i<24;i++)s+=a[Math.floor(Math.random()*a.length)];return "q_"+s;
+}
+window.openQuoteSend=openQuoteSend;
 
 function showConfirm(type,svg,title,text,cb){const ci=document.getElementById("confirm-icon");ci.className=`ci ${type}`;ci.innerHTML=svg;document.getElementById("confirm-title").textContent=title;document.getElementById("confirm-text").innerHTML=text;const btn=document.getElementById("confirm-ok");btn.className=type==="d"?"btn-d":"btn-w";btn.onclick=async()=>{const r=await cb();if(r===false)return;closeMo("mo-confirm");};openMo("mo-confirm");}
 function showSP(t){document.getElementById("sp-txt").textContent=t||"טוען...";document.getElementById("spinner").classList.add("show");}

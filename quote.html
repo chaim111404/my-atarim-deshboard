@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="robots" content="noindex, nofollow"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src 'self' data: blob: https://i.postimg.cc https://firebasestorage.googleapis.com; connect-src 'self' https://*.googleapis.com https://*.cloudfunctions.net https://*.firebaseio.com wss://*.firebaseio.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"/>
 <title>הצעת מחיר — WebDesk</title>
 <!-- תצוגה מקדימה של הקישור (Open Graph) — ממותגת וגנרית, ללא נתוני לקוח/סכום (בלי דליפת מידע) -->
 <meta property="og:type" content="website"/>
@@ -152,7 +153,34 @@ td.desc{font-weight:600}
 @keyframes sp{to{transform:rotate(360deg)}}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--deep);color:#fff;padding:13px 22px;border-radius:12px;font-size:14px;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.25);z-index:100;animation:tin .3s ease}
 @keyframes tin{from{opacity:0;transform:translateX(-50%) translateY(12px)}to{opacity:1;transform:translateX(-50%)}}
-@media(max-width:560px){body{padding:0}.doc{border-radius:0}.doc-num{position:static;display:inline-block;margin-bottom:14px}.doc-head,.doc-body,.approve-zone{padding-left:18px;padding-right:18px}}
+@media(max-width:560px){
+  body{padding:13px 11px 26px}
+  .wrap{max-width:100%}
+  /* קובייה תחומה ומעוצבת — כרטיס צף עם פינות מעוגלות ושוליים */
+  .doc{border-radius:20px;box-shadow:0 6px 26px rgba(14,165,233,.14),0 1px 4px rgba(12,26,46,.06)}
+  .doc-head{padding:24px 20px 22px;border-radius:20px 20px 0 0}
+  .doc-num{position:static;display:inline-block;margin-bottom:14px}
+  .doc-title{font-size:22px;line-height:1.25}
+  .doc-brand-t{font-size:18px}
+  .doc-meta{gap:10px 16px;font-size:12.5px}
+  .doc-body{padding:20px 17px}
+  .approve-zone{padding:20px 17px}
+  .sec-lbl{font-size:11.5px}
+  /* טבלת פריטים קומפקטית וקריאה */
+  table{font-size:13.5px}
+  th{font-size:10.5px;padding:0 3px 9px}
+  td{padding:11px 3px;font-size:13.5px}
+  td.desc{font-weight:700}
+  .totals{max-width:100%}
+  .t-row{font-size:14px}
+  .t-grand{font-size:20px}
+  /* סעיפים עשירים — יותר אוויר במובייל */
+  .psec{margin-top:26px}
+  .upg-card{padding:13px}
+  .upg-name{font-size:14.5px}
+  .tl-item{gap:12px}
+  .foot{padding:16px}
+}
 /* ── כפתור הורדת ההצעה כ-PDF ── */
 .pdf-bar{max-width:720px;margin:0 auto 14px;display:flex;justify-content:flex-end}
 .pdf-btn{background:#fff;border:1.5px solid var(--bdr);border-radius:12px;padding:10px 18px;font-family:'Heebo',sans-serif;font-size:13.5px;font-weight:700;color:var(--pd);cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.15s;box-shadow:0 2px 10px rgba(14,165,233,.08)}
@@ -190,8 +218,31 @@ td.desc{font-weight:600}
 .pdfm-loading .spin{width:40px;height:40px;border:4px solid var(--bdr);border-top-color:var(--p);border-radius:50%;animation:sp 1s linear infinite}
 .pdfm-loading .lt{font-size:14px;font-weight:700;color:var(--ink)}
 .pdfm-loading .ls{font-size:12px;color:var(--muted)}
+/* ── חלון "נחתם בהצלחה" ── */
+.succ{background:#fff;border-radius:20px;max-width:400px;width:100%;overflow:hidden;box-shadow:0 22px 66px rgba(12,26,46,.34);animation:succ-pop .34s cubic-bezier(.2,.9,.3,1.3)}
+@keyframes succ-pop{from{opacity:0;transform:scale(.9) translateY(10px)}to{opacity:1;transform:none}}
+.succ-top{background:linear-gradient(135deg,#16a34a,#15803d);padding:30px 0 24px;display:flex;justify-content:center}
+.succ-check svg{width:76px;height:76px}
+.sc-ring{fill:none;stroke:rgba(255,255,255,.5);stroke-width:2.5;stroke-dasharray:151;stroke-dashoffset:151;animation:sc-ring .5s ease forwards}
+.sc-tick{fill:none;stroke:#fff;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:40;stroke-dashoffset:40;animation:sc-tick .35s .45s ease forwards}
+@keyframes sc-ring{to{stroke-dashoffset:0}}
+@keyframes sc-tick{to{stroke-dashoffset:0}}
+.succ-body{padding:24px 26px 22px;text-align:center}
+.succ-t{font-size:21px;font-weight:800;color:var(--ink)}
+.succ-s{font-size:13.5px;color:var(--muted);line-height:1.6;margin-top:7px}
+.succ-meta{display:flex;flex-direction:column;gap:7px;background:var(--soft);border:1px solid var(--bdr);border-radius:12px;padding:12px 14px;margin:16px 0 4px;text-align:right}
+.succ-meta .m-row{display:flex;justify-content:space-between;gap:10px;font-size:12.5px}
+.succ-meta .m-row .k{color:var(--muted);font-weight:600}
+.succ-meta .m-row .v{color:var(--ink);font-weight:700}
+.succ-meta .m-row .v.mono{font-family:ui-monospace,Menlo,monospace;direction:ltr;font-size:11.5px}
+.succ-dl{width:100%;background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;border:none;border-radius:13px;padding:14px;font-family:'Heebo',sans-serif;font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;margin-top:16px;transition:transform .15s,box-shadow .15s}
+.succ-dl:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(14,165,233,.32)}
+.succ-close{width:100%;background:none;border:none;color:var(--muted);font-family:'Heebo',sans-serif;font-size:13.5px;font-weight:600;padding:12px 0 2px;cursor:pointer;margin-top:6px}
+/* כפתור הורדה באזור המאושר (ביקור חוזר) */
+.dl-cta{margin-top:14px;width:100%;background:#fff;border:1.5px solid var(--p);color:var(--pd);border-radius:13px;padding:13px;font-family:'Heebo',sans-serif;font-size:14.5px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:.15s}
+.dl-cta:hover{background:var(--soft)}
 /* מצב לכידה (משמש ב-onclone של html2canvas) — מסתיר את כלי החתימה */
-.pdfing .pdf-bar,.pdfing .sig-pad-wrap,.pdfing .sig-tools,.pdfing .sig-consent,.pdfing .btn-approve,.pdfing .btn-reject,.pdfing .appr-gate,.pdfing .sig-secure,.pdfing .sig-lbl,.pdfing .appr-title,.pdfing .appr-sub,.pdfing .appr-field{display:none!important}
+.pdfing .pdf-bar,.pdfing .dl-cta,.pdfing .sig-pad-wrap,.pdfing .sig-tools,.pdfing .sig-consent,.pdfing .btn-approve,.pdfing .btn-reject,.pdfing .appr-gate,.pdfing .sig-secure,.pdfing .sig-lbl,.pdfing .appr-title,.pdfing .appr-sub,.pdfing .appr-field{display:none!important}
 /* לבטל אנימציית fade-in בשכפול הלכידה — אחרת נלכד פריים שקוף (opacity:0) */
 .pdfing .doc,.pdfing .doc *{animation:none!important}
 .pdfing .doc{opacity:1!important;transform:none!important}
@@ -203,7 +254,7 @@ td.desc{font-weight:600}
   .doc{box-shadow:none;border-radius:0}
   .foot{margin-top:8px}
   /* להסתיר את כלי החתימה האינטראקטיביים + הכפתורים — משאירים תוכן וסטטוס בלבד */
-  .pdf-bar,.sig-pad-wrap,.sig-tools,.sig-consent,.btn-approve,.btn-reject,.appr-gate,.sig-secure,.sig-lbl,.appr-title,.appr-sub,.appr-field{display:none!important}
+  .pdf-bar,.dl-cta,.sig-pad-wrap,.sig-tools,.sig-consent,.btn-approve,.btn-reject,.appr-gate,.sig-secure,.sig-lbl,.appr-title,.appr-sub,.appr-field{display:none!important}
   .approve-zone{border-top:1px solid var(--bdr)}
   .upg-card{cursor:default}
   .psec,.pay-item,.bonus-item,.upg-card,.tl-item,.legal-item{break-inside:avoid}
@@ -249,6 +300,23 @@ td.desc{font-weight:600}
         <div class="spin"></div>
         <div><div class="lt">מכינים את קובץ ה-PDF...</div><div class="ls">עוד רגע והקובץ יירד אליכם</div></div>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="pdfm-ov" id="sign-success">
+  <div class="succ">
+    <div class="succ-top">
+      <div class="succ-check">
+        <svg viewBox="0 0 52 52"><circle class="sc-ring" cx="26" cy="26" r="24"/><path class="sc-tick" d="M15 27 l7 7 L38 18"/></svg>
+      </div>
+    </div>
+    <div class="succ-body">
+      <div class="succ-t">המסמך נחתם בהצלחה</div>
+      <div class="succ-s" id="succ-sub">החתימה נקלטה ואושרה. ההצעה שלך מאושרת ומחייבת.</div>
+      <div class="succ-meta" id="succ-meta"></div>
+      <button class="succ-dl" id="succ-download"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>שמירת ההצעה כ-PDF</button>
+      <button class="succ-close" id="succ-close">סגירה</button>
     </div>
   </div>
 </div>
@@ -375,7 +443,8 @@ function render(q){
     const a=q.approval||{};
     stateHtml=`<div class="approve-zone"><div class="state-banner state-approved">
       <span class="state-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span>
-      <div><div class="state-t" style="color:#16a34a">ההצעה אושרה</div><div class="state-d">${a.name?"אושר על ידי "+esc(a.name)+" · ":""}${fmtDate(a.at)}</div></div></div></div>`;
+      <div><div class="state-t" style="color:#16a34a">ההצעה אושרה</div><div class="state-d">${a.name?"אושר על ידי "+esc(a.name)+" · ":""}${fmtDate(a.at)}</div></div></div>
+      <button class="dl-cta" id="pdf-download"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>שמירת ההצעה כ-PDF</button></div>`;
   }else if(st==="rejected"){
     stateHtml=`<div class="approve-zone"><div class="state-banner state-rejected">
       <span class="state-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></span>
@@ -413,8 +482,7 @@ function render(q){
       <div class="sig-secure"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>החתימה מאומתת ומתועדת</div>
     </div>`;
   }
-  content.innerHTML=`<div class="pdf-bar"><button class="pdf-btn" id="pdf-download"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>שמירת ההצעה כ-PDF</button></div>
-    <div class="doc">
+  content.innerHTML=`<div class="doc">
     <div class="doc-head">
       ${q.number?`<div class="doc-num">${esc(q.number)}</div>`:""}
       <div class="doc-brand"><div class="doc-logo"><img src="${LOGO}" alt="" onerror="this.parentNode.innerHTML='<svg width=26 height=26 viewBox=\\'0 0 24 24\\' fill=none stroke=white stroke-width=2><path d=\\'M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z\\'/></svg>'"/></div>
@@ -564,6 +632,24 @@ async function doPdfDownload(){
   const ov=document.getElementById("pdf-modal");if(ov)ov.onclick=e=>{if(e.target===ov)closePdfModal();};
 })();
 
+/* ── חלון "נחתם בהצלחה" — נפתח מיד אחרי חתימה מוצלחת ── */
+function showSignSuccess(q,signedName){
+  const t=totals(q); const grand=t.grand+upgSum(q);
+  const name=(signedName||document.getElementById("appr-name")?.value||q.clientName||"").trim();
+  const meta=document.getElementById("succ-meta");
+  if(meta)meta.innerHTML=`
+    ${name?`<div class="m-row"><span class="k">נחתם על ידי</span><span class="v">${esc(name)}</span></div>`:""}
+    ${q.number?`<div class="m-row"><span class="k">מספר הצעה</span><span class="v mono">${esc(q.number)}</span></div>`:""}
+    <div class="m-row"><span class="k">סכום מאושר</span><span class="v">${ils(grand)}</span></div>`;
+  const ov=document.getElementById("sign-success"); if(ov)ov.classList.add("show");
+}
+(function wireSignSuccess(){
+  const dl=document.getElementById("succ-download");
+  if(dl)dl.onclick=()=>{ document.getElementById("sign-success").classList.remove("show"); openPdfModal(); };
+  const cl=document.getElementById("succ-close");
+  if(cl)cl.onclick=()=>document.getElementById("sign-success").classList.remove("show");
+})();
+
 /* ── סעיף 1: חתימה — ציור (עכבר+מגע) / העלאה / הסכמה / חסימת אישור ── */
 const SIG_CONSENT_TEXT="אני מאשר/ת שזו חתימתי המחייבת ומסכים/ה לתנאי ההצעה ולסכום הכולל. ידוע לי שהחתימה מהווה הסכמה משפטית.";
 let sigHasInk=false, sigConsent=false, sigMethod="draw";
@@ -639,7 +725,7 @@ async function approve(q){
   const btn=document.getElementById("btn-approve");btn.disabled=true;btn.textContent="חותם...";
   try{
     const res=await quoteFn({action:"sign",qid,name,consent:sigConsent===true,method:sigMethod,imageData:canvas.toDataURL("image/png"),upgrades:[...selUpg]});
-    if(res.ok){toast("ההצעה נחתמה ואושרה — תודה!");return;}
+    if(res.ok){showSignSuccess(q,name);return;}
     toast(FN_ERR[res.error]||"שגיאה בחתימה, נסו שוב");
   }catch(e){console.error(e);toast("שגיאת תקשורת, נסו שוב");}
   btn.disabled=false;

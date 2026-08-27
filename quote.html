@@ -52,6 +52,53 @@ td.desc{font-weight:600}
 .terms{margin-top:26px;background:var(--bg);border-radius:var(--rs);padding:16px 18px;font-size:14px;white-space:pre-wrap;word-break:break-word}
 .terms-lbl{font-size:12px;font-weight:800;color:var(--muted);margin-bottom:7px}
 .valid-tag{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--pd);background:rgba(14,165,233,.1);padding:7px 14px;border-radius:20px;margin-top:20px}
+/* ── סעיפים עשירים (הצעה מלאה) ── */
+.psec{margin-top:30px}
+.psec-h{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:800;color:var(--p);letter-spacing:.5px;text-transform:uppercase;margin-bottom:14px}
+.psec-h svg{color:var(--p)}
+/* שדרוגים אינטראקטיביים */
+.upg-card{display:flex;align-items:center;gap:13px;background:var(--card);border:2px solid var(--bdr);border-radius:14px;padding:14px 15px;cursor:pointer;transition:.15s;margin-bottom:10px;-webkit-tap-highlight-color:transparent}
+.upg-card:hover{border-color:#bfe0f6}
+.upg-card.on{border-color:var(--p);background:rgba(14,165,233,.05)}
+.upg-check{width:26px;height:26px;border-radius:8px;border:2px solid #cbdbe9;background:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:transparent;transition:.15s}
+.upg-card.on .upg-check{background:var(--p);border-color:var(--p);color:#fff}
+.upg-info{flex:1;min-width:0}
+.upg-name{font-size:15px;font-weight:700;color:var(--txt)}
+.upg-desc{font-size:12.5px;color:var(--muted);margin-top:2px;line-height:1.45}
+.upg-price{font-size:15px;font-weight:800;color:var(--pd);flex-shrink:0;white-space:nowrap}
+.upg-hint{font-size:12px;color:var(--muted);margin-bottom:12px}
+/* ציר שלבים */
+.tl{position:relative;padding-inline-start:4px}
+.tl-item{position:relative;display:flex;gap:14px;padding-bottom:16px}
+.tl-item:not(:last-child)::before{content:"";position:absolute;top:30px;bottom:0;right:14px;width:2px;background:linear-gradient(var(--acc),var(--bdr))}
+.tl-node{width:30px;height:30px;border-radius:50%;background:var(--p);color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1;box-shadow:0 2px 8px rgba(14,165,233,.3)}
+.tl-body{flex:1;padding-top:3px}
+.tl-title{font-size:15px;font-weight:700}
+.tl-dur{font-size:12.5px;color:var(--muted);margin-top:1px}
+/* לוח תשלומים */
+.pay-item{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:13px 15px;margin-bottom:9px}
+.pay-badge{width:30px;height:30px;border-radius:8px;background:rgba(34,197,94,.12);color:#16a34a;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pay-info{flex:1;min-width:0}
+.pay-label{font-size:14.5px;font-weight:700}
+.pay-when{font-size:12px;color:var(--muted);margin-top:1px}
+.pay-amt{font-size:15px;font-weight:800;color:var(--txt);white-space:nowrap}
+/* בונוסים */
+.bonus-item{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(236,72,153,.05),rgba(139,92,246,.05));border:1px solid rgba(139,92,246,.2);border-radius:12px;padding:13px 15px;margin-bottom:9px}
+.bonus-ic{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#ec4899,#8b5cf6);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.bonus-info{flex:1;min-width:0}
+.bonus-name{font-size:14.5px;font-weight:700}
+.bonus-tag{font-size:11.5px;font-weight:800;color:#7c3aed;background:rgba(139,92,246,.12);padding:3px 10px;border-radius:100px;white-space:nowrap}
+.bonus-val{font-size:12px;color:var(--muted)}
+/* משפטי */
+.legal-item{border-bottom:1px solid var(--bdr);padding:12px 0}
+.legal-item:last-child{border-bottom:none}
+.legal-t{font-size:14px;font-weight:700;margin-bottom:4px;display:flex;gap:8px}
+.legal-t .ln{color:var(--p);font-weight:800;flex-shrink:0}
+.legal-b{font-size:13px;color:var(--muted);line-height:1.6;padding-inline-start:20px}
+.monthly-line{display:flex;justify-content:space-between;align-items:center;background:rgba(14,165,233,.06);border:1px dashed var(--bdr);border-radius:12px;padding:13px 16px;margin-top:12px}
+.monthly-line .ml-l{font-size:14px;font-weight:700;color:var(--pd)}
+.monthly-line .ml-a{font-size:15px;font-weight:800;color:var(--pd)}
+.t-row.upg{color:var(--pd)}
 .approve-zone{padding:24px 30px;border-top:1px solid var(--bdr);background:#fbfdff}
 .appr-title{font-size:16px;font-weight:800;margin-bottom:6px}
 .appr-sub{font-size:13px;color:var(--muted);margin-bottom:16px}
@@ -106,6 +153,25 @@ td.desc{font-weight:600}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--deep);color:#fff;padding:13px 22px;border-radius:12px;font-size:14px;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.25);z-index:100;animation:tin .3s ease}
 @keyframes tin{from{opacity:0;transform:translateX(-50%) translateY(12px)}to{opacity:1;transform:translateX(-50%)}}
 @media(max-width:560px){body{padding:0}.doc{border-radius:0}.doc-num{position:static;display:inline-block;margin-bottom:14px}.doc-head,.doc-body,.approve-zone{padding-left:18px;padding-right:18px}}
+/* ── כפתור הורדת ההצעה כ-PDF ── */
+.pdf-bar{max-width:720px;margin:0 auto 14px;display:flex;justify-content:flex-end}
+.pdf-btn{background:#fff;border:1.5px solid var(--bdr);border-radius:12px;padding:10px 18px;font-family:'Heebo',sans-serif;font-size:13.5px;font-weight:700;color:var(--pd);cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.15s;box-shadow:0 2px 10px rgba(14,165,233,.08)}
+.pdf-btn:hover{border-color:var(--p);background:#f8fcff}
+.pdf-btn svg{flex-shrink:0}
+/* ── עיצוב הדפסה: הצעה נקייה לשמירה כ-PDF ── */
+@media print{
+  html,body{background:#fff;padding:0}
+  body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .wrap{max-width:100%}
+  .doc{box-shadow:none;border-radius:0}
+  .foot{margin-top:8px}
+  /* להסתיר את כלי החתימה האינטראקטיביים + הכפתורים — משאירים תוכן וסטטוס בלבד */
+  .pdf-bar,.sig-pad-wrap,.sig-tools,.sig-consent,.btn-approve,.btn-reject,.appr-gate,.sig-secure,.sig-lbl,.appr-title,.appr-sub,.appr-field{display:none!important}
+  .approve-zone{border-top:1px solid var(--bdr)}
+  .upg-card{cursor:default}
+  .psec,.pay-item,.bonus-item,.upg-card,.tl-item,.legal-item{break-inside:avoid}
+  @page{size:A4;margin:12mm}
+}
 </style>
 </head>
 <body>
@@ -146,6 +212,15 @@ function totals(q){
   const vat=afterDisc*(Number(q.vat)||0)/100;
   return {sub,disc,vat,grand:afterDisc+vat};
 }
+function propArr(x){return Array.isArray(x)?x:(x&&typeof x==="object"?Object.values(x):[]);}
+/* השדרוגים שהלקוח סימן (בזיכרון בלבד; נשלחים לשרת בחתימה) */
+let selUpg=new Set();
+function upgList(q){return propArr(q.upgrades).filter(u=>u&&(u.title||u.price));}
+function upgSum(q){return upgList(q).reduce((s,u)=>s+(selUpg.has(u.id)?(Number(u.price)||0):0),0);}
+/* סה"כ סופי = בסיס (פריטים−הנחה+מע"מ) + שדרוגים שנבחרו */
+function grandWithUpg(q){return totals(q).grand+upgSum(q);}
+const DUR_UNIT={weeks:"שבועות",days:"ימים",months:"חודשים"};
+function durText(s){const n=Number(s.dur)||0;if(!n)return"";const u=DUR_UNIT[s.durUnit||"weeks"]||"";return n===1?"כ-"+(s.durUnit==="days"?"יום":s.durUnit==="months"?"חודש":"שבוע"):"כ-"+n+" "+u;}
 function isExpired(q){return q.validUntil && new Date(q.validUntil+"T23:59:59")<new Date();}
 function toast(msg){const t=document.createElement("div");t.className="toast";t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2800);}
 
@@ -170,7 +245,53 @@ function expiredView(){
   brandedPage("warn",'<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5l3 1.6"/></svg>',"הקישור אינו בתוקף","ההצעה כבר אינה זמינה לצפייה. נשמח לחדש עבורך — פנו אלינו ונכין הצעה מעודכנת.");
 }
 
+/* ── בוני הסעיפים העשירים ── */
+function stagesSecHtml(q){
+  const st=propArr(q.stages).filter(s=>s&&s.title);
+  if(!st.length)return"";
+  return `<div class="psec"><div class="psec-h"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3.5" cy="6" r="1.5"/><circle cx="3.5" cy="12" r="1.5"/><circle cx="3.5" cy="18" r="1.5"/></svg>שלבי הפרויקט ולוח זמנים</div>
+    <div class="tl">${st.map((s,i)=>`<div class="tl-item"><div class="tl-node">${i+1}</div><div class="tl-body"><div class="tl-title">${esc(s.title)}</div>${durText(s)?`<div class="tl-dur">${esc(durText(s))}</div>`:""}</div></div>`).join("")}</div></div>`;
+}
+function paymentsSecHtml(q){
+  const pays=propArr(q.payments).filter(p=>p&&(p.label||p.value));
+  if(!pays.length)return"";
+  const grand=grandWithUpg(q);
+  const stMap={};propArr(q.stages).forEach(s=>{if(s&&s.id)stMap[s.id]=s.title;});
+  return `<div class="psec"><div class="psec-h"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>לוח תשלומים</div>
+    ${pays.map((p,i)=>{const amt=p.mode==="amount"?(Number(p.value)||0):Math.round(grand*(Number(p.value)||0)/100);const when=p.stageRef&&stMap[p.stageRef]?("בסיום: "+stMap[p.stageRef]):"עם החתימה";return `<div class="pay-item"><div class="pay-badge">${i+1}</div><div class="pay-info"><div class="pay-label">${esc(p.label||"תשלום")}</div><div class="pay-when">${esc(when)}${p.mode==="pct"?" · "+(Number(p.value)||0)+"%":""}</div></div><div class="pay-amt">${ils(amt)}</div></div>`;}).join("")}</div>`;
+}
+function bonusesSecHtml(q){
+  const bon=propArr(q.bonuses).filter(b=>b&&b.title);
+  if(!bon.length)return"";
+  return `<div class="psec"><div class="psec-h"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>בונוסים במתנה</div>
+    ${bon.map(b=>`<div class="bonus-item"><div class="bonus-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/></svg></div><div class="bonus-info"><div class="bonus-name">${esc(b.title)}</div>${Number(b.value)>0?`<div class="bonus-val">שווי ${ils(b.value)} — כלול ללא עלות</div>`:""}</div><span class="bonus-tag">מתנה</span></div>`).join("")}</div>`;
+}
+function upgradesSecHtml(q){
+  const ups=upgList(q);
+  if(!ups.length)return"";
+  return `<div class="psec"><div class="psec-h"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>שדרוגים אופציונליים</div>
+    <div class="upg-hint">סמן שדרוגים שתרצה להוסיף — הסכום הכולל יתעדכן בהתאם.</div>
+    ${ups.map(u=>`<div class="upg-card ${selUpg.has(u.id)?"on":""}" data-uid="${esc(u.id)}"><div class="upg-check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><div class="upg-info"><div class="upg-name">${esc(u.title||"שדרוג")}</div>${u.desc?`<div class="upg-desc">${esc(u.desc)}</div>`:""}</div><div class="upg-price">+${ils(u.price)}</div></div>`).join("")}</div>`;
+}
+function legalSecHtml(q){
+  const lg=propArr(q.legal).filter(c=>c&&(c.title||c.body));
+  if(!lg.length)return"";
+  return `<div class="psec"><div class="psec-h"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/></svg>סעיפים משפטיים ותנאי שימוש</div>
+    ${lg.map((c,i)=>`<div class="legal-item"><div class="legal-t"><span class="ln">${i+1}.</span>${esc(c.title||"")}</div>${c.body?`<div class="legal-b">${esc(c.body)}</div>`:""}</div>`).join("")}</div>`;
+}
+function totalsHtml(q){
+  const t=totals(q);const uSum=upgSum(q);const grand=t.grand+uSum;
+  const mon=q.monthly&&q.monthly.on&&Number(q.monthly.amount)>0?q.monthly:null;
+  return `<div class="t-row"><span>סכום ביניים</span><span>${ils(t.sub)}</span></div>
+    ${t.disc>0?`<div class="t-row discount"><span>הנחה</span><span>-${ils(t.disc)}</span></div>`:""}
+    <div class="t-row"><span>מע"מ (${Number(q.vat)||0}%)</span><span>${ils(t.vat)}</span></div>
+    ${uSum>0?`<div class="t-row upg"><span>שדרוגים שנבחרו</span><span>+${ils(uSum)}</span></div>`:""}
+    <div class="t-grand"><span>סה"כ לתשלום</span><span>${ils(grand)}</span></div>
+    ${mon?`<div class="monthly-line"><span class="ml-l">${esc(mon.label||"תשלום חודשי")}</span><span class="ml-a">${ils(mon.amount)} / חודש</span></div>`:""}`;
+}
 function render(q){
+  /* אתחול בחירת השדרוגים ממצב ההצעה (בהצעה חתומה — מה שנבחר ונחתם) */
+  selUpg=new Set(upgList(q).filter(u=>u.selectedByClient).map(u=>u.id));
   const t=totals(q);
   const items=q.items?Object.values(q.items):[];
   const expired=isExpired(q);
@@ -219,7 +340,8 @@ function render(q){
       <div class="sig-secure"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>החתימה מאומתת ומתועדת</div>
     </div>`;
   }
-  content.innerHTML=`<div class="doc">
+  content.innerHTML=`<div class="pdf-bar"><button class="pdf-btn" id="pdf-download"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>שמירת ההצעה כ-PDF</button></div>
+    <div class="doc">
     <div class="doc-head">
       ${q.number?`<div class="doc-num">${esc(q.number)}</div>`:""}
       <div class="doc-brand"><div class="doc-logo"><img src="${LOGO}" alt="" onerror="this.parentNode.innerHTML='<svg width=26 height=26 viewBox=\\'0 0 24 24\\' fill=none stroke=white stroke-width=2><path d=\\'M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z\\'/></svg>'"/></div>
@@ -230,28 +352,44 @@ function render(q){
     <div class="doc-body">
       <div class="sec-lbl">פירוט ההצעה</div>
       <table><thead><tr><th>תיאור</th><th class="num">כמות</th><th class="num">מחיר יח'</th><th class="tot">סה"כ</th></tr></thead><tbody>${rowsHtml||`<tr><td colspan="4" style="color:var(--muted);text-align:center;padding:20px">אין סעיפים</td></tr>`}</tbody></table>
-      <div class="totals">
-        <div class="t-row"><span>סכום ביניים</span><span>${ils(t.sub)}</span></div>
-        ${t.disc>0?`<div class="t-row discount"><span>הנחה</span><span>-${ils(t.disc)}</span></div>`:""}
-        <div class="t-row"><span>מע"מ (${Number(q.vat)||0}%)</span><span>${ils(t.vat)}</span></div>
-        <div class="t-grand"><span>סה"כ לתשלום</span><span>${ils(t.grand)}</span></div>
-      </div>
-      ${q.terms?`<div class="terms"><div class="terms-lbl">תנאי תשלום והערות</div>${esc(q.terms)}</div>`:""}
+      ${upgradesSecHtml(q)}
+      <div class="totals" id="totals-box">${totalsHtml(q)}</div>
+      ${stagesSecHtml(q)}
+      <div id="payments-box">${paymentsSecHtml(q)}</div>
+      ${bonusesSecHtml(q)}
+      ${legalSecHtml(q)}
+      ${(!propArr(q.legal).filter(c=>c&&(c.title||c.body)).length && q.terms)?`<div class="terms"><div class="terms-lbl">תנאי תשלום והערות</div>${esc(q.terms)}</div>`:""}
     </div>
     ${stateHtml}${approveHtml}
   </div>`;
+  const pdfBtn=document.getElementById("pdf-download");
+  if(pdfBtn)pdfBtn.onclick=()=>window.print();   /* הורדת ההצעה כ-PDF (הדפסת דפדפן → שמירה כ-PDF) */
   /* תצוגה מקדימה — מחליף את אזור החתימה בבאנר, ומוסיף רצועת "תצוגה מקדימה" למעלה. אין פעולות. */
   if(IS_PREVIEW){
     const zone=content.querySelector(".approve-zone");
     if(zone)zone.outerHTML=`<div class="approve-zone"><div class="state-banner" style="background:rgba(14,165,233,.08);border:1.5px solid rgba(14,165,233,.32)"><span class="state-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span><div><div class="state-t" style="color:#0284c7">תצוגה מקדימה</div><div class="state-d">כך הלקוח יראה את ההצעה. במצב זה לא ניתן לבצע פעולות והצפייה אינה נרשמת.</div></div></div></div>`;
     content.insertAdjacentHTML("afterbegin",`<div style="max-width:720px;margin:0 auto 14px;background:#0284c7;color:#fff;border-radius:12px;padding:11px 16px;display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:700"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>תצוגה מקדימה — אינה נרשמת ואינה מאפשרת פעולות</div>`);
+    wireUpgrades(q);   /* גם בתצוגה מקדימה השדרוגים אינטראקטיביים להמחשה */
     return;
   }
-  if(st!=="approved"&&st!=="rejected"&&!expired){
+  const interactive=(st!=="approved"&&st!=="rejected"&&!expired);
+  if(interactive){
+    wireUpgrades(q);   /* שדרוגים ניתנים לסימון כל עוד ההצעה פתוחה */
     setupSignatureUI(q);
     document.getElementById("btn-approve").onclick=()=>approve(q);
     document.getElementById("btn-reject").onclick=()=>reject(q);
   }
+}
+function wireUpgrades(q){
+  content.querySelectorAll(".upg-card").forEach(card=>{
+    card.onclick=()=>{
+      const id=card.getAttribute("data-uid");
+      if(selUpg.has(id))selUpg.delete(id);else selUpg.add(id);
+      card.classList.toggle("on",selUpg.has(id));
+      const tb=document.getElementById("totals-box");if(tb)tb.innerHTML=totalsHtml(q);
+      const pb=document.getElementById("payments-box");if(pb)pb.innerHTML=paymentsSecHtml(q);
+    };
+  });
 }
 
 /* ── סעיף 1: חתימה — ציור (עכבר+מגע) / העלאה / הסכמה / חסימת אישור ── */
@@ -328,7 +466,7 @@ async function approve(q){
   if(!sigConsent){toast("נא לסמן את ההסכמה");return;}
   const btn=document.getElementById("btn-approve");btn.disabled=true;btn.textContent="חותם...";
   try{
-    const res=await quoteFn({action:"sign",qid,name,consent:sigConsent===true,method:sigMethod,imageData:canvas.toDataURL("image/png")});
+    const res=await quoteFn({action:"sign",qid,name,consent:sigConsent===true,method:sigMethod,imageData:canvas.toDataURL("image/png"),upgrades:[...selUpg]});
     if(res.ok){toast("ההצעה נחתמה ואושרה — תודה!");return;}
     toast(FN_ERR[res.error]||"שגיאה בחתימה, נסו שוב");
   }catch(e){console.error(e);toast("שגיאת תקשורת, נסו שוב");}

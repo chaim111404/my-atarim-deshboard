@@ -510,20 +510,40 @@ async function doPdfDownload(){
     const canvas=await window.html2canvas(el,{scale:2,useCORS:true,backgroundColor:"#ffffff",
       onclone:(cd)=>{cd.body.classList.add("pdfing");cd.querySelectorAll(".doc-logo").forEach(l=>{l.innerHTML='<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>';});}
     });
-    /* חותכים את הקנבס לעמודי A4 בקנה מידה שנכנס בדיוק לרוחב העמוד (בלי זום/חיתוך שגוי) */
+    /* חותכים את הקנבס לעמודי A4 בקנה מידה שנכנס בדיוק לרוחב העמוד (בלי זום),
+       וחשוב — חותכים כל עמוד ברווח לבן בין שורות/סעיפים, לא באמצע טקסט */
     const doc=new jsPDF({orientation:"p",unit:"pt",format:"a4"});
     const pageW=doc.internal.pageSize.getWidth(), pageH=doc.internal.pageSize.getHeight();
     const margin=22, imgW=pageW-margin*2, usableH=pageH-margin*2;
-    const imgH=canvas.height*imgW/canvas.width;
-    const imgData=canvas.toDataURL("image/jpeg",0.92);
-    let heightLeft=imgH, pos=margin;
-    doc.addImage(imgData,"JPEG",margin,pos,imgW,imgH,undefined,"FAST");
-    heightLeft-=usableH;
-    while(heightLeft>0){
-      pos=margin-(imgH-heightLeft);
-      doc.addPage();
-      doc.addImage(imgData,"JPEG",margin,pos,imgW,imgH,undefined,"FAST");
-      heightLeft-=usableH;
+    const cw=canvas.width, ch=canvas.height;
+    const pxPerPt=cw/imgW;                          /* פיקסלים לכל נקודה */
+    const pagePxH=Math.max(1,Math.floor(usableH*pxPerPt));
+    const cctx=canvas.getContext("2d");
+    function safeCut(startY){
+      const target=startY+pagePxH;
+      if(target>=ch)return ch-startY;               /* עמוד אחרון — עד הסוף */
+      const win=Math.min(Math.floor(pagePxH*0.24), target-startY-1);
+      let band;
+      try{band=cctx.getImageData(0,target-win,cw,win).data;}catch(e){return pagePxH;}
+      for(let r=win-1;r>=0;r--){                     /* מהגבול כלפי מעלה — הרווח הלבן הקרוב ביותר */
+        let white=true;
+        for(let x=0;x<cw;x+=5){const i=(r*cw+x)*4;if(band[i]<250||band[i+1]<250||band[i+2]<250){white=false;break;}}
+        if(white)return (target-win+r)-startY;
+      }
+      return pagePxH;                                /* לא נמצא רווח — חיתוך רגיל */
+    }
+    let y=0, first=true;
+    while(y<ch){
+      let sliceH=Math.min(pagePxH,ch-y);
+      if(y+sliceH<ch)sliceH=safeCut(y);
+      const tmp=document.createElement("canvas");
+      tmp.width=cw; tmp.height=sliceH;
+      tmp.getContext("2d").drawImage(canvas,0,y,cw,sliceH,0,0,cw,sliceH);
+      const data=tmp.toDataURL("image/jpeg",0.92);
+      if(!first)doc.addPage();
+      doc.addImage(data,"JPEG",margin,margin,imgW,sliceH/pxPerPt,undefined,"FAST");
+      first=false;
+      y+=sliceH;
     }
     doc.save(pdfFileName(curQuote));
     markPdfDownloaded();

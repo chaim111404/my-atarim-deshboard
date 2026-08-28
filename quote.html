@@ -68,6 +68,18 @@ td.desc{font-weight:600}
 .upg-desc{font-size:12.5px;color:var(--muted);margin-top:2px;line-height:1.45}
 .upg-price{font-size:15px;font-weight:800;color:var(--pd);flex-shrink:0;white-space:nowrap}
 .upg-hint{font-size:12px;color:var(--muted);margin-bottom:12px}
+/* שדרוגים שנבחרו (מצב חתום) */
+.upg-picked{display:flex;align-items:center;gap:13px;background:rgba(22,163,74,.05);border:1px solid rgba(22,163,74,.28);border-radius:12px;padding:12px 14px;margin-bottom:9px}
+.upg-picked-ck{width:24px;height:24px;border-radius:7px;background:#16a34a;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.upg-picked-info{flex:1;min-width:0}
+.upg-picked-tag{font-size:12.5px;font-weight:800;color:#15803d;white-space:nowrap;flex-shrink:0}
+/* בלוק חתימת הלקוח (מצב מאושר + ב-PDF) */
+.signed-block{background:#fff;border:1px solid var(--bdr);border-radius:14px;padding:16px 18px;margin-top:14px;text-align:center}
+.sb-head{font-size:11.5px;font-weight:800;color:var(--pd);letter-spacing:.06em;margin-bottom:10px}
+.sb-row{display:flex;justify-content:center;align-items:center;border-bottom:1.5px solid #d7e6f4;padding-bottom:8px;margin:0 8px 10px}
+.sb-img{max-width:220px;max-height:88px;object-fit:contain}
+.sb-name{font-size:15px;font-weight:800;color:var(--ink)}
+.sb-meta{font-size:11.5px;color:var(--muted);margin-top:3px}
 /* ציר שלבים */
 .tl{position:relative;padding-inline-start:4px}
 .tl-item{position:relative;display:flex;gap:14px;padding-bottom:16px}
@@ -408,7 +420,15 @@ function bonusesSecHtml(q){
 function upgradesSecHtml(q){
   const ups=upgList(q);
   if(!ups.length)return"";
-  return `<div class="psec"><div class="psec-h"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>שדרוגים אופציונליים</div>
+  const upgIcon='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>';
+  /* מצב חתום/נעול — מציגים רק את מה שנבחר, מסומן וברור (לא משבצות אינטראקטיביות) */
+  if(q.status==="approved"){
+    const sel=ups.filter(u=>selUpg.has(u.id));
+    if(!sel.length)return"";
+    return `<div class="psec"><div class="psec-h">${upgIcon}שדרוגים שנבחרו</div>
+      ${sel.map(u=>`<div class="upg-picked"><span class="upg-picked-ck"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2"><polyline points="20 6 9 17 4 12"/></svg></span><div class="upg-picked-info"><div class="upg-name">${esc(u.title||"שדרוג")}</div>${u.desc?`<div class="upg-desc">${esc(u.desc)}</div>`:""}</div><div class="upg-picked-tag">נכלל · +${ils(u.price)}</div></div>`).join("")}</div>`;
+  }
+  return `<div class="psec"><div class="psec-h">${upgIcon}שדרוגים אופציונליים</div>
     <div class="upg-hint">סמן שדרוגים שתרצה להוסיף — הסכום הכולל יתעדכן בהתאם.</div>
     ${ups.map(u=>`<div class="upg-card ${selUpg.has(u.id)?"on":""}" data-uid="${esc(u.id)}"><div class="upg-check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><div class="upg-info"><div class="upg-name">${esc(u.title||"שדרוג")}</div>${u.desc?`<div class="upg-desc">${esc(u.desc)}</div>`:""}</div><div class="upg-price">+${ils(u.price)}</div></div>`).join("")}</div>`;
 }
@@ -440,10 +460,18 @@ function render(q){
   const rowsHtml=items.map(it=>`<tr><td class="desc">${esc(it.desc||"")}</td><td class="num">${Number(it.qty)||0}</td><td class="num">${ils(it.price)}</td><td class="tot">${ils((Number(it.qty)||0)*(Number(it.price)||0))}</td></tr>`).join("");
   let stateHtml="", approveHtml="";
   if(st==="approved"){
-    const a=q.approval||{};
+    const a=q.approval||{};const s=q.signature||{};
+    const sigName=esc(s.signerName||a.name||q.clientName||"");
+    const sigBlock=s.url?`<div class="signed-block">
+        <div class="sb-head">חתימת הלקוח</div>
+        <div class="sb-row"><img class="sb-img" src="${esc(s.url)}" crossorigin="anonymous" alt="חתימה"/></div>
+        <div class="sb-name">${sigName}</div>
+        <div class="sb-meta">נחתם דיגיטלית ואומת · ${fmtDate(typeof s.at==="number"?s.at:a.at)}${s.sigId?" · "+esc(s.sigId):""}</div>
+      </div>`:"";
     stateHtml=`<div class="approve-zone"><div class="state-banner state-approved">
       <span class="state-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span>
       <div><div class="state-t" style="color:#16a34a">ההצעה אושרה</div><div class="state-d">${a.name?"אושר על ידי "+esc(a.name)+" · ":""}${fmtDate(a.at)}</div></div></div>
+      ${sigBlock}
       <button class="dl-cta" id="pdf-download"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>שמירת ההצעה כ-PDF</button></div>`;
   }else if(st==="rejected"){
     stateHtml=`<div class="approve-zone"><div class="state-banner state-rejected">

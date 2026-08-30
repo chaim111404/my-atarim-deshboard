@@ -765,6 +765,27 @@ tr:hover td{background:#f8faff}
 .stg-field input{width:42px;border:none;background:none;font-family:'Heebo',sans-serif;font-size:13px;font-weight:800;color:var(--txt);outline:none;text-align:center}
 .stg-field select{border:none;background:none;font-family:'Heebo',sans-serif;font-size:12.5px;font-weight:700;color:var(--pd);outline:none;cursor:pointer}
 .stg-add-node{width:30px;height:30px;border-radius:50%;border:2px dashed var(--bdr);color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.stg-row .stg-card{cursor:grab}
+.stg-row .stg-card input,.stg-row .stg-card select{cursor:auto}
+/* הקובייה המרחפת בזמן גרירה */
+.stg-ghost{position:fixed;z-index:100001;pointer-events:none;margin:0;padding-bottom:0}
+.stg-ghost::before{display:none}
+.stg-ghost .stg-card{transform:rotate(1.2deg) scale(1.02);border-color:var(--p);box-shadow:0 18px 40px rgba(14,165,233,.35);background:var(--card)}
+.stg-ghost .stg-node{box-shadow:0 6px 18px rgba(14,165,233,.6)}
+/* החריץ שמסמן את נקודת הנחיתה */
+.stg-slot-row{display:flex;gap:12px;padding-bottom:13px}
+.stg-slot-row::before{display:none}
+.stg-slot-node{width:30px;height:30px;border-radius:50%;border:2px dashed var(--p);opacity:.55;flex-shrink:0;box-sizing:border-box}
+.stg-slot-card{flex:1;border:2px dashed var(--p);border-radius:12px;background:rgba(14,165,233,.07);opacity:.7;box-sizing:border-box}
+.stg-drag{display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--muted);cursor:grab;padding:2px;margin-inline-end:1px;opacity:.55;border-radius:6px;touch-action:none;transition:opacity .12s,background .12s}
+.stg-drag:hover{opacity:1;background:var(--bg)}
+.stg-drag:active{cursor:grabbing}
+.stg-r{transition:transform .16s ease}
+.stg-row.stg-dragging{opacity:.96}
+.stg-row.stg-dragging .stg-card{border-color:var(--p);box-shadow:0 12px 26px rgba(14,165,233,.28);transform:scale(1.012)}
+.stg-row.stg-dragging .stg-node{box-shadow:0 4px 14px rgba(14,165,233,.55)}
+#q-stages.stg-dnd-active{cursor:grabbing;user-select:none}
+#q-stages.stg-dnd-active .stg-t,#q-stages.stg-dnd-active .stg-field{pointer-events:none}
 .pay-presets{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
 .pay-preset{border:1.5px solid var(--bdr);background:var(--card);border-radius:10px;padding:7px 13px;font-family:'Heebo',sans-serif;font-size:12.5px;font-weight:700;color:var(--muted);cursor:pointer;transition:.14s}
 .pay-preset:hover{border-color:var(--p)}
@@ -2243,6 +2264,13 @@ async function doLogin() {
     }
 
     if(res.ok&&res.profile){
+      /* בלי זהות Firebase חתומה אין גישה למסד — עוצרים בקול במקום דשבורד ריק */
+      if(res.signedIn===false){
+        hideLoadOverlay();
+        e.textContent="ההתחברות לא הושלמה. רעננו את הדף ונסו שוב.";
+        e.classList.add("show");
+        return;
+      }
       const prof=res.profile, tid=prof.userId;
       /* בדיקת מכשיר קיים — התנהגות שהייתה קודם, נשמרת */
       try{
@@ -2287,7 +2315,9 @@ async function doLogin() {
 function doLogout() {
   localStorage.removeItem(SESSION_KEY);
   if(currentUser) remove(ref(db,`sessions/${currentUser.userId}/dashboard`)).catch(()=>{});
-  location.reload();
+  /* ניתוק גם מזהות Firebase — שלא תישאר זהות חתומה בדפדפן אחרי יציאה.
+     ה-reload ממתין לסיום הניתוק כדי שהרענון לא יקטע אותו. */
+  Promise.resolve().then(()=>window.WDAuth.signOut()).catch(()=>{}).then(()=>location.reload());
 }
 
 /* wdAuthGuard — סשן מקומי בלי זהות Firebase מאומתת אינו מספיק.
@@ -4605,7 +4635,7 @@ const CHAT_BGS=[
   {id:"color-purple",name:"זוהר סגול",cat:"color",light:"radial-gradient(125% 125% at 50% 10%,#fff 40%,#7c3aed 100%)"},
   {id:"color-slate",name:"זוהר אפור",cat:"color",light:"radial-gradient(125% 125% at 50% 10%,#fff 40%,#475569 100%)"},
   {id:"color-amber",name:"זוהר ענבר",cat:"color",light:"radial-gradient(125% 125% at 50% 10%,#ffffff 40%,#f59e0b 100%)"},
-  {id:"default",name:"ברירת מחדל",cat:"classic",light:"#f2f6fb"},
+  {id:"default",name:"ברירת מחדל",cat:"classic",light:`url("chat-bg-doodle-light.svg") 0 0/270px repeat, #e5ddd5`},
   {id:"cream",name:"שמנת",cat:"classic",light:"#f7f2e9"},
   {id:"sky",name:"תכלת",cat:"classic",light:"#e9f2fc"},
   {id:"mint",name:"מנטה",cat:"classic",light:"#e9f5ee"},
@@ -5795,10 +5825,11 @@ function renderQStages(){
   const host=document.getElementById("q-stages");if(!host)return;
   const unitOpts=(u)=>STG_UNITS.map(([v,t])=>`<option value="${v}"${u===v?" selected":""}>${t}</option>`).join("");
   host.innerHTML=qStages.map((s,i)=>`
-    <div class="stg-r">
+    <div class="stg-r stg-row" data-idx="${i}">
       <div class="stg-node">${i+1}</div>
       <div class="stg-card">
         <div class="stg-top">
+          <span class="stg-drag" title="גרור לשינוי סדר השלבים" aria-label="גרור לשינוי סדר"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg></span>
           <input class="stg-t" value="${esc(s.title||"")}" placeholder="שם השלב" oninput="qStgSet(${i},'title',this.value)"/>
           <button class="stg-del" type="button" title="הסר שלב" onclick="qStgDel(${i})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg></button>
         </div>
@@ -5808,8 +5839,115 @@ function renderQStages(){
         </div>
       </div>
     </div>`).join("")+`
-    <div class="stg-r" style="padding-bottom:0"><div class="stg-add-node"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div style="flex:1"></div></div>`;
+    <div class="stg-r stg-addrow" style="padding-bottom:0"><div class="stg-add-node"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div style="flex:1"></div></div>`;
   applyStageLockState();
+  wireStageDnD();
+}
+/* ── גרירה לשינוי סדר השלבים — הקובייה מרחפת עם העכבר ──
+   הכרטיס כולו ניתן לגרירה בעכבר (חוץ משדות/כפתורים); במגע — מהידית בלבד.
+   בזמן גרירה: הקובייה הופכת ל"רוח" צפה (position:fixed) שעוקבת אחרי הסמן,
+   במקומה מוצג חריץ מקווקו, ושאר השלבים מחליקים לפנות מקום (אנימציית FLIP).
+   בשחרור הקובייה "נוחתת" בחריץ ורק אז הסדר נשמר. */
+function wireStageDnD(){
+  const host=document.getElementById("q-stages");if(!host)return;
+  host.querySelectorAll(".stg-row").forEach(row=>{
+    row.addEventListener("pointerdown",e=>{
+      if(quoteReadOnly)return;
+      if(e.button!==undefined&&e.button!==0)return;                /* עכבר: כפתור שמאלי בלבד */
+      if(e.target.closest("input,select,button,textarea,label"))return; /* שדות נשארים שדות */
+      if(e.pointerType!=="mouse"&&!e.target.closest(".stg-drag"))return; /* מגע: רק מהידית */
+      e.preventDefault();
+      const addRow=host.querySelector(".stg-addrow");
+      const startX=e.clientX,startY=e.clientY;
+      let started=false,slot=null,grabDX=0,grabDY=0,dropping=false;
+      /* המכולה הנגללת של המודל — לגלילה אוטומטית בקצוות */
+      let scroller=host.parentElement;
+      while(scroller&&scroller!==document.body){
+        const cs=getComputedStyle(scroller);
+        if(/(auto|scroll)/.test(cs.overflowY)&&scroller.scrollHeight>scroller.clientHeight)break;
+        scroller=scroller.parentElement;
+      }
+      const begin=ev=>{
+        started=true;
+        const r=row.getBoundingClientRect();
+        grabDX=ev.clientX-r.left; grabDY=ev.clientY-r.top;
+        /* חריץ מקווקו בגובה הקובייה, במקומה */
+        slot=document.createElement("div");
+        slot.className="stg-r stg-slot-row";
+        slot.innerHTML='<div class="stg-slot-node"></div><div class="stg-slot-card"></div>';
+        slot.querySelector(".stg-slot-card").style.height=(r.height-13)+"px"; /* בלי ריווח-התחתית של השורה */
+        host.insertBefore(slot,row);
+        /* הקובייה הופכת לרוח צפה — מועברת ל-body כדי ש-position:fixed יתייחס
+           לחלון ולא למודל (לאנימציית הכניסה של .md יש transform שנשאר, והוא
+           הופך את המודל לעוגן של fixed ומזיז את הקואורדינטות) */
+        row.classList.add("stg-dragging","stg-ghost");
+        row.style.width=r.width+"px"; row.style.left=r.left+"px"; row.style.top=r.top+"px";
+        document.body.appendChild(row);
+        host.classList.add("stg-dnd-active");
+      };
+      /* FLIP — השורות האחרות מחליקות למקום החדש במקום לקפוץ */
+      const flipMoveSlot=(refNode)=>{
+        const rows=[...host.querySelectorAll(".stg-row:not(.stg-ghost)")];
+        const before=new Map(rows.map(r2=>[r2,r2.getBoundingClientRect().top]));
+        host.insertBefore(slot,refNode);
+        rows.forEach(r2=>{
+          const d=before.get(r2)-r2.getBoundingClientRect().top;
+          if(!d)return;
+          r2.style.transition="none";r2.style.transform=`translateY(${d}px)`;
+          requestAnimationFrame(()=>{r2.style.transition="transform .18s ease";r2.style.transform="";});
+        });
+      };
+      const onMove=ev=>{
+        if(dropping)return;
+        if(!started){if(Math.hypot(ev.clientX-startX,ev.clientY-startY)<4)return;begin(ev);} /* סף קטן — קליק נשאר קליק */
+        ev.preventDefault();
+        row.style.left=(ev.clientX-grabDX)+"px";
+        row.style.top=(ev.clientY-grabDY)+"px";
+        /* גלילה אוטומטית כשמתקרבים לקצה המכולה */
+        if(scroller&&scroller!==document.body){
+          const sr=scroller.getBoundingClientRect();
+          if(ev.clientY<sr.top+56)scroller.scrollTop-=14;
+          else if(ev.clientY>sr.bottom-56)scroller.scrollTop+=14;
+        }
+        /* מציאת נקודת הנחיתה לפי מרכז הקובייה המרחפת */
+        const midY=ev.clientY-grabDY+row.getBoundingClientRect().height/2;
+        const others=[...host.querySelectorAll(".stg-row:not(.stg-ghost)")];
+        const before=others.find(r2=>{const b=r2.getBoundingClientRect();return midY<b.top+b.height/2;});
+        const ref=before||addRow||null;
+        if(slot.nextElementSibling!==ref)flipMoveSlot(ref);
+      };
+      const finish=(commit)=>{
+        window.removeEventListener("pointermove",onMove);
+        window.removeEventListener("pointerup",onUp);
+        window.removeEventListener("pointercancel",onCancel);
+        if(!started)return;
+        dropping=true;
+        /* נחיתה רכה אל תוך החריץ */
+        const t=slot.getBoundingClientRect();
+        row.style.transition="left .16s ease,top .16s ease";
+        row.style.left=t.left+"px"; row.style.top=t.top+"px";
+        row.classList.remove("stg-dragging");
+        setTimeout(()=>{
+          /* הסדר הסופי: מיקום החריץ = מיקום הקובייה הנגררת */
+          const dragIdx=Number(row.dataset.idx);
+          const order=[...host.children].filter(el=>el===slot||(el.classList.contains("stg-row")&&!el.classList.contains("stg-addrow")))
+            .map(el=>el===slot?dragIdx:Number(el.dataset.idx));
+          const changed=commit&&order.some((idx,pos)=>idx!==pos);
+          slot.remove();
+          row.remove(); /* הרוח יושבת על body — מסירים, והרינדור בונה הכל מחדש */
+          host.classList.remove("stg-dnd-active");
+          if(changed)qStages=order.map(idx=>qStages[idx]);
+          renderQStages();refreshPayAnchors();
+          if(changed)scheduleQuoteSave();
+        },170);
+      };
+      const onUp=()=>finish(true);
+      const onCancel=()=>finish(false);
+      window.addEventListener("pointermove",onMove,{passive:false});
+      window.addEventListener("pointerup",onUp);
+      window.addEventListener("pointercancel",onCancel);
+    });
+  });
 }
 window.qStgSet=(i,field,val)=>{
   if(!qStages[i])return;
@@ -5900,7 +6038,7 @@ function recalcPayments(){
 function applyStageLockState(){
   const locked=quoteReadOnly;
   document.querySelectorAll("#q-stages input,#q-stages select,#q-payments input,#q-payments select,#q-pay-presets .pay-preset,#q-payments .pay-seg button,#q-materials input,#q-materials select,#q-materials .mat-io-chip,#q-bonuses input,#q-upgrades input,#q-legal input,#q-legal textarea").forEach(el=>{el.disabled=locked;});
-  document.querySelectorAll("#q-stages .stg-del,#q-payments .pay-del,#q-add-stage,#q-add-pay,#q-stages .stg-add-node,#q-materials .mat-del,#q-add-mat,#q-mat-catadd,#q-bonuses .row-del,#q-upgrades .row-del,#q-add-bon,#q-add-upg,#q-legal .lg-del,#q-legal-lib,#q-legal-free,#q-legal-mng").forEach(el=>{el.style.display=locked?"none":"";});
+  document.querySelectorAll("#q-stages .stg-del,#q-stages .stg-drag,#q-payments .pay-del,#q-add-stage,#q-add-pay,#q-stages .stg-add-node,#q-materials .mat-del,#q-add-mat,#q-mat-catadd,#q-bonuses .row-del,#q-upgrades .row-del,#q-add-bon,#q-add-upg,#q-legal .lg-del,#q-legal-lib,#q-legal-free,#q-legal-mng").forEach(el=>{el.style.display=locked?"none":"";});
   document.querySelectorAll("#q-pay-presets .pay-preset,#q-materials .mat-io-chip").forEach(el=>{el.style.pointerEvents=locked?"none":"";el.style.opacity=locked?".5":"";});
 }
 /* ── סעיף 4: חומרים נדרשים מהלקוח → משימות (משתמש מחדש ב-TASK_CATS/TASK_IO) ── */

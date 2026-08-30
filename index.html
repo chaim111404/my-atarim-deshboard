@@ -1172,6 +1172,7 @@ tr:hover td{background:#f8faff}
           <input type="file" accept="image/*" id="default-img-file" hidden/>
         </div>
       </div></div>
+      <div class="panel" id="p-aibrain"><div id="aibrain-root" style="padding:2px"></div></div>
     </div>
   </div>
 </div>
@@ -1253,7 +1254,7 @@ tr:hover td{background:#f8faff}
   <div class="mh"><span class="mt2" id="mo-quote-t">הצעת מחיר</span><span class="q-save-status" id="q-save-status"></span><button class="mc" id="mo-quote-close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
   <div class="mb">
     <div class="fr"><div class="fg"><label class="fl">כותרת ההצעה</label><input id="q-title" class="fi" type="text" placeholder="לדוגמה: בניית אתר תדמית"/></div><div class="fg"><label class="fl">מספר הצעה</label><input id="q-number" class="fi" type="text" readonly style="background:var(--bg);font-family:monospace;direction:ltr;text-align:right"/></div></div>
-    <div class="fst" style="display:flex;align-items:center;justify-content:space-between">סעיפים<button class="btn-as" id="q-open-pricing" type="button" style="margin-top:0;background:rgba(14,165,233,.1);color:var(--pd);border:none;display:inline-flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>מחשבון תמחור</button></div>
+    <div class="fst" style="display:flex;align-items:center;justify-content:space-between">סעיפים<span style="display:inline-flex;gap:8px"><button class="btn-as qai-sec" id="qai-items" type="button" onclick="openAiSection('items')" style="margin-top:0;background:rgba(139,92,246,.12);color:#7c3aed;border:none;display:inline-flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4V2M15 10V8M11 6H9M21 6h-2M17.4 4.6l1.4-1.4M17.4 7.4l1.4 1.4"/><path d="M3 21l9-9 2 2-9 9-2-2z"/><path d="M12 8l4 4"/></svg>בנה בעזרת AI</button><button class="btn-as" id="q-open-pricing" type="button" style="margin-top:0;background:rgba(14,165,233,.1);color:var(--pd);border:none;display:inline-flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>מחשבון תמחור</button></span></div>
     <div class="q-item-head"><span>תיאור</span><span>כמות</span><span>מחיר יח'</span><span>סה"כ</span><span></span></div>
     <div id="q-items"></div>
     <button class="btn-as" id="q-add-item" type="button">הוספת סעיף</button>
@@ -1286,11 +1287,11 @@ tr:hover td{background:#f8faff}
     </div>
 
     <!-- ── סעיף 3: שלבי פרויקט, לו"ז ותשלומים ── -->
-    <div class="fst" style="margin-top:20px">שלבי הפרויקט<span style="margin-inline-start:auto;font-size:11px;font-weight:600;color:var(--muted)">יורשים לפרויקט אוטומטית בחתימה</span></div>
+    <div class="fst" style="margin-top:20px">שלבי הפרויקט<button class="btn-as qai-sec" id="qai-stages" type="button" onclick="openAiSection('stages')" style="margin-top:0;margin-inline-start:10px;background:rgba(139,92,246,.12);color:#7c3aed;border:none;display:inline-flex;align-items:center;gap:5px;padding:4px 11px;font-size:12px;font-weight:700"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4V2M15 10V8M11 6H9M21 6h-2M17.4 4.6l1.4-1.4M17.4 7.4l1.4 1.4"/><path d="M3 21l9-9 2 2-9 9-2-2z"/><path d="M12 8l4 4"/></svg>בנה בעזרת AI</button><span style="margin-inline-start:auto;font-size:11px;font-weight:600;color:var(--muted)">יורשים לפרויקט אוטומטית בחתימה</span></div>
     <div class="stg-line" id="q-stages"></div>
     <button class="btn-as" id="q-add-stage" type="button" style="margin-top:2px">הוספת שלב</button>
 
-    <div class="fst" style="margin-top:20px">לוח תשלומים<span style="margin-inline-start:auto;font-size:11px;font-weight:600;color:var(--muted)">סכום התשלומים חייב להיות שווה לסה"כ ההצעה</span></div>
+    <div class="fst" style="margin-top:20px">לוח תשלומים<button class="btn-as qai-sec" id="qai-payments" type="button" onclick="openAiSection('payments')" style="margin-top:0;margin-inline-start:10px;background:rgba(139,92,246,.12);color:#7c3aed;border:none;display:inline-flex;align-items:center;gap:5px;padding:4px 11px;font-size:12px;font-weight:700"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4V2M15 10V8M11 6H9M21 6h-2M17.4 4.6l1.4-1.4M17.4 7.4l1.4 1.4"/><path d="M3 21l9-9 2 2-9 9-2-2z"/><path d="M12 8l4 4"/></svg>בנה בעזרת AI</button><span style="margin-inline-start:auto;font-size:11px;font-weight:600;color:var(--muted)">סכום התשלומים חייב להיות שווה לסה"כ ההצעה</span></div>
     <div class="pay-presets" id="q-pay-presets">
       <button type="button" class="pay-preset" data-split="100">תשלום יחיד</button>
       <button type="button" class="pay-preset" data-split="50,50">מקדמה + סיום</button>
@@ -1307,26 +1308,26 @@ tr:hover td{background:#f8faff}
     <div class="pay-bar"><i id="q-pay-bal-bar" style="width:0"></i></div>
 
     <!-- ── סעיף 4: חומרים נדרשים מהלקוח → משימות ── -->
-    <div class="fst" style="margin-top:20px">חומרים נדרשים מהלקוח<span style="margin-inline-start:auto;font-size:11px;font-weight:600;color:var(--muted)">כל חומר → קוביית משימה בחתימה</span></div>
+    <div class="fst" style="margin-top:20px">חומרים נדרשים מהלקוח<button class="btn-as qai-sec" id="qai-materials" type="button" onclick="openAiSection('materials')" style="margin-top:0;margin-inline-start:10px;background:rgba(139,92,246,.12);color:#7c3aed;border:none;display:inline-flex;align-items:center;gap:5px;padding:4px 11px;font-size:12px;font-weight:700"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4V2M15 10V8M11 6H9M21 6h-2M17.4 4.6l1.4-1.4M17.4 7.4l1.4 1.4"/><path d="M3 21l9-9 2 2-9 9-2-2z"/><path d="M12 8l4 4"/></svg>בנה בעזרת AI</button><span style="margin-inline-start:auto;font-size:11px;font-weight:600;color:var(--muted)">כל חומר → קוביית משימה בחתימה</span></div>
     <div style="font-size:12px;color:var(--muted);margin:2px 0 12px">החומרים שהלקוח צריך לספק כדי להתחיל. בחתימה הם הופכים למשימות שהלקוח מטפל בהן בצ'אט.</div>
     <div class="mat-catadd" id="q-mat-catadd"></div>
     <div id="q-materials"></div>
     <button class="btn-as" id="q-add-mat" type="button" style="margin-top:2px">הוספת חומר מותאם</button>
 
     <!-- ── סעיף 5: בונוסים במתנה ── -->
-    <div class="fst" style="margin-top:20px">בונוסים במתנה<span style="margin-inline-start:auto;font-size:11px;font-weight:600;color:var(--muted)">מוצג ללקוח כמתנה — ללא חיוב</span></div>
+    <div class="fst" style="margin-top:20px">בונוסים במתנה<button class="btn-as qai-sec" id="qai-bonuses" type="button" onclick="openAiSection('bonuses')" style="margin-top:0;margin-inline-start:10px;background:rgba(139,92,246,.12);color:#7c3aed;border:none;display:inline-flex;align-items:center;gap:5px;padding:4px 11px;font-size:12px;font-weight:700"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4V2M15 10V8M11 6H9M21 6h-2M17.4 4.6l1.4-1.4M17.4 7.4l1.4 1.4"/><path d="M3 21l9-9 2 2-9 9-2-2z"/><path d="M12 8l4 4"/></svg>בנה בעזרת AI</button><span style="margin-inline-start:auto;font-size:11px;font-weight:600;color:var(--muted)">מוצג ללקוח כמתנה — ללא חיוב</span></div>
     <div style="font-size:12px;color:var(--muted);margin:2px 0 12px">פריטים שאתה נותן במתנה. השווי (אופציונלי) מוצג ללקוח כדי להדגיש ערך, אך לא מתווסף למחיר.</div>
     <div id="q-bonuses"></div>
     <button class="btn-as" id="q-add-bon" type="button" style="margin-top:2px">הוספת בונוס</button>
 
     <!-- ── סעיף 6: שדרוגים בתשלום ── -->
-    <div class="fst" style="margin-top:20px">שדרוגים בתשלום<span style="margin-inline-start:auto;font-size:11px;font-weight:600;color:var(--muted)">הלקוח בוחר בעמוד ההצעה — המחיר מתעדכן חי</span></div>
+    <div class="fst" style="margin-top:20px">שדרוגים בתשלום<button class="btn-as qai-sec" id="qai-upgrades" type="button" onclick="openAiSection('upgrades')" style="margin-top:0;margin-inline-start:10px;background:rgba(139,92,246,.12);color:#7c3aed;border:none;display:inline-flex;align-items:center;gap:5px;padding:4px 11px;font-size:12px;font-weight:700"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4V2M15 10V8M11 6H9M21 6h-2M17.4 4.6l1.4-1.4M17.4 7.4l1.4 1.4"/><path d="M3 21l9-9 2 2-9 9-2-2z"/><path d="M12 8l4 4"/></svg>בנה בעזרת AI</button><span style="margin-inline-start:auto;font-size:11px;font-weight:600;color:var(--muted)">הלקוח בוחר בעמוד ההצעה — המחיר מתעדכן חי</span></div>
     <div style="font-size:12px;color:var(--muted);margin:2px 0 12px">תוספות אופציונליות. בעמוד ההצעה הלקוח מסמן מה שהוא רוצה והמחיר הכולל מתעדכן אוטומטית.</div>
     <div id="q-upgrades"></div>
     <button class="btn-as" id="q-add-upg" type="button" style="margin-top:2px">הוספת שדרוג</button>
 
     <!-- ── סעיף 8: סעיפים משפטיים ותנאי שימוש ── -->
-    <div class="fst" style="margin-top:20px">סעיפים משפטיים ותנאי שימוש<button class="lg-mng" id="q-legal-mng" type="button"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>ניהול רכיבים קבועים</button></div>
+    <div class="fst" style="margin-top:20px">סעיפים משפטיים ותנאי שימוש<button class="btn-as qai-sec" id="qai-legal" type="button" onclick="openAiSection('legal')" style="margin-top:0;margin-inline-start:10px;background:rgba(139,92,246,.12);color:#7c3aed;border:none;display:inline-flex;align-items:center;gap:5px;padding:4px 11px;font-size:12px;font-weight:700"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4V2M15 10V8M11 6H9M21 6h-2M17.4 4.6l1.4-1.4M17.4 7.4l1.4 1.4"/><path d="M3 21l9-9 2 2-9 9-2-2z"/><path d="M12 8l4 4"/></svg>בנה בעזרת AI</button><button class="lg-mng" id="q-legal-mng" type="button"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>ניהול רכיבים קבועים</button></div>
     <div style="font-size:12px;color:var(--muted);margin:2px 0 12px">הסעיפים הקבועים נטענים אוטומטית לכל הצעה חדשה. הסר מה שלא רלוונטי, ערוך נוסח, או הוסף סעיף חופשי. לחץ על סעיף כדי לפתוח לעריכה.</div>
     <div id="q-legal"></div>
     <div class="btns-row" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:2px">
@@ -2950,6 +2951,7 @@ function buildSidebar() {
       {id:"ni-reports",panel:"p-reports",title:"דיווחים",ic:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>',always:true,badge:"reports-badge"},
       {id:"ni-ratings",panel:"p-ratings",title:"גרף דירוגים",ic:'<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>',always:true},
       {id:"ni-settings",panel:"p-settings",title:"הגדרות כלליות",ic:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82A1.65 1.65 0 003 13.09H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>',always:true},
+      {id:"ni-aibrain",panel:"p-aibrain",title:"מוח AI",ic:'<rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/>',always:true},
     ]:[]),
   ];
   nav.innerHTML=`<div class="sb-sec">ראשי</div>`+items.map((item,idx)=>{
@@ -2968,6 +2970,7 @@ function buildSidebar() {
       if(!allowed){showPermDenied(item.perm);return;}
       showPanel(item.panel,item.id,item.title);
       if(item.panel==="p-proposals")renderProposals();
+      if(item.panel==="p-aibrain")renderAiBrain();
     };
   });
   /* events */
@@ -3137,10 +3140,21 @@ function startListening() {
     });
   }
   showLoadOverlay("טוען נתונים...");
-  let n=0; const done=()=>{n++;if(n>=3)hideLoadOverlay();};
-  onValue(ref(db,"clients"),s=>{clients=s.val()||{};renderAll();done();});
-  onValue(ref(db,"blocked"),s=>{blocked=s.val()||{};renderBlockedTable();updateBlockedBadge();done();});
-  onValue(ref(db,"usedPins"),s=>{usedPins=s.val()||{};done();});
+  let n=0, bootSettled=false;
+  const done=()=>{n++;if(n>=3&&!bootSettled){bootSettled=true;hideLoadOverlay();}};
+  /* רשת ביטחון: אם קריאת-שורש נדחית (למשל זהות לא מאומתת — קורה כשמריצים
+     מ-file:// במקום מה-URL הפרוס) או שהטעינה לא הושלמה — לא נתקעים על אנימציית
+     טעינה אין-סופית; מנקים סשן ומחזירים למסך התחברות עם הסבר. */
+  const bootFail=()=>{
+    if(bootSettled)return; bootSettled=true;
+    hideLoadOverlay();
+    try{ localStorage.removeItem(SESSION_KEY); window.WDAuth.signOut(); }catch(e){}
+    showAutoLogoutMsg();
+  };
+  onValue(ref(db,"clients"),s=>{clients=s.val()||{};renderAll();done();},bootFail);
+  onValue(ref(db,"blocked"),s=>{blocked=s.val()||{};renderBlockedTable();updateBlockedBadge();done();},bootFail);
+  onValue(ref(db,"usedPins"),s=>{usedPins=s.val()||{};done();},bootFail);
+  setTimeout(()=>{ if(!bootSettled) bootFail(); }, 12000);
   onValue(ref(db,"team"),s=>{
     team=s.val()||{};
     renderTeamTable();
@@ -4657,6 +4671,139 @@ document.addEventListener("click",(e)=>{const menu=document.getElementById("chat
 
 /* ── Utils ── */
 function showPanel(id,navId,title){document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll(".ni").forEach(n=>n.classList.remove("active"));const el=document.getElementById(navId);if(el)el.classList.add("active");document.getElementById("topbar-title").textContent=title;if(window.innerWidth<=768)toggleSB(false);}
+
+/* ═══ לשונית ניהול המוח (admin) — סקירה, תקרות, סקילים, חוקה, ידע משפטי, יומן.
+   קריאה: task:"aiadmin". שמירה דורשת קוד TOTP (נאכף בשרת). ═══ */
+function ensureAibCss(){
+  if(document.getElementById("aib-css"))return;
+  const st=document.createElement("style");st.id="aib-css";
+  st.textContent=`
+  .aib-grid{display:grid;gap:14px}
+  .aib-sec{background:var(--card);border:1px solid var(--bdr);border-radius:16px;padding:16px 18px}
+  .aib-sec h3{margin:0 0 4px;font-size:15px;font-weight:800;color:var(--text);display:flex;align-items:center;gap:8px}
+  .aib-sec .sub{font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.5}
+  .aib-ta{width:100%;box-sizing:border-box;border:1.5px solid var(--bdr);border-radius:12px;padding:11px 13px;font-family:'Heebo',sans-serif;font-size:13px;line-height:1.65;resize:vertical;background:var(--bg);color:var(--text)}
+  .aib-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .aib-num{width:104px;border:1.5px solid var(--bdr);border-radius:10px;padding:8px 10px;font-family:'Heebo',sans-serif;font-size:14px;font-weight:700;text-align:center;background:var(--bg);color:var(--text)}
+  .aib-tog{display:inline-flex;align-items:center;gap:8px;background:var(--bg);border:1.5px solid var(--bdr);border-radius:12px;padding:8px 12px;cursor:pointer;font-size:13px;font-weight:700;color:var(--text);user-select:none}
+  .aib-sw{width:38px;height:22px;border-radius:11px;background:#cbd5e1;position:relative;transition:.2s;flex:none}
+  .aib-sw::after{content:"";position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+  .aib-tog.on .aib-sw{background:#7c3aed}
+  .aib-tog.on .aib-sw::after{right:18px}
+  .aib-save{background:linear-gradient(135deg,#8b5cf6,#6d28d9);border:none;border-radius:11px;color:#fff;font-family:'Heebo',sans-serif;font-size:13.5px;font-weight:700;padding:9px 20px;cursor:pointer;margin-top:12px}
+  .aib-restore{background:var(--bg);border:1.5px solid var(--bdr);border-radius:11px;color:var(--muted);font-family:'Heebo',sans-serif;font-size:12.5px;font-weight:600;padding:7px 14px;cursor:pointer;margin-inline-start:8px;margin-top:12px}
+  .aib-bar{height:10px;border-radius:6px;background:var(--bdr);overflow:hidden}
+  .aib-bar>span{display:block;height:100%;background:linear-gradient(90deg,#8b5cf6,#6d28d9)}
+  .aib-stat{display:flex;gap:14px;flex-wrap:wrap}
+  .aib-stat .box{flex:1;min-width:150px;background:var(--bg);border:1px solid var(--bdr);border-radius:12px;padding:12px 14px}
+  .aib-stat .box .n{font-size:22px;font-weight:800;color:var(--text)}
+  .aib-stat .box .l{font-size:11.5px;color:var(--muted);font-weight:600;margin-top:2px}
+  .aib-code-bar{position:sticky;top:8px;z-index:5;background:rgba(139,92,246,.09);border:1px solid rgba(139,92,246,.3);border-radius:14px;padding:11px 15px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .aib-code-bar input{width:130px;border:1.5px solid var(--bdr);border-radius:10px;padding:8px 10px;font-size:16px;font-weight:800;text-align:center;letter-spacing:3px;font-family:monospace;background:#fff;color:#0c1a2e}
+  .aib-log{width:100%;border-collapse:collapse;font-size:12.5px}
+  .aib-log th,.aib-log td{text-align:right;padding:7px 9px;border-bottom:1px solid var(--bdr);white-space:nowrap}
+  .aib-log th{color:var(--muted);font-weight:700;font-size:11.5px}`;
+  document.head.appendChild(st);
+}
+let aibStatus=null;
+async function renderAiBrain(){
+  ensureAibCss();
+  const root=document.getElementById("aibrain-root");if(!root)return;
+  root.innerHTML=`<div style="padding:44px 0;display:flex;justify-content:center">${aiThinkingHTML("טוען את מרכז השליטה")}</div>`;
+  const res=await authedPost("aiAssist",{task:"aiadmin",action:"status"});
+  if(!res||!res.ok){root.innerHTML=`<div class="aib-sec">טעינת מרכז השליטה נכשלה${res&&res.error==="admin-only"?" — למנהל בלבד":""}.</div>`;return;}
+  aibStatus=res;
+  const s=res, cap=Number(s.caps.globalUsd)||5, cost=Number(s.usage.costUsd)||0, pct=cap>0?Math.min(100,Math.round(cost/cap*100)):0;
+  const callsToday=Object.values(s.usage.byUser||{}).reduce((a,b)=>a+(Number(b)||0),0);
+  const con=s.constitution, def=s.defaults;
+  const skillTog=(key,label)=>`<div class="aib-tog${s.skills[key]!==false?" on":""}" data-skill="${key}" onclick="this.classList.toggle('on')"><span class="aib-sw"></span>${esc(label)}</div>`;
+  const secLabels={stages:"שלבים",items:"סעיפי תמחור",payments:"תשלומים",materials:"חומרים",bonuses:"בונוסים",upgrades:"שדרוגים",legal:"משפטי"};
+  root.innerHTML=`
+  <div class="aib-code-bar">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+    <span style="font-size:13px;font-weight:700;color:#6d28d9">לשמירת שינויים — הזן קוד מאפליקציית האבטחה</span>
+    <input id="aib-code" type="text" inputmode="numeric" maxlength="8" placeholder="••••••"/>
+  </div>
+  <div class="aib-grid">
+    <div class="aib-sec">
+      <h3>סקירה — היום (${esc(s.usage.date)})</h3>
+      <div class="aib-stat">
+        <div class="box"><div class="n">$${cost.toFixed(3)}</div><div class="l">עלות היום · תקרה $${cap}</div><div class="aib-bar" style="margin-top:8px"><span style="width:${pct}%"></span></div></div>
+        <div class="box"><div class="n">${callsToday}</div><div class="l">קריאות AI היום</div></div>
+      </div>
+    </div>
+    <div class="aib-sec">
+      <h3>תקרות</h3>
+      <div class="sub">מגבילות ניצול תקציב. תקרה גלובלית ב-$, ותקרת קריאות יומית לכל תפקיד.</div>
+      <div class="aib-row">
+        <label style="font-size:12.5px;font-weight:700;text-align:center">גלובלי ($/יום)<br/><input class="aib-num" id="cap-globalUsd" type="number" min="0" step="0.5" value="${s.caps.globalUsd}"/></label>
+        <label style="font-size:12.5px;font-weight:700;text-align:center">לקוח (קריאות)<br/><input class="aib-num" id="cap-client" type="number" min="0" value="${s.caps.perUser.client}"/></label>
+        <label style="font-size:12.5px;font-weight:700;text-align:center">נציג<br/><input class="aib-num" id="cap-agent" type="number" min="0" value="${s.caps.perUser.agent}"/></label>
+        <label style="font-size:12.5px;font-weight:700;text-align:center">מנהל<br/><input class="aib-num" id="cap-admin" type="number" min="0" value="${s.caps.perUser.admin}"/></label>
+      </div>
+      <button class="aib-save" onclick="aibSaveCaps()">שמירת תקרות</button>
+    </div>
+    <div class="aib-sec">
+      <h3>סקילים — הפעלה/כיבוי</h3>
+      <div class="sub">כיבוי סקיל מפסיק אותו מיד — הצ'אט/הכפתור מסליק לצוות במקום לפעול.</div>
+      <div class="aib-row" style="gap:8px">${skillTog("chat","עוזר צ'אט ללקוח")}${skillTog("quote","הצעה (ראשי)")}</div>
+      <div class="sub" style="margin:14px 0 6px">סעיפי ההצעה:</div>
+      <div class="aib-row" style="gap:8px">${s.sections.map(k=>skillTog("quote."+k,secLabels[k]||k)).join("")}</div>
+      <button class="aib-save" onclick="aibSaveSkills()">שמירת סקילים</button>
+    </div>
+    <div class="aib-sec">
+      <h3>חוקה — עוזר הצ'אט (לקוח)</h3>
+      <div class="sub">האישיות והגבולות של המוח בצ'אט הלקוח.</div>
+      <textarea class="aib-ta" id="con-client" rows="8">${esc(con.client||def.constitution.client)}</textarea>
+      <div><button class="aib-save" onclick="aibSaveConstitution('client')">שמירת חוקת לקוח</button><button class="aib-restore" onclick="document.getElementById('con-client').value=aibDefault('client')">שחזר ברירת מחדל</button></div>
+    </div>
+    <div class="aib-sec">
+      <h3>חוקה — קו-פיילוט ההצעות</h3>
+      <div class="sub">ההנחיות למוח בבניית סעיפי ההצעה.</div>
+      <textarea class="aib-ta" id="con-quote" rows="8">${esc(con.quote||def.constitution.quote)}</textarea>
+      <div><button class="aib-save" onclick="aibSaveConstitution('quote')">שמירת חוקת הצעות</button><button class="aib-restore" onclick="document.getElementById('con-quote').value=aibDefault('quote')">שחזר ברירת מחדל</button></div>
+    </div>
+    <div class="aib-sec">
+      <h3>ידע משפטי (§26)</h3>
+      <div class="sub">הבסיס שהמוח משתמש בו לניסוח סעיפים. הנחיה, לא ייעוץ משפטי.</div>
+      <textarea class="aib-ta" id="legal-knowledge" rows="10">${esc(s.legalKnowledge||def.legalKnowledge)}</textarea>
+      <div><button class="aib-save" onclick="aibSaveLegal()">שמירת ידע משפטי</button><button class="aib-restore" onclick="document.getElementById('legal-knowledge').value=aibDefault('legal')">שחזר ברירת מחדל</button></div>
+    </div>
+    <div class="aib-sec">
+      <h3>יומן פעילות<button class="aib-restore" style="margin:0 auto 0 0" onclick="aibLoadLog()">רענון</button></h3>
+      <div id="aib-log-host" class="sub">טוען...</div>
+    </div>
+  </div>`;
+  aibLoadLog();
+}
+function aibDefault(which){
+  if(!aibStatus)return "";
+  if(which==="legal")return aibStatus.defaults.legalKnowledge;
+  return aibStatus.defaults.constitution[which]||"";
+}
+async function aibSave(patch){
+  const codeEl=document.getElementById("aib-code");
+  const code=(codeEl&&codeEl.value||"").trim();
+  if(!code){toast("הזן קוד אימות מהאפליקציה","e");if(codeEl)codeEl.focus();return false;}
+  const res=await authedPost("aiAssist",{task:"aiadmin",action:"save",code,patch});
+  if(res&&res.ok){toast("נשמר ✓","s");return true;}
+  const m={"totp-required":"נדרש קוד אימות","totp-invalid":"קוד אימות שגוי — נסה קוד עדכני","admin-only":"למנהל בלבד","nothing":"אין שינוי לשמירה"};
+  toast((res&&m[res.error])||"השמירה נכשלה","e");return false;
+}
+window.aibSaveCaps=()=>aibSave({caps:{globalUsd:Number(document.getElementById("cap-globalUsd").value)||0,client:Number(document.getElementById("cap-client").value)||0,agent:Number(document.getElementById("cap-agent").value)||0,admin:Number(document.getElementById("cap-admin").value)||0}});
+window.aibSaveSkills=()=>{const skills={};document.querySelectorAll("#aibrain-root .aib-tog[data-skill]").forEach(t=>{skills[t.dataset.skill]=t.classList.contains("on");});return aibSave({skills});};
+window.aibSaveConstitution=(which)=>aibSave({constitution:{[which]:document.getElementById("con-"+which).value}});
+window.aibSaveLegal=()=>aibSave({legalKnowledge:document.getElementById("legal-knowledge").value});
+async function aibLoadLog(){
+  const host=document.getElementById("aib-log-host");if(!host)return;
+  host.textContent="טוען...";
+  const res=await authedPost("aiAssist",{task:"aiadmin",action:"log",limit:60});
+  if(!res||!res.ok){host.textContent="טעינת היומן נכשלה.";return;}
+  if(!res.log||!res.log.length){host.textContent="אין עדיין רשומות ביומן.";return;}
+  const tm=(ts)=>{try{return new Date(ts).toLocaleString("he-IL",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});}catch(e){return "";}};
+  const outcome=(e)=>e.ok?'<span style="color:#16a34a;font-weight:800">✓</span>':(e.escalated?'הוסלק':(e.blocked?esc(e.blocked):(e.skipped?'דולג':'<span style="color:#dc2626">✕</span>')));
+  host.innerHTML=`<div style="overflow:auto"><table class="aib-log"><thead><tr><th>זמן</th><th>משימה</th><th>תוצאה</th><th>עלות</th><th>כלים</th></tr></thead><tbody>${res.log.map(e=>`<tr><td>${tm(e.at)}</td><td>${esc(e.task||"")}${e.section?" · "+esc(e.section):""}</td><td>${outcome(e)}</td><td>${e.cost!=null?"$"+Number(e.cost).toFixed(4):""}</td><td style="color:var(--muted)">${esc((e.tools||[]).join(", "))}</td></tr>`).join("")}</tbody></table></div>`;
+}
 function toggleSB(f){const sb=document.getElementById("sidebar"),ov=document.getElementById("sb-ov");const o=f!==undefined?f:!sb.classList.contains("open");sb.classList.toggle("open",o);ov.classList.toggle("show",o);}
 function openMo(id){document.getElementById(id).classList.add("show");}
 function closeMo(id){document.getElementById(id).classList.remove("show");}
@@ -5609,6 +5756,144 @@ async function openQuoteBuilder(pid,quoteId){
   openMo("mo-quote");
 }
 window.openQuoteBuilder=openQuoteBuilder;
+/* ═══ P2': מערכת ה-AI בבונה ההצעה — פר-סעיף (שלבים/פריטים/תשלומים) ═══
+   כל סעיף = כפתור משלו → openAiSection(section). המוח בונה רק את אותו סעיף,
+   קוהרנטי למצב-ההצעה (context). הכל טיוטה נערכת; שום דבר לא נשלח/נשמר אוטומטית. */
+
+/* ── תשתית UI/UX משותפת לכל מערכת ה-AI: אנימציית "חשיבה" ייחודית (לא ספינר) ── */
+function ensureAiCss(){
+  if(document.getElementById("wd-ai-css"))return;
+  const st=document.createElement("style");st.id="wd-ai-css";
+  st.textContent=`
+  .wd-ai-think{display:flex;flex-direction:column;align-items:center;gap:14px;padding:8px}
+  .wd-ai-orb .r{animation:wdAiRip 1.9s ease-out infinite}
+  .wd-ai-orb .r2{animation-delay:.95s}
+  .wd-ai-orb .orbit{transform-box:fill-box;transform-origin:center;animation:wdAiSpin 3.4s linear infinite}
+  .wd-ai-orb .core{transform-box:fill-box;transform-origin:center;animation:wdAiPulse 1.6s ease-in-out infinite;filter:drop-shadow(0 0 5px rgba(124,58,237,.6))}
+  @keyframes wdAiRip{0%{r:11px;opacity:.5}100%{r:31px;opacity:0}}
+  @keyframes wdAiSpin{to{transform:rotate(360deg)}}
+  @keyframes wdAiPulse{0%,100%{transform:scale(.8)}50%{transform:scale(1.12)}}
+  .wd-ai-lbl{font-size:13.5px;font-weight:700;color:#7c3aed;letter-spacing:.2px}
+  .wd-ai-lbl i{font-style:normal;animation:wdAiDots 1.4s steps(1,end) infinite;opacity:0}
+  .wd-ai-lbl i:nth-child(2){animation-delay:.25s}.wd-ai-lbl i:nth-child(3){animation-delay:.5s}
+  @keyframes wdAiDots{0%,100%{opacity:0}25%,90%{opacity:1}}`;
+  document.head.appendChild(st);
+}
+/* מחזיר אנימציית AI חיה — לשימוש בכל מקום שהמודל עובד (הצעות, צ'אט עתידי, סקילים) */
+function aiThinkingHTML(label){
+  ensureAiCss();
+  return `<div class="wd-ai-think"><svg class="wd-ai-orb" width="76" height="76" viewBox="0 0 76 76" fill="none" aria-hidden="true">
+    <defs><linearGradient id="wdAiG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#6d28d9"/></linearGradient></defs>
+    <circle class="r" cx="38" cy="38" r="11" stroke="url(#wdAiG)" stroke-width="2"/>
+    <circle class="r r2" cx="38" cy="38" r="11" stroke="url(#wdAiG)" stroke-width="2"/>
+    <g class="orbit"><circle cx="38" cy="38" r="25" stroke="url(#wdAiG)" stroke-width="2" stroke-dasharray="5 11" opacity=".5"/><circle cx="38" cy="13" r="3" fill="#a78bfa"/><circle cx="63" cy="38" r="2.3" fill="#c4b5fd"/><circle cx="20" cy="55" r="2" fill="#8b5cf6"/></g>
+    <circle class="core" cx="38" cy="38" r="9" fill="url(#wdAiG)"/>
+  </svg>${label?`<div class="wd-ai-lbl">${esc(label)}<i>.</i><i>.</i><i>.</i></div>`:""}</div>`;
+}
+
+/* מטא-דאטה פר-סעיף */
+const AI_SEC={
+  stages:{title:"בניית שלבים",verb:"בונה שלבים",need:false,ph:"תאר את הפרויקט (או השאר ריק — נבנה מהסעיפים הקיימים): אתר תדמית 5 עמודים, חנות, בלוג"},
+  items:{title:"בניית סעיפי תמחור",verb:"מתמחר סעיפים",need:true,ph:"תאר את היקף העבודה: אתר תדמית לעורך דין, טופס יצירת קשר, בלוג, SEO בסיסי"},
+  payments:{title:"פריסת תשלומים",verb:"בונה פריסה",need:false,ph:"העדפות (אופציונלי): מקדמה 40% עם החתימה, השאר בסיום"},
+  materials:{title:"חומרים מהלקוח",verb:"בונה רשימת חומרים",need:false,ph:"תאר את הפרויקט (או השאר ריק): אתר תדמית — לוגו, תמונות, טקסטים, פרטי קשר"},
+  bonuses:{title:"בונוסים במתנה",verb:"מנסח בונוסים",need:false,ph:"סוג הפרויקט / קהל היעד (אופציונלי): עסק מקומי, לקוח פרימיום"},
+  upgrades:{title:"שדרוגים בתשלום",verb:"מנסח שדרוגים",need:false,ph:"תחום העסק (אופציונלי): מסעדה, קליניקה, חנות אונליין"},
+  legal:{title:"סעיפים משפטיים",verb:"מנסח סעיפים משפטיים",need:false,ph:"דגשים משפטיים (אופציונלי): פרויקט מורכב, לקוח שמבקש שינויים רבים, אתר מסחר..."},
+};
+/* אוסף את מצב-ההצעה הנוכחי מהטופס — כדי שהמוח יבנה קוהרנטי לשאר ההצעה */
+function collectQuoteContext(){
+  const items=[];
+  document.querySelectorAll("#q-items .q-item-row").forEach(row=>{
+    const desc=row.querySelector(".q-desc").value.trim();
+    const qty=Number(row.querySelector(".q-qty").value)||0;
+    const price=Number(row.querySelector(".q-price").value)||0;
+    if(desc||price)items.push({desc,qty,price});
+  });
+  return {
+    title:(document.getElementById("q-title").value||"").trim(),
+    projectName:(quotes[curQuoteId]&&quotes[curQuoteId].projectName)||"",
+    items,
+    stages:qStages.map(s=>({title:s.title,dur:s.dur,durUnit:s.durUnit,weight:s.weight})),
+    grandTotal:Math.round(currentGrand()),
+  };
+}
+/* מזריק את תוצר הסעיף לטופס דרך הפונקציות הקיימות — רק הסעיף שנבנה */
+function applyAiSection(section,draft){
+  if(!draft)return;
+  if(section==="stages"&&Array.isArray(draft.stages)){
+    qStages=draft.stages.map(s=>({id:newStageId(),title:s.title||"",dur:s.dur!=null?s.dur:1,durUnit:s.durUnit||"weeks",weight:s.weight!=null?s.weight:1}));
+    renderQStages();
+  }else if(section==="items"&&Array.isArray(draft.items)){
+    document.getElementById("q-items").innerHTML="";
+    draft.items.forEach(it=>addQuoteItemRow({desc:it.desc||"",qty:it.qty!=null?it.qty:1,price:it.price!=null?it.price:0}));
+    if(!draft.items.length)addQuoteItemRow({desc:"",qty:1,price:0});
+    recalcQuote();
+  }else if(section==="payments"&&Array.isArray(draft.payments)){
+    qPayments=draft.payments.map(p=>({label:p.label||"",mode:p.mode==="amount"?"amount":"pct",value:p.value!=null?p.value:0,stageRef:""}));
+    renderQPayments();
+  }else if(section==="materials"&&Array.isArray(draft.materials)){
+    qMaterials=draft.materials.map(m=>({title:m.title||"",category:m.category||"other",input:m.input||"upload",note:m.note||""}));
+    renderQMaterials();
+  }else if(section==="bonuses"&&Array.isArray(draft.bonuses)){
+    qBonuses=draft.bonuses.map(b=>({title:b.title||"",value:b.value!=null?b.value:0}));
+    renderQBonuses();
+  }else if(section==="upgrades"&&Array.isArray(draft.upgrades)){
+    qUpgrades=draft.upgrades.map(u=>({id:newUpgId(),title:u.title||"",price:u.price!=null?u.price:0,desc:u.desc||"",selectedByClient:false}));
+    renderQUpgrades();
+  }else if(section==="legal"&&Array.isArray(draft.clauses)){
+    qLegal=draft.clauses.map(c=>({title:c.title||"",body:c.body||"",fromPreset:!!c.fromPreset,_open:false}));
+    renderQLegal();
+  }
+  scheduleQuoteSave();
+}
+const AI_ERR={"ai-unavailable":"שירות ה-AI לא זמין כרגע (ייתכן שאין אשראי). נסה שוב מאוחר יותר.","cost-cap":"נגמרה מכסת ה-AI היומית של המערכת.","daily-user-cap":"הגעת למכסת השימוש היומית שלך.","rate-limit":"יותר מדי בקשות בזמן קצר. המתן רגע ונסה שוב.","quotes-forbidden":"אין לך הרשאה ליצור הצעות.","bad-section":"סעיף לא מזוהה.","empty-brief":"כתוב תיאור קצר קודם.","no-draft":"לא הצלחתי לבנות מהתיאור. נסה לפרט יותר.","refused":"הבקשה נדחתה. נסח מחדש.","network":"תקלת רשת. נסה שוב.","no-session":"פג תוקף ההתחברות. רענן את הדף."};
+window.openAiSection=function(section){
+  const meta=AI_SEC[section];if(!meta)return;
+  if(!quotesCanManage()){showPermDenied("quotes");return;}
+  if(!curQuoteId)return;
+  if(quoteReadOnly)return toast("ההצעה נעולה","e");
+  if(document.getElementById("ai-sec-ov"))return;
+  ensureAiCss();
+  const ov=document.createElement("div");
+  ov.id="ai-sec-ov";
+  ov.style.cssText="position:fixed;inset:0;background:rgba(12,26,46,.6);backdrop-filter:blur(4px);z-index:690;display:flex;align-items:center;justify-content:center;padding:22px;animation:fi .2s ease";
+  ov.innerHTML=`<div class="md" id="ai-sec-card" style="max-width:440px;position:relative">
+    <div class="mh"><span class="mt2" style="display:inline-flex;align-items:center;gap:8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4V2M15 10V8M11 6H9M21 6h-2M17.4 4.6l1.4-1.4M17.4 7.4l1.4 1.4"/><path d="M3 21l9-9 2 2-9 9-2-2z"/><path d="M12 8l4 4"/></svg>${meta.title}</span><button class="mc" id="ais-x"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="mb">
+      <label class="fl">תיאור לבינה ${meta.need?"(מומלץ)":"(אופציונלי)"}</label>
+      <textarea id="ais-brief" class="fi" rows="4" style="resize:vertical;line-height:1.6" placeholder="${meta.ph}"></textarea>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px;line-height:1.55">הבינה תבנה רק את הסעיף הזה, קוהרנטי לשאר ההצעה. ניתן לעריכה; לא נשלח ללקוח.${section!=="payments"?" אם יש כבר תוכן בסעיף — יוחלף.":""}</div>
+      <div id="ais-msg" style="display:none;font-size:13px;font-weight:600;margin-top:10px;padding:10px 12px;border-radius:10px"></div>
+    </div>
+    <div class="mf"><button class="bp" id="ais-go" style="width:auto;padding:9px 22px;margin-top:0">צור</button><button class="btn-cancel" id="ais-cancel">ביטול</button></div></div>`;
+  document.body.appendChild(ov);
+  const close=()=>ov.remove();
+  const ta=document.getElementById("ais-brief");ta.focus();
+  document.getElementById("ais-x").onclick=close;
+  document.getElementById("ais-cancel").onclick=close;
+  ov.onclick=e=>{if(e.target===ov)close();};
+  const msg=(t,isErr)=>{const m=document.getElementById("ais-msg");if(!m)return;m.style.display="block";m.textContent=t;m.style.background=isErr?"#fef2f2":"#eff6ff";m.style.color=isErr?"#dc2626":"#1d4ed8";};
+  document.getElementById("ais-go").onclick=async()=>{
+    const brief=ta.value.trim();
+    if(meta.need&&!brief){msg("כתוב תיאור קצר של היקף העבודה",true);return;}
+    /* מצב "חושב" — שכבת אנימציה מקצועית מעל הכרטיס */
+    const card=document.getElementById("ai-sec-card");
+    const load=document.createElement("div");
+    load.style.cssText="position:absolute;inset:0;background:var(--card);border-radius:20px;display:flex;align-items:center;justify-content:center;z-index:3";
+    load.innerHTML=aiThinkingHTML(meta.verb);
+    card.appendChild(load);
+    const res=await authedPost("aiAssist",{task:"quote",section,brief,context:collectQuoteContext()});
+    if(res&&res.ok&&res.draft){
+      applyAiSection(section,res.draft);close();
+      toast("נוצר — עברו וערכו לפי הצורך","s");
+    }else{
+      load.remove();
+      msg((res&&AI_ERR[res.error])||"היצירה נכשלה. נסה שוב.",true);
+    }
+  };
+  ta.onkeydown=e=>{if((e.ctrlKey||e.metaKey)&&e.key==="Enter")document.getElementById("ais-go").click();};
+};
 /* מצב הממשק לפי שמור/לא-שמור: כותרת, מציין סטטוס, כפתור מחיקה */
 function quoteFreshUi(q){
   const st=document.getElementById("q-save-status");
@@ -5733,7 +6018,7 @@ function applyQuoteLock(locked){
   ["q-title","q-number","q-disc-val","q-mon-label","q-mon-amt","q-valid"].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=locked;});
   md.querySelectorAll("#q-items input").forEach(el=>el.disabled=locked);
   md.querySelectorAll("#q-items .q-item-del").forEach(el=>el.style.display=locked?"none":"");
-  ["q-add-item","q-send-btn","q-open-pricing"].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=locked?"none":"";});
+  ["q-add-item","q-send-btn","q-open-pricing","qai-items","qai-stages","qai-payments","qai-materials","qai-bonuses","qai-upgrades","qai-legal"].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=locked?"none":"";});
   md.querySelectorAll(".q-switch, #q-disc-seg button, .q-vat-rate-link").forEach(el=>{el.style.pointerEvents=locked?"none":"";el.style.opacity=locked?".55":"";});
   applyStageLockState();
   let banner=document.getElementById("q-lock-banner");

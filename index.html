@@ -246,6 +246,7 @@ tr:hover td{background:#f8faff}
 .av-crop-btn.primary{background:linear-gradient(135deg,var(--p),var(--pd));color:#fff}
 .av-crop-btn.ghost{background:rgba(255,255,255,.12);color:#fff}
 .av-crop-btn:disabled{opacity:.55;cursor:default}
+.av-crop-rect{position:absolute;inset:0;box-shadow:0 0 0 9999px rgba(8,18,32,.55);pointer-events:none;border:2px solid rgba(255,255,255,.9);border-radius:6px}
 .av-sheet-row{width:100%;background:none;border:none;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:14px;padding:15px 22px;cursor:pointer;font-family:'Heebo',sans-serif;text-align:start}
 .av-sheet-ic{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .bg-swatch.sel .bg-swatch-name{color:var(--p)}
@@ -570,6 +571,59 @@ tr:hover td{background:#f8faff}
 .pmode-opt{padding:7px 15px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:none;color:var(--muted);font-family:'Heebo',sans-serif}
 .pmode-opt.on{background:var(--p);color:#fff}
 .pj-type-sel{display:inline-flex;background:var(--bg);border:1.5px solid var(--bdr);border-radius:10px;padding:3px;gap:3px}
+/* ── מצב לכל פלטפורמה (PT-1/PT-5b) ── */
+.pj-del-hint{font-size:11.5px;color:var(--muted);margin-top:6px;display:flex;align-items:flex-start;gap:5px;line-height:1.5}
+.pj-del-hint svg{width:13px;height:13px;flex-shrink:0;color:var(--p);margin-top:1px}
+.pj-plat{border:1.5px solid var(--bdr);border-radius:13px;overflow:hidden;margin-bottom:14px}
+.pj-plat-h{display:flex;align-items:center;gap:10px;padding:11px 13px;background:linear-gradient(90deg,rgba(14,165,233,.06),transparent);border-bottom:1px solid var(--bdr)}
+.pj-plat-i{width:30px;height:30px;border-radius:8px;background:var(--deep);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pj-plat-i svg{width:17px;height:17px}
+.pj-plat-n{font-weight:800;font-size:14px}
+.pj-plat-s{font-size:11.5px;color:var(--muted)}
+.pj-plat-b{padding:13px}
+.pj-state-sel{display:flex;border:1.5px solid var(--bdr);border-radius:var(--rs);overflow:hidden;background:var(--bg)}
+.pj-state-sel button{flex:1;border:none;background:transparent;font-family:'Heebo',sans-serif;font-size:12.5px;font-weight:700;color:var(--muted);padding:9px 4px;cursor:pointer;transition:all .15s;border-inline-start:1px solid var(--bdr)}
+.pj-state-sel button:first-child{border-inline-start:none}
+.pj-state-sel button.on{background:var(--p);color:#fff}
+.pj-state-sel button.on[data-s="testing"]{background:var(--warn)}
+.pj-state-sel button.on[data-s="hidden"]{background:#94a3b8}
+.pj-fhint{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.5}
+.pj-plat-b .fg{margin-top:11px}
+.pj-fld-dim{opacity:.45}
+/* ── סינון + חיפוש בלשונית פרויקטים (PT-4) ── */
+.pj-filterbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:0 16px 4px}
+.pj-ftabs{display:flex;gap:6px;background:var(--bg);border:1.5px solid var(--bdr);border-radius:22px;padding:4px}
+.pj-ftab{border:none;background:transparent;font-family:'Heebo',sans-serif;font-size:13px;font-weight:700;color:var(--muted);padding:7px 15px;border-radius:18px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.pj-ftab svg{width:14px;height:14px}
+.pj-ftab.on{background:var(--p);color:#fff}
+.pj-ftab-n{font-size:11px;opacity:.75;font-weight:800}
+.pj-fsearch{flex:1;min-width:200px;position:relative}
+.pj-fsearch svg{position:absolute;inset-inline-start:13px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--muted);pointer-events:none}
+.pj-fsearch input{width:100%;border:1.5px solid var(--bdr);border-radius:20px;padding:9px 16px;padding-inline-start:40px;font-family:'Heebo',sans-serif;font-size:14px;background:#fff;outline:none;color:var(--txt)}
+.pj-fsearch input:focus{border-color:var(--p)}
+/* ── בורר ייבוא שלבים מהצעה (PS-2) ── */
+.pj-imp-pop{position:absolute;top:44px;right:0;width:380px;max-width:min(92vw,380px);background:#fff;border:1.5px solid var(--bdr);border-radius:14px;box-shadow:0 16px 40px rgba(12,26,46,.18);z-index:30;overflow:hidden;max-height:60vh;display:flex;flex-direction:column}
+.pj-imp-h{padding:12px 14px;border-bottom:1px solid var(--bdr);font-size:13.5px;font-weight:800;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.pj-imp-h span{font-weight:600;color:var(--muted);font-size:11px;display:block;margin-top:2px}
+.pj-imp-x{border:none;background:none;color:var(--muted);cursor:pointer;padding:2px;flex-shrink:0}
+.pj-imp-x svg{width:18px;height:18px}
+.pj-imp-list{overflow-y:auto}
+.pj-imp-row{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;cursor:pointer}
+.pj-imp-row+.pj-imp-row{border-top:1px solid var(--bdr)}
+.pj-imp-row:hover{background:rgba(14,165,233,.05)}
+.pj-imp-ic{width:34px;height:34px;border-radius:9px;background:rgba(14,165,233,.1);color:var(--pd);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.pj-imp-ic svg{width:17px;height:17px}
+.pj-imp-tx{flex:1;min-width:0}
+.pj-imp-head{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.pj-imp-head .m{font-size:13.5px;font-weight:800}
+.pj-imp-head .num{font-size:10.5px;color:var(--muted);font-family:monospace}
+.pj-imp-badge{font-size:9.5px;font-weight:800;padding:2px 7px;border-radius:20px}
+.pj-imp-prev{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px;align-items:center}
+.pj-imp-chip{font-size:10.5px;font-weight:700;background:var(--bg);border:1px solid var(--bdr);border-radius:20px;padding:2px 8px 2px 4px;color:var(--txt);display:inline-flex;align-items:center;gap:5px}
+.pj-imp-chip .n{width:14px;height:14px;border-radius:50%;background:var(--p);color:#fff;font-size:8.5px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pj-imp-more{font-size:10.5px;font-weight:800;color:var(--pur)}
+.pj-imp-go{align-self:center;background:var(--pur);color:#fff;border:none;border-radius:8px;font-family:'Heebo',sans-serif;font-size:11.5px;font-weight:800;padding:7px 12px;cursor:pointer;flex-shrink:0}
+.pj-imp-empty{padding:22px 16px;text-align:center;color:var(--muted);font-size:12.5px;line-height:1.6}
 
 /* ── קוביות משימה בצ'אט (שלב 4) ── */
 .tc-pins{display:flex;flex-direction:column;gap:8px;padding:8px 12px;max-height:46vh;overflow-y:auto;flex-shrink:0}
@@ -784,8 +838,8 @@ tr:hover td{background:#f8faff}
 .stg-row.stg-dragging{opacity:.96}
 .stg-row.stg-dragging .stg-card{border-color:var(--p);box-shadow:0 12px 26px rgba(14,165,233,.28);transform:scale(1.012)}
 .stg-row.stg-dragging .stg-node{box-shadow:0 4px 14px rgba(14,165,233,.55)}
-#q-stages.stg-dnd-active{cursor:grabbing;user-select:none}
-#q-stages.stg-dnd-active .stg-t,#q-stages.stg-dnd-active .stg-field{pointer-events:none}
+.stg-dnd-active{cursor:grabbing;user-select:none}
+.stg-dnd-active .stg-t,.stg-dnd-active .stg-field{pointer-events:none}
 .pay-presets{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
 .pay-preset{border:1.5px solid var(--bdr);background:var(--card);border-radius:10px;padding:7px 13px;font-family:'Heebo',sans-serif;font-size:12.5px;font-weight:700;color:var(--muted);cursor:pointer;transition:.14s}
 .pay-preset:hover{border-color:var(--p)}
@@ -1124,6 +1178,14 @@ tr:hover td{background:#f8faff}
       <div class="panel" id="p-projects">
         <div id="projects-list-view">
           <div class="card"><div class="ch"><span class="ct" id="projects-lbl">פרויקטים</span><button class="btn-add" id="btn-add-project"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>פרויקט חדש</button></div>
+            <div class="pj-filterbar" id="pj-filterbar">
+              <div class="pj-ftabs">
+                <button class="pj-ftab on" data-f="all" onclick="setPjFilter('all')">הכל <span class="pj-ftab-n" id="pjf-n-all">0</span></button>
+                <button class="pj-ftab" data-f="site" onclick="setPjFilter('site')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="14" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/></svg>אתרים <span class="pj-ftab-n" id="pjf-n-site">0</span></button>
+                <button class="pj-ftab" data-f="app" onclick="setPjFilter('app')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg>אפליקציות <span class="pj-ftab-n" id="pjf-n-app">0</span></button>
+              </div>
+              <div class="pj-fsearch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input id="pj-search" type="text" placeholder="חיפוש: שם פרויקט, לקוח, כתובת, סטטוס…" oninput="pjSearchInput(this.value)"/></div>
+            </div>
             <div style="padding:16px"><div class="pj-grid" id="projects-grid"></div></div>
           </div>
         </div>
@@ -1220,13 +1282,32 @@ tr:hover td{background:#f8faff}
     <div class="fst">פרטי הפרויקט</div>
     <div class="fg"><label class="fl">שם הפרויקט / האתר</label><input id="pj-name" class="fi" type="text" placeholder="לדוגמה: אתר תדמית — ישראל ישראלי"/></div>
     <div class="fr"><div class="fg"><label class="fl">לקוח משויך</label><select id="pj-client" class="fi"></select></div><div class="fg"><label class="fl">סוג</label><div class="pj-type-sel" style="width:100%"><button type="button" class="pmode-opt" id="pj-type-site" onclick="setPjType('site')" style="flex:1">אתר</button><button type="button" class="pmode-opt" id="pj-type-app" onclick="setPjType('app')" style="flex:1">אפליקציה</button></div></div></div>
-    <div class="fr"><div class="fg"><label class="fl">סטטוס</label><select id="pj-status" class="fi"><option value="building">בבנייה</option><option value="active">פעיל</option><option value="paused">מושהה</option></select></div>
-      <div class="fg" id="pj-url-wrap"><label class="fl">כתובת URL</label><input id="pj-url" class="fi" type="text" dir="ltr" placeholder="https://..."/></div></div>
-    <div id="pj-applinks-wrap" style="display:none">
-      <div class="fr"><div class="fg"><label class="fl">קישור iOS / App Store</label><input id="pj-ios" class="fi" type="text" dir="ltr" placeholder="https://apps.apple.com/..."/></div><div class="fg"><label class="fl">קישור Android / Play</label><input id="pj-android" class="fi" type="text" dir="ltr" placeholder="https://play.google.com/..."/></div></div>
-      <div class="fg"><label class="fl">קישור TestFlight (בדיקות iOS)</label><input id="pj-testflight" class="fi" type="text" dir="ltr" placeholder="https://testflight.apple.com/..."/></div>
+    <div class="fr"><div class="fg"><label class="fl">אופן אספקה</label><div class="pj-type-sel" style="width:100%"><button type="button" class="pmode-opt" id="pj-del-a" onclick="setPjDelivery(0)" style="flex:1"></button><button type="button" class="pmode-opt" id="pj-del-b" onclick="setPjDelivery(1)" style="flex:1"></button></div><div class="pj-del-hint" id="pj-del-hint"></div></div>
+      <div class="fg"><label class="fl">סטטוס</label><select id="pj-status" class="fi"><option value="building">בבנייה</option><option value="active">פעיל</option><option value="paused">מושהה</option></select></div></div>
+    <div class="fr"><div class="fg"><label class="fl">תפקיד</label><div class="pj-type-sel" style="width:100%"><button type="button" class="pmode-opt on" id="pj-role-primary" onclick="setPjRole('primary')" style="flex:1">פרויקט ראשי</button><button type="button" class="pmode-opt" id="pj-role-panel" onclick="setPjRole('panel')" style="flex:1">מערכת ניהול</button></div><div class="pj-del-hint" id="pj-role-hint"></div></div>
+      <div class="fg" id="pj-parent-wrap" style="display:none"><label class="fl">מערכת הניהול של</label><select id="pj-parent" class="fi"></select></div></div>
+    <div class="fg" id="pj-url-wrap"><label class="fl">כתובת URL</label><input id="pj-url" class="fi" type="text" dir="ltr" placeholder="https://..."/></div>
+    <div id="pj-native-wrap" style="display:none">
+      <div class="pj-plat">
+        <div class="pj-plat-h"><div class="pj-plat-i"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M16.4 12.9c0-2 1.6-3 1.7-3-1-1.4-2.4-1.6-2.9-1.6-1.2-.1-2.4.7-3 .7-.6 0-1.6-.7-2.6-.7-1.3 0-2.5.8-3.2 2-1.4 2.4-.4 5.9 1 7.8.6.9 1.4 2 2.4 1.9 1-.04 1.3-.6 2.5-.6s1.5.6 2.5.6c1 0 1.7-.9 2.3-1.8.7-1 1-2 1-2.1 0 0-2-.8-2-3zM14.5 6.3c.5-.7.9-1.6.8-2.5-.8 0-1.7.5-2.3 1.2-.5.6-.9 1.5-.8 2.4.9.06 1.7-.4 2.3-1.1z"/></svg></div><div><div class="pj-plat-n">iOS · Apple</div><div class="pj-plat-s" id="pj-ios-state-lbl"></div></div></div>
+        <div class="pj-plat-b">
+          <div class="pj-state-sel" id="pj-ios-states"><button type="button" data-s="auto" onclick="setPlatState('ios','auto')">auto</button><button type="button" data-s="testing" onclick="setPlatState('ios','testing')">בדיקות</button><button type="button" data-s="live" onclick="setPlatState('ios','live')">חנות</button><button type="button" data-s="hidden" onclick="setPlatState('ios','hidden')">מוסתר</button></div>
+          <div class="fg" data-fld="ios-test"><label class="fl">קישור TestFlight (בדיקות)</label><input id="pj-ios-tf" class="fi" type="text" dir="ltr" placeholder="https://testflight.apple.com/join/XXXXXXXX"/><div class="pj-fhint">הקוד מוטמע בקישור · דורש את אפליקציית TestFlight · בילד פג אחרי 90 יום</div></div>
+          <div class="fg" data-fld="ios-test"><label class="fl">קוד הזמנה (אופציונלי)</label><input id="pj-ios-code" class="fi" type="text" dir="ltr" placeholder="רק אם ההזמנה אינה ציבורית"/></div>
+          <div class="fg" data-fld="ios-live"><label class="fl">קישור App Store (חנות)</label><input id="pj-ios-store" class="fi" type="text" dir="ltr" placeholder="https://apps.apple.com/il/app/name/id000000000"/></div>
+        </div>
+      </div>
+      <div class="pj-plat">
+        <div class="pj-plat-h"><div class="pj-plat-i"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M3.6 2.3c-.3.3-.4.7-.4 1.2v17c0 .5.1.9.4 1.2l.1.1L13 12.5v-.2L3.7 2.2zM16.5 15.8l-3.1-3.1v-.2l3.1-3.1.07.04 3.7 2.1c1 .6 1 1.6 0 2.2zM12.4 12.9l3.2 3.2-9.4 5.3c-.4.2-.7.2-1 0zM6.2 2.4c.3-.2.6-.2 1 0l9.4 5.3-3.2 3.2z"/></svg></div><div><div class="pj-plat-n">Android · Google Play</div><div class="pj-plat-s" id="pj-and-state-lbl"></div></div></div>
+        <div class="pj-plat-b">
+          <div class="pj-state-sel" id="pj-and-states"><button type="button" data-s="auto" onclick="setPlatState('android','auto')">auto</button><button type="button" data-s="testing" onclick="setPlatState('android','testing')">בדיקות</button><button type="button" data-s="live" onclick="setPlatState('android','live')">חנות</button><button type="button" data-s="hidden" onclick="setPlatState('android','hidden')">מוסתר</button></div>
+          <div class="fg" data-fld="and-live"><label class="fl">קישור Google Play (חנות)</label><input id="pj-and-store" class="fi" type="text" dir="ltr" placeholder="https://play.google.com/store/apps/details?id=com.example.app"/></div>
+          <div class="fg" data-fld="and-test"><label class="fl">קישור Testing — opt-in (בדיקות)</label><input id="pj-and-test" class="fi" type="text" dir="ltr" placeholder="https://play.google.com/apps/testing/com.example.app"/><div class="pj-fhint">דורש שהחשבון ברשימת הבודקים · אותו חשבון Google בהצטרפות ובהורדה</div></div>
+        </div>
+      </div>
     </div>
-    <div class="fr full"><div class="fg"><label class="fl">תמונת תצוגה (16:9)</label>
+    <div class="fg" id="pj-appnote-wrap" style="display:none"><label class="fl">הערה ללקוח (אופציונלי)</label><input id="pj-appnote" class="fi" type="text" placeholder="לדוגמה: הבדיקה פתוחה עד סוף החודש / מומלץ להתקין על מסך הבית"/></div>
+    <div class="fr full"><div class="fg"><label class="fl" id="pj-img-lbl">תמונת תצוגה (16:9)</label>
       <div class="img-upload-box" id="pj-img-box">
         <div class="img-upload-dz-hint">גרור ושחרר כאן</div>
         <div class="img-upload-preview" id="pj-img-preview" style="aspect-ratio:16/9"></div>
@@ -1242,9 +1323,14 @@ tr:hover td{background:#f8faff}
     <div class="pmode-toggle" style="margin-bottom:12px"><button type="button" class="pmode-opt" id="pmode-stages" onclick="setPjMode('stages')">לפי שלבים</button><button type="button" class="pmode-opt" id="pmode-manual" onclick="setPjMode('manual')">ידני</button></div>
     <div id="pj-manual-wrap" style="display:none"><div class="fg"><label class="fl">אחוז התקדמות ידני (0–100)</label><input id="pj-manual" class="fi" type="number" min="0" max="100" value="0"/></div></div>
     <div id="pj-stages-wrap">
-      <div style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6">השלבים נטענים מתבנית ברירת המחדל. אפשר להוסיף, להסיר, ולשנות משקל. האחוז מחושב לפי השלבים שהושלמו.</div>
+      <div id="pj-stage-topbar" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;position:relative">
+        <button class="btn-as" id="pj-import-stages" type="button" onclick="openStageImport()" style="background:rgba(139,92,246,.1);color:var(--pur);border-color:rgba(139,92,246,.3);display:inline-flex;align-items:center;gap:7px;margin-top:0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>ייבוא שלבים מהצעה</button>
+        <span style="font-size:11.5px;color:var(--muted);line-height:1.5">ייבוא מהצעת מחיר של הלקוח, או בנייה מ-8 שלבי ברירת המחדל למטה</span>
+        <div id="pj-stage-import-pop"></div>
+      </div>
       <div id="pj-stages-editor"></div>
-      <button class="btn-as" id="pj-add-stage" type="button">הוספת שלב</button>
+      <button class="btn-as" id="pj-add-stage" type="button" style="margin-top:2px">הוספת שלב</button>
+      <div style="font-size:11.5px;color:var(--muted);margin-top:9px;line-height:1.6">גוררים שלב לשינוי הסדר · עורכים שם ומשקל · האחוז מחושב לפי השלבים שהושלמו.</div>
     </div>
   </div>
   <div class="mf"><button class="bp" style="width:auto;padding:10px 26px;margin-top:0" id="btn-save-project">שמירה</button><button class="btn-cancel" id="mo-project-cancel">ביטול</button></div>
@@ -3949,6 +4035,7 @@ window.openAgentAiMenu=function(ev){
   pop.innerHTML=`<div id="aap-body" style="padding:8px">
     <button class="aap-item" onclick="agentAiRun('draft_reply')"><span class="aap-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4V2M11 6H9M21 6h-2M17.4 4.6l1.4-1.4"/><path d="M3 21l9-9 2 2-9 9-2-2z"/><path d="M12 8l4 4"/></svg></span><span><b>טיוטת תשובה</b><br><span style="font-size:11.5px;color:var(--muted)">המוח מנסח תשובה מההקשר — לעריכה ושליחה</span></span></button>
     <button class="aap-item" onclick="agentAiRun('summary')"><span class="aap-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="17" x2="17" y2="17"/></svg></span><span><b>סיכום השיחה</b><br><span style="font-size:11.5px;color:var(--muted)">תקציר של מה שסוכם ומה עדיין פתוח</span></span></button>
+    <button class="aap-item" onclick="agentAiRun('rephrase')"><span class="aap-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></span><span><b>נסח מחדש את מה שכתבתי</b><br><span style="font-size:11.5px;color:var(--muted)">שכתוב מקצועי לטקסט שבתיבת הכתיבה</span></span></button>
   </div>`;
   document.body.appendChild(pop);
   if(btn){const r=btn.getBoundingClientRect();pop.style.left=Math.max(8,Math.min(window.innerWidth-(pop.offsetWidth||330)-8,r.left+r.width/2-165))+"px";pop.style.bottom=(window.innerHeight-r.top+8)+"px";}
@@ -3957,21 +4044,27 @@ window.openAgentAiMenu=function(ev){
 };
 window.agentAiRun=async function(action){
   const body=document.getElementById("aap-body");if(!body)return;
-  const verb=action==="summary"?"מסכם את השיחה":"מנסח טיוטה";
+  const ta=document.getElementById("chat-ta");
+  let draft="";
+  if(action==="rephrase"){
+    draft=(ta&&ta.value||"").trim();
+    if(!draft){body.innerHTML='<div style="padding:16px;font-size:13px;color:#dc2626;font-weight:600">כתוב הודעה בתיבת הכתיבה קודם — ואז אשכתב אותה.</div>';return;}
+  }
+  const verb=action==="summary"?"מסכם את השיחה":(action==="rephrase"?"משכתב את ההודעה":"מנסח טיוטה");
   body.innerHTML=`<div style="padding:16px 8px">${aiThinkingHTML(verb)}</div>`;
-  const res=await authedPost("aiAssist",{task:"agentchat",action,phone:chatPhone});
+  const res=await authedPost("aiAssist",{task:"agentchat",action,phone:chatPhone,draft});
   const pop=document.getElementById("agent-ai-pop");const b2=document.getElementById("aap-body");
   if(res&&res.ok&&res.text){
-    if(action==="draft_reply"){
-      const ta=document.getElementById("chat-ta");
+    if(action==="summary"){
+      if(b2)b2.innerHTML=`<div style="padding:12px 12px 10px"><div style="font-size:13px;font-weight:800;margin-bottom:8px">סיכום השיחה</div><div style="font-size:13px;line-height:1.65;white-space:pre-wrap;max-height:260px;overflow:auto;color:var(--text)">${esc(res.text)}</div><button class="aap-close" onclick="document.getElementById('agent-ai-pop').remove()" style="margin-top:12px">סגור</button></div>`;
+    }else{
+      /* draft_reply / rephrase → ממלא את תיבת הכתיבה */
       if(ta){ta.value=res.text;ta.dispatchEvent(new Event("input"));ta.focus();}
       if(pop)pop.remove();
-      toast("טיוטה מוכנה — ערוך ושלח","s");
-    }else if(b2){
-      b2.innerHTML=`<div style="padding:12px 12px 10px"><div style="font-size:13px;font-weight:800;margin-bottom:8px">סיכום השיחה</div><div style="font-size:13px;line-height:1.65;white-space:pre-wrap;max-height:260px;overflow:auto;color:var(--text)">${esc(res.text)}</div><button class="aap-close" onclick="document.getElementById('agent-ai-pop').remove()" style="margin-top:12px">סגור</button></div>`;
+      toast(action==="rephrase"?"נוסח מחדש — עבור/י ושלח/י":"טיוטה מוכנה — ערוך ושלח","s");
     }
   }else if(b2){
-    const m={"ai-unavailable":"שירות ה-AI לא זמין כרגע (ייתכן שאין אשראי).","cost-cap":"נגמרה מכסת ה-AI היומית של המערכת.","daily-user-cap":"הגעת למכסת השימוש היומית.","skill-off":"הסקיל כבוי בלשונית ניהול המוח.","chat-forbidden":"אין לך הרשאת צ'אט.","no-draft":"לא הצלחתי לנסח. נסה שוב.","refused":"הבקשה נדחתה.","bad-phone":"שגיאת זיהוי לקוח.","network":"תקלת רשת."};
+    const m={"ai-unavailable":"שירות ה-AI לא זמין כרגע (ייתכן שאין אשראי).","cost-cap":"נגמרה מכסת ה-AI היומית של המערכת.","daily-user-cap":"הגעת למכסת השימוש היומית.","skill-off":"הסקיל כבוי בלשונית ניהול המוח.","chat-forbidden":"אין לך הרשאת צ'אט.","no-draft":"לא הצלחתי לנסח. נסה שוב.","empty-draft":"כתוב הודעה בתיבה קודם.","refused":"הבקשה נדחתה.","bad-phone":"שגיאת זיהוי לקוח.","network":"תקלת רשת."};
     b2.innerHTML=`<div style="padding:14px;font-size:13px;color:#dc2626;font-weight:600">${(res&&m[res.error])||"הפעולה נכשלה."}</div>`;
   }
 };
@@ -4802,7 +4895,7 @@ async function renderAiBrain(){
   const con=s.constitution, def=s.defaults;
   const secLabels={stages:"שלבים",items:"סעיפי תמחור",payments:"תשלומים",materials:"חומרים",bonuses:"בונוסים",upgrades:"שדרוגים",legal:"משפטי"};
   const skillTog=(key,label)=>`<div class="aib-tog${s.skills[key]!==false?" on":""}" data-skill="${key}" onclick="this.classList.toggle('on');aibMark('sv-skills')"><span class="aib-sw"></span>${esc(label)}</div>`;
-  const allSkillKeys=["chat","quote",...s.sections.map(k=>"quote."+k),"agentchat.draft_reply","agentchat.summary","leads.triage","leads.draft_outreach","explain.task","explain.quote","explain.project"];
+  const allSkillKeys=["chat","quote",...s.sections.map(k=>"quote."+k),"agentchat.draft_reply","agentchat.summary","agentchat.rephrase","leads.triage","leads.draft_outreach","explain.task","explain.quote","explain.project","assist"];
   const onCount=allSkillKeys.filter(k=>s.skills[k]!==false).length;
   const tab=(k,l)=>`<button class="aib-tab" data-tab="${k}" onclick="aibSetTab('${k}')">${l}</button>`;
   root.innerHTML=`
@@ -4846,11 +4939,11 @@ async function renderAiBrain(){
         <div class="sub" style="margin:14px 0 6px">סעיפי ההצעה:</div>
         <div class="aib-row" style="gap:8px">${s.sections.map(k=>skillTog("quote."+k,secLabels[k]||k)).join("")}</div>
         <div class="sub" style="margin:14px 0 6px">קו-פיילוט הנציג בצ'אט:</div>
-        <div class="aib-row" style="gap:8px">${skillTog("agentchat.draft_reply","טיוטת תשובה")}${skillTog("agentchat.summary","סיכום שיחה")}</div>
+        <div class="aib-row" style="gap:8px">${skillTog("agentchat.draft_reply","טיוטת תשובה")}${skillTog("agentchat.summary","סיכום שיחה")}${skillTog("agentchat.rephrase","ניסוח מחדש")}</div>
         <div class="sub" style="margin:14px 0 6px">לידים:</div>
         <div class="aib-row" style="gap:8px">${skillTog("leads.triage","טריאז'")}${skillTog("leads.draft_outreach","טיוטת פנייה")}</div>
         <div class="sub" style="margin:14px 0 6px">עוזר הלקוח בהקשר:</div>
-        <div class="aib-row" style="gap:8px">${skillTog("explain.task","הסבר משימה")}${skillTog("explain.quote","הסבר מונחים בהצעה")}${skillTog("explain.project","סטטוס פרויקט")}</div>
+        <div class="aib-row" style="gap:8px">${skillTog("explain.task","הסבר משימה")}${skillTog("explain.quote","הסבר מונחים בהצעה")}${skillTog("explain.project","סטטוס פרויקט")}${skillTog("assist","עזרה בכתיבת משימה")}</div>
         <button class="aib-save" id="sv-skills" onclick="aibSaveSkills(this)">שמירת סקילים</button>
       </div>
     </div>
@@ -4954,9 +5047,28 @@ function pjTypeLabel(p){return (p.type==="app")?"אפליקציה":"אתר";}
 const PJ_STAT={active:{c:"pj-stat-active",t:"פעיל"},building:{c:"pj-stat-active",t:"בבנייה"},done:{c:"pj-stat-done",t:"הושלם"},paused:{c:"pj-stat-paused",t:"מושהה"}};
 function pjImg(p,cls){return p.image?`<img src="${esc(p.image)}" alt="" class="${cls}" loading="lazy"/>`:`<div class="${cls} pj-noimg"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>`;}
 
+let pjFilter="all", pjSearch="";
+window.setPjFilter=(f)=>{pjFilter=f;document.querySelectorAll(".pj-ftab").forEach(b=>b.classList.toggle("on",b.dataset.f===f));renderProjects();};
+window.pjSearchInput=(v)=>{pjSearch=(v||"").trim().toLowerCase();renderProjects();};
+function pjMatches(p){
+  if(pjFilter==="site"&&(p.type||"site")==="app")return false;
+  if(pjFilter==="app"&&(p.type||"site")!=="app")return false;
+  if(pjSearch){
+    const al=p.appLinks||{};
+    const hay=[p.name,p.clientName,pjClientName(p.clientPhone),p.url,al.ios,al.android,pjTypeLabel(p),PJ_STAT[p.status]?.t].filter(Boolean).join(" ").toLowerCase();
+    if(!hay.includes(pjSearch))return false;
+  }
+  return true;
+}
 function renderProjects(){
   const grid=document.getElementById("projects-grid");if(!grid)return;
   const entries=Object.entries(projects);
+  /* מוני הטאבים — על כלל הפרויקטים */
+  const setN=(id,n)=>{const el=document.getElementById(id);if(el)el.textContent=n;};
+  setN("pjf-n-all",entries.length);
+  setN("pjf-n-site",entries.filter(([,p])=>(p.type||"site")!=="app").length);
+  setN("pjf-n-app",entries.filter(([,p])=>p.type==="app").length);
+  const bar=document.getElementById("pj-filterbar");if(bar)bar.style.display=entries.length?"flex":"none";
   if(!entries.length){
     grid.innerHTML=`<div class="pj-empty" style="grid-column:1/-1">
       <svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
@@ -4964,9 +5076,17 @@ function renderProjects(){
       <div>לחץ "פרויקט חדש" כדי ליצור פרויקט ולשייך אותו ללקוח.</div></div>`;
     return;
   }
+  const filtered=entries.filter(([id,p])=>pjMatches(p));
+  if(!filtered.length){
+    grid.innerHTML=`<div class="pj-empty" style="grid-column:1/-1">
+      <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <div class="pj-empty-t">אין תוצאות</div>
+      <div>לא נמצאו פרויקטים התואמים לסינון או לחיפוש.</div></div>`;
+    return;
+  }
   /* קיבוץ לפי לקוח */
   const groups={};
-  entries.forEach(([id,p])=>{const ph=p.clientPhone||"—";(groups[ph]=groups[ph]||[]).push({id,...p});});
+  filtered.forEach(([id,p])=>{const ph=p.clientPhone||"—";(groups[ph]=groups[ph]||[]).push({id,...p});});
   const groupArr=Object.entries(groups).map(([ph,list])=>({ph,list:list.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)),latest:Math.max(...list.map(x=>x.createdAt||0))})).sort((a,b)=>b.latest-a.latest);
   /* כל לקוח = קובייה אחת בגודל קבוע (גם לפרויקט יחיד). 2+ = גלילה פנימית. */
   grid.innerHTML=groupArr.map(g=>clientGroupCube(g.ph,g.list)).join("");
@@ -4982,9 +5102,12 @@ function clientGroupCube(ph,list){
 }
 function innerProjectCube(p){
   const pct=pjProgress(p);const stat=PJ_STAT[p.status]||PJ_STAT.active;
+  const isPanel=(p.role||"primary")==="panel";
+  const parentName=isPanel&&p.parentId&&projects[p.parentId]?projects[p.parentId].name:"";
+  const typeTag=isPanel?`<span class="pj-type-tag" style="font-size:9px;padding:2px 7px;background:rgba(139,92,246,.85)">מערכת ניהול</span>`:`<span class="pj-type-tag" style="font-size:9px;padding:2px 7px">${pjTypeLabel(p)}</span>`;
   return`<div class="pj-inner" data-ctx="project" data-id="${p.id}" onclick="enterProject('${p.id}')">
-    <div class="pj-inner-banner">${pjImg(p,"pj-inner-img")}<span class="pj-stat-tag ${stat.c} pj-inner-stat">${stat.t}</span><span class="pj-type-tag" style="font-size:9px;padding:2px 7px">${pjTypeLabel(p)}</span></div>
-    <div class="pj-inner-body"><div class="pj-inner-name">${esc(p.name||"ללא שם")}</div><div class="pj-inner-next">${esc(pjCurrentStage(p))}</div>
+    <div class="pj-inner-banner">${pjImg(p,"pj-inner-img")}<span class="pj-stat-tag ${stat.c} pj-inner-stat">${stat.t}</span>${typeTag}</div>
+    <div class="pj-inner-body"><div class="pj-inner-name">${esc(p.name||"ללא שם")}</div><div class="pj-inner-next">${isPanel&&parentName?"פאנל של: "+esc(parentName):esc(pjCurrentStage(p))}</div>
       <div class="pj-prog-bar" style="height:5px;margin-top:7px"><div class="pj-prog-fill" style="width:${pct}%"></div></div>
       <div class="pj-inner-foot"><span class="pj-inner-pct">${pct}%</span><span style="font-size:9.5px;color:var(--muted)">${(p.progressMode||"stages")==="manual"?"ידני":"שלבים"}</span></div></div>
     <div class="pj-inner-hover"><button class="pj-enter-btn" onclick="event.stopPropagation();enterProject('${p.id}')">כניסה לפרויקט<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button></div>
@@ -5353,14 +5476,79 @@ window.switchProjectTab=switchProjectTab;
 
 /* ── מודל יצירה/עריכה ── */
 let pjStageRows=[];
-let pjType="site", pjMode="stages";
+let pjType="site", pjMode="stages", pjDelivery="browser", pjPlatState={ios:"auto",android:"auto"};
+/* אופני אספקה זמינים לכל סוג (PT-1) */
+const PJ_DELIVERY={site:[{v:"browser",l:"אתר בדפדפן"},{v:"pwa",l:"אתר + PWA (ניתן להתקנה)"}],
+                   app:[{v:"pwa",l:"PWA · אתר מותקן"},{v:"native",l:"נייטיב · חנויות"}]};
+const PJ_PLAT_STATE_LBL={auto:"אוטומטי — לפי סטטוס הפרויקט",testing:"בדיקות",live:"חנות (פעיל)",hidden:"מוסתר — לא מוצג ללקוח"};
+const INFO_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>';
+function pjDeliveryHint(){
+  const t=pjType,d=pjDelivery;
+  if(t==="site"&&d==="browser")return"אתר רגיל שנפתח בדפדפן.";
+  if(t==="site"&&d==="pwa")return"אתר שגם ניתן להתקנה כאפליקציה על מסך הבית — הלקוח יראה תג ״ניתן להתקנה״.";
+  if(t==="app"&&d==="pwa")return"האפליקציה היא בעצם האתר, מותקן כ-PWA (בלי חנות).";
+  return"אפליקציה אמיתית מהחנויות — App Store / Google Play / TestFlight.";
+}
+function renderPjDelivery(){
+  const opts=PJ_DELIVERY[pjType],a=document.getElementById("pj-del-a"),b=document.getElementById("pj-del-b");
+  a.textContent=opts[0].l;b.textContent=opts[1].l;
+  a.classList.toggle("on",pjDelivery===opts[0].v);
+  b.classList.toggle("on",pjDelivery===opts[1].v);
+  document.getElementById("pj-del-hint").innerHTML=INFO_SVG+"<span>"+esc(pjDeliveryHint())+"</span>";
+}
+function renderPlatState(plat){
+  const s=pjPlatState[plat]||"auto";
+  const sel=document.getElementById(plat==="ios"?"pj-ios-states":"pj-and-states");
+  if(sel)sel.querySelectorAll("button").forEach(btn=>btn.classList.toggle("on",btn.dataset.s===s));
+  const lbl=document.getElementById(plat==="ios"?"pj-ios-state-lbl":"pj-and-state-lbl");
+  if(lbl)lbl.textContent="מצב: "+PJ_PLAT_STATE_LBL[s];
+  const testKey=plat==="ios"?"ios-test":"and-test",liveKey=plat==="ios"?"ios-live":"and-live";
+  document.querySelectorAll(`#pj-native-wrap [data-fld="${testKey}"]`).forEach(el=>el.classList.toggle("pj-fld-dim",s==="live"||s==="hidden"));
+  document.querySelectorAll(`#pj-native-wrap [data-fld="${liveKey}"]`).forEach(el=>el.classList.toggle("pj-fld-dim",s==="testing"||s==="hidden"));
+}
+window.setPlatState=(plat,s)=>{pjPlatState[plat]=s;renderPlatState(plat);};
+function applyPjFieldVis(){
+  const urlShown=(pjType==="site")||(pjType==="app"&&pjDelivery==="pwa");
+  document.getElementById("pj-url-wrap").style.display=urlShown?"":"none";
+  document.getElementById("pj-native-wrap").style.display=(pjType==="app"&&pjDelivery==="native")?"":"none";
+  document.getElementById("pj-appnote-wrap").style.display=(pjDelivery!=="browser")?"":"none";
+  const ulbl=document.querySelector("#pj-url-wrap label");
+  if(ulbl)ulbl.textContent=(pjType==="app")?"כתובת האפליקציה (PWA)":"כתובת URL";
+  if(pjType==="app"&&pjDelivery==="native"){renderPlatState("ios");renderPlatState("android");}
+  /* יחס תמונת התצוגה לפי סוג (PT-2) */
+  const isApp=pjType==="app",prev=document.getElementById("pj-img-preview"),ilbl=document.getElementById("pj-img-lbl");
+  if(prev){prev.style.aspectRatio=isApp?"9/16":"16/9";prev.style.maxWidth=isApp?"210px":"";prev.style.margin=isApp?"0 auto":"";}
+  if(ilbl)ilbl.textContent=isApp?"תמונת תצוגה / מוקאפ (9:16)":"תמונת תצוגה (16:9)";
+}
+function pjImgAspect(){return pjType==="app"?9/16:16/9;}
 function setPjType(t){pjType=t;
   document.getElementById("pj-type-site").classList.toggle("on",t==="site");
   document.getElementById("pj-type-app").classList.toggle("on",t==="app");
-  document.getElementById("pj-url-wrap").style.display=t==="site"?"":"none";
-  document.getElementById("pj-applinks-wrap").style.display=t==="app"?"":"none";
+  const valid=PJ_DELIVERY[t].map(o=>o.v);
+  if(!valid.includes(pjDelivery))pjDelivery=(t==="site")?"browser":"native";
+  renderPjDelivery();applyPjFieldVis();
 }
 window.setPjType=setPjType;
+window.setPjDelivery=(idx)=>{pjDelivery=PJ_DELIVERY[pjType][idx].v;renderPjDelivery();applyPjFieldVis();};
+/* תפקיד: פרויקט ראשי / מערכת ניהול (PT-3) */
+let pjRole="primary";
+window.setPjRole=(r)=>{pjRole=r;
+  document.getElementById("pj-role-primary").classList.toggle("on",r==="primary");
+  document.getElementById("pj-role-panel").classList.toggle("on",r==="panel");
+  document.getElementById("pj-parent-wrap").style.display=(r==="panel")?"":"none";
+  const hint=document.getElementById("pj-role-hint");
+  if(hint)hint.innerHTML=INFO_SVG+"<span>"+(r==="panel"?"מערכת ניהול שמשויכת לאתר-אב — תוצג ללקוח בתוך קוביית האב, לא כקובייה נפרדת.":"פרויקט עצמאי — קובייה משלו אצל הלקוח.")+"</span>";
+  if(r==="panel")populatePjParents();
+};
+function populatePjParents(){
+  const sel=document.getElementById("pj-parent");if(!sel)return;
+  const ph=document.getElementById("pj-client").value;
+  const opts=Object.entries(projects)
+    .filter(([id,p])=>p.clientPhone===ph && id!==editProjectId && (p.role||"primary")!=="panel")
+    .sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0))
+    .map(([id,p])=>`<option value="${id}">${esc(p.name||"פרויקט")}</option>`).join("");
+  sel.innerHTML=opts||`<option value="">— אין פרויקט ראשי לאותו לקוח —</option>`;
+}
 function setPjMode(m){pjMode=m;
   document.getElementById("pmode-stages").classList.toggle("on",m==="stages");
   document.getElementById("pmode-manual").classList.toggle("on",m==="manual");
@@ -5379,13 +5567,71 @@ function addPjPwdField(pwd={}){
 window.addPjPwdField=addPjPwdField;
 function wirePjImgUpload(){
   const box=document.getElementById("pj-img-box"),preview=document.getElementById("pj-img-preview"),file=document.getElementById("pj-img-file"),hidden=document.getElementById("pj-img"),changeBtn=document.getElementById("pj-img-change"),removeBtn=document.getElementById("pj-img-remove");
-  const handle=async f=>{if(!f.type.startsWith("image/"))return toast("קובץ תמונה בלבד","e");preview.innerHTML='<div class="img-upload-spin"></div>';
-    try{const ext=(f.name.split(".").pop()||"jpg").toLowerCase();const snap=await uploadBytes(sRef(storage,"site-images/"+Date.now()+"_"+Math.random().toString(36).slice(2,8)+"."+ext),f);const url=await getDownloadURL(snap.ref);hidden.value=url;preview.innerHTML=`<img src="${url}"/>`;changeBtn.textContent="שינוי תמונה";removeBtn.style.display="flex";}
-    catch(e){toast("שגיאה בהעלאת התמונה","e");preview.innerHTML=hidden.value?`<img src="${hidden.value}"/>`:siteImgFallbackSvg();}};
+  /* העלאה של ה-blob החתוך (PT-2) */
+  const doUpload=async blob=>{const before=hidden.value;preview.innerHTML='<div class="img-upload-spin"></div>';
+    try{const snap=await uploadBytes(sRef(storage,"site-images/"+Date.now()+"_"+Math.random().toString(36).slice(2,8)+".jpg"),blob);const url=await getDownloadURL(snap.ref);hidden.value=url;preview.innerHTML=`<img src="${url}"/>`;changeBtn.textContent="שינוי תמונה";removeBtn.style.display="flex";}
+    catch(e){toast("שגיאה בהעלאת התמונה","e");preview.innerHTML=before?`<img src="${before}"/>`:siteImgFallbackSvg();}};
+  /* כל תמונה עוברת דרך חותך נעול-יחס לפי סוג הפרויקט */
+  const handle=f=>{if(!f||!f.type.startsWith("image/"))return toast("קובץ תמונה בלבד","e");openProjectImageCropper(f,pjImgAspect(),doUpload);};
   changeBtn.onclick=()=>file.click();
   file.onchange=e=>{const f=e.target.files[0];e.target.value="";if(f)handle(f);};
   removeBtn.onclick=()=>{hidden.value="";preview.innerHTML=siteImgFallbackSvg();changeBtn.textContent="העלאת תמונה";removeBtn.style.display="none";};
   wireImgDropZone(box,handle);
+}
+/* ── חותך תמונה נעול-יחס (PT-2) — מלבני, ממחזר את שפת ה-avatar-crop ── */
+window.openProjectImageCropper=(file,aspect,onCropped)=>{
+  if(!file||!/^image\//.test(file.type)){toast("קובץ תמונה בלבד","e");return;}
+  const objUrl=URL.createObjectURL(file);const img=new Image();
+  img.onload=()=>buildRectCropper(img,objUrl,aspect,onCropped);
+  img.onerror=()=>{URL.revokeObjectURL(objUrl);toast("שגיאה בטעינת התמונה","e");};
+  img.src=objUrl;
+};
+function buildRectCropper(img,objUrl,aspect,onCropped){
+  const nw=img.naturalWidth,nh=img.naturalHeight;
+  if(!nw||!nh){URL.revokeObjectURL(objUrl);toast("שגיאה בטעינת התמונה","e");return;}
+  const maxW=Math.min(window.innerWidth*0.82,360),maxH=Math.min(window.innerHeight*0.5,420);
+  let VW,VH;
+  if(aspect>=1){VW=maxW;VH=Math.round(VW/aspect);if(VH>maxH){VH=maxH;VW=Math.round(VH*aspect);}}
+  else{VH=maxH;VW=Math.round(VH*aspect);if(VW>maxW){VW=maxW;VH=Math.round(VW/aspect);}}
+  const minScale=Math.max(VW/nw,VH/nh),maxScale=minScale*4;
+  let scale=minScale,tx=(VW-nw*scale)/2,ty=(VH-nh*scale)/2,busy=false;
+  const ov=document.createElement("div");ov.className="av-crop-overlay";
+  ov.innerHTML=`
+    <div class="av-crop-title">מיקום תמונת התצוגה</div>
+    <div class="av-crop-sub">גרירה למיקום · צביטה או מחוון לזום · יחס ${aspect>=1?"16:9":"9:16"}</div>
+    <div class="av-crop-view" id="pjc-cv" style="width:${VW}px;height:${VH}px"><img id="pjc-img" src="${objUrl}" style="width:${nw}px;height:${nh}px"/><div class="av-crop-rect"></div></div>
+    <div class="av-crop-zoom"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg><input type="range" id="pjc-zoom" min="1" max="4" step="0.01" value="1"/><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></div>
+    <div class="av-crop-actions"><button class="av-crop-btn ghost" id="pjc-cancel">ביטול</button><button class="av-crop-btn primary" id="pjc-confirm">אישור</button></div>`;
+  document.body.appendChild(ov);
+  const imgEl=ov.querySelector("#pjc-img"),view=ov.querySelector("#pjc-cv"),zoom=ov.querySelector("#pjc-zoom");
+  const cancelBtn=ov.querySelector("#pjc-cancel"),confirmBtn=ov.querySelector("#pjc-confirm");
+  const clamp=()=>{scale=Math.max(minScale,Math.min(maxScale,scale));tx=Math.min(0,Math.max(VW-nw*scale,tx));ty=Math.min(0,Math.max(VH-nh*scale,ty));};
+  const render=()=>{clamp();imgEl.style.transform=`translate(${tx}px,${ty}px) scale(${scale})`;};
+  const setScaleAround=(ns,cx,cy)=>{ns=Math.max(minScale,Math.min(maxScale,ns));const k=ns/scale;tx=cx-(cx-tx)*k;ty=cy-(cy-ty)*k;scale=ns;render();zoom.value=(scale/minScale).toFixed(2);};
+  render();
+  zoom.oninput=()=>setScaleAround(minScale*parseFloat(zoom.value),VW/2,VH/2);
+  const pts=new Map();let startDist=0,startScale=scale,startMid={x:0,y:0};
+  view.addEventListener("pointerdown",e=>{view.setPointerCapture(e.pointerId);pts.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pts.size===2){const p=[...pts.values()];startDist=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);startScale=scale;const r=view.getBoundingClientRect();startMid={x:(p[0].x+p[1].x)/2-r.left,y:(p[0].y+p[1].y)/2-r.top};}});
+  view.addEventListener("pointermove",e=>{if(!pts.has(e.pointerId))return;const prev=pts.get(e.pointerId);pts.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pts.size===1){tx+=e.clientX-prev.x;ty+=e.clientY-prev.y;render();}else if(pts.size===2){const p=[...pts.values()];const d=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);if(startDist)setScaleAround(startScale*(d/startDist),startMid.x,startMid.y);}});
+  const upP=e=>{pts.delete(e.pointerId);};
+  view.addEventListener("pointerup",upP);view.addEventListener("pointercancel",upP);
+  view.addEventListener("wheel",e=>{e.preventDefault();const r=view.getBoundingClientRect();setScaleAround(scale*(e.deltaY<0?1.08:0.926),e.clientX-r.left,e.clientY-r.top);},{passive:false});
+  const close=()=>{URL.revokeObjectURL(objUrl);ov.remove();};
+  cancelBtn.onclick=()=>{if(busy)return;close();};
+  ov.addEventListener("click",e=>{if(e.target===ov&&!busy)close();});
+  confirmBtn.onclick=async()=>{
+    if(busy)return;busy=true;confirmBtn.disabled=true;cancelBtn.disabled=true;
+    try{
+      const OUTW=aspect>=1?1280:720,OUTH=aspect>=1?720:1280;
+      const canvas=document.createElement("canvas");canvas.width=OUTW;canvas.height=OUTH;
+      const ctx=canvas.getContext("2d");
+      const srcW=VW/scale,srcH=VH/scale,srcX=-tx/scale,srcY=-ty/scale;
+      ctx.drawImage(img,srcX,srcY,srcW,srcH,0,0,OUTW,OUTH);
+      const blob=await new Promise((res,rej)=>canvas.toBlob(b=>b?res(b):rej(new Error("blob")),"image/jpeg",0.9));
+      close();
+      onCropped&&onCropped(blob);
+    }catch(err){console.error(err);busy=false;confirmBtn.disabled=false;cancelBtn.disabled=false;toast("שגיאה בחיתוך התמונה","e");}
+  };
 }
 function openProjectModal(id){
   if(!pjCanManage()){showPermDenied("projects");return;}
@@ -5400,9 +5646,16 @@ function openProjectModal(id){
   document.getElementById("pj-client").value=p.clientPhone||"";
   document.getElementById("pj-status").value=p.status||"building";
   document.getElementById("pj-url").value=p.url||"";
-  document.getElementById("pj-ios").value=p.appLinks?.ios||"";
-  document.getElementById("pj-android").value=p.appLinks?.android||"";
-  document.getElementById("pj-testflight").value=p.appLinks?.testflight||"";
+  /* מודל type+delivery+platforms (PT-1/PT-5b) — עם תאימות לאחור מ-appLinks הישן */
+  const pf=p.platforms||{}, io=pf.ios||{}, an=pf.android||{}, al=p.appLinks||{};
+  document.getElementById("pj-ios-tf").value=io.testflightUrl||al.testflight||"";
+  document.getElementById("pj-ios-code").value=io.testflightCode||"";
+  document.getElementById("pj-ios-store").value=io.appStoreUrl||al.ios||"";
+  document.getElementById("pj-and-store").value=an.playStoreUrl||al.android||"";
+  document.getElementById("pj-and-test").value=an.testingUrl||"";
+  document.getElementById("pj-appnote").value=p.appNote||"";
+  pjPlatState={ios:io.state||"auto",android:an.state||"auto"};
+  pjDelivery=p.delivery||((p.type==="app")?"native":"browser");
   document.getElementById("pj-message").value=p.message||"";
   document.getElementById("pj-img").value=p.image||"";
   document.getElementById("pj-img-preview").innerHTML=p.image?`<img src="${esc(p.image)}"/>`:siteImgFallbackSvg();
@@ -5415,36 +5668,85 @@ function openProjectModal(id){
     :(p.stages?Object.values(p.stages).sort((a,b)=>(a.order||0)-(b.order||0)):[]).map(s=>({title:s.title,weight:Number(s.weight)||1,done:!!s.done,doneAt:s.doneAt||null,doneBy:s.doneBy||null}));
   setPjType(p.type||"site");
   setPjMode(p.progressMode||"stages");
+  /* תפקיד + פרויקט אב (PT-3) */
+  setPjRole(p.role||"primary");
+  if((p.role||"primary")==="panel"&&p.parentId){const ps=document.getElementById("pj-parent");if(ps)ps.value=p.parentId;}
+  document.getElementById("pj-client").onchange=()=>{if(pjRole==="panel")populatePjParents();};
   /* פרויקט שנוצר מהצעה חתומה (יש quoteId) — השלבים נעולים (מקור אמת = ההצעה) */
   pjStagesLocked=!isNew&&!!p.quoteId;
   const addStageBtn=document.getElementById("pj-add-stage");if(addStageBtn)addStageBtn.style.display=pjStagesLocked?"none":"";
-  const stagesHint=document.querySelector("#pj-stages-wrap > div:first-child");if(stagesHint)stagesHint.style.display=pjStagesLocked?"none":"";
+  const impStageBtn=document.getElementById("pj-import-stages");if(impStageBtn)impStageBtn.style.display=pjStagesLocked?"none":"";
+  closeStageImport();
+  const stageTop=document.getElementById("pj-stage-topbar");if(stageTop)stageTop.style.display=pjStagesLocked?"none":"flex";
   renderStageEditor();
   wirePjImgUpload();
   openMo("mo-project");
 }
 window.openProjectModal=openProjectModal;
 let pjStagesLocked=false;
+const STG_DRAG_SVG='<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>';
 function renderStageEditor(){
-  const host=document.getElementById("pj-stages-editor");
+  const host=document.getElementById("pj-stages-editor");if(!host)return;
+  host.classList.add("stg-line");
   if(pjStagesLocked){
-    /* פרויקט שנוצר מהצעה חתומה — השלבים הם מקור אמת של ההצעה, לא לעריכה */
-    host.innerHTML=`<div style="display:flex;align-items:center;gap:9px;background:rgba(14,165,233,.07);border:1px solid rgba(14,165,233,.25);border-radius:11px;padding:11px 13px;margin-bottom:10px;font-size:12.5px;font-weight:700;color:var(--pd)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>השלבים נקבעו בהצעה החתומה ואינם ניתנים לעריכה כאן.</div>`+
-      pjStageRows.map((s,i)=>`<div class="pj-stage-row" style="cursor:default;opacity:.75"><div class="pj-stage-body" style="padding:8px 10px;font-size:14px;font-weight:600">${esc(s.title)}</div><div class="pj-stage-w"><span style="font-size:11px;color:var(--muted)">משקל</span> <b>${s.weight}</b></div></div>`).join("");
+    /* פרויקט שנוצר מהצעה חתומה — השלבים הם מקור אמת של ההצעה, לא לעריכה/גרירה */
+    host.innerHTML=`<div style="display:flex;align-items:center;gap:9px;background:rgba(14,165,233,.07);border:1px solid rgba(14,165,233,.25);border-radius:11px;padding:11px 13px;margin-bottom:12px;font-size:12.5px;font-weight:700;color:var(--pd)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>השלבים נקבעו בהצעה החתומה ואינם ניתנים לעריכה כאן.</div>`+
+      pjStageRows.map((s,i)=>`<div class="stg-r"><div class="stg-node">${i+1}</div><div class="stg-card" style="cursor:default;opacity:.8"><div class="stg-top"><span class="stg-t" style="border:none">${esc(s.title)}</span></div><div class="stg-meta"><div class="stg-field"><label>משקל</label><b style="font-size:13px">${s.weight}</b></div></div></div></div>`).join("");
     return;
   }
+  if(!pjStageRows.length){host.innerHTML=`<div style="font-size:13px;color:var(--muted);padding:8px 0">אין שלבים — הוסף שלב או ייבא מהצעה כדי להתחיל.</div>`;return;}
   host.innerHTML=pjStageRows.map((s,i)=>`
-    <div class="pj-stage-row" style="cursor:default">
-      <div class="pj-stage-body"><input class="fi" value="${esc(s.title)}" oninput="pjStgSet(${i},'title',this.value)" style="padding:8px 10px;font-size:14px"/></div>
-      <div class="pj-stage-w"><span style="font-size:11px;color:var(--muted)">משקל</span><input type="number" min="1" value="${s.weight}" oninput="pjStgSet(${i},'weight',this.value)"/></div>
-      <button class="pj-stage-del" onclick="pjStgDel(${i})" title="הסר שלב"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
-    </div>`).join("")||`<div style="font-size:13px;color:var(--muted);padding:8px 0">אין שלבים — הוסף שלב כדי להתחיל.</div>`;
+    <div class="stg-r stg-row" data-idx="${i}">
+      <div class="stg-node">${i+1}</div>
+      <div class="stg-card">
+        <div class="stg-top">
+          <span class="stg-drag" title="גרור לשינוי סדר השלבים" aria-label="גרור לשינוי סדר">${STG_DRAG_SVG}</span>
+          <input class="stg-t" value="${esc(s.title)}" placeholder="שם השלב" oninput="pjStgSet(${i},'title',this.value)"/>
+          <button class="stg-del" type="button" title="הסר שלב" onclick="pjStgDel(${i})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg></button>
+        </div>
+        <div class="stg-meta"><div class="stg-field"><label>משקל</label><input type="number" min="1" value="${s.weight}" oninput="pjStgSet(${i},'weight',this.value)"/></div></div>
+      </div>
+    </div>`).join("");
+  wireStageDnD(host,{readOnly:()=>pjStagesLocked,reorder:o=>{pjStageRows=o.map(i=>pjStageRows[i]);},rerender:renderStageEditor,commit:()=>{}});
 }
 window.renderStageEditor=renderStageEditor;
 /* עוזרי חלון — מטפלי inline אינם רואים משתני מודול (pjStageRows), חייבים לעבור דרך window */
 window.pjStgSet=(i,field,val)=>{if(!pjStageRows[i])return;if(field==="weight")pjStageRows[i].weight=Math.max(1,parseInt(val)||1);else pjStageRows[i][field]=val;};
 window.pjStgDel=(i)=>{pjStageRows.splice(i,1);renderStageEditor();};
 document.getElementById("pj-add-stage")?.addEventListener("click",()=>{if(pjStagesLocked)return;pjStageRows.push({title:"",weight:1,done:false,doneAt:null,doneBy:null});renderStageEditor();});
+/* ── ייבוא שלבים מהצעת מחיר של הלקוח (PS-2) ── */
+function quoteStagesArr(q){const raw=Array.isArray(q.stages)?q.stages:(q.stages?Object.values(q.stages):[]);return raw.map(s=>({title:(s.title||"").trim(),weight:Number(s.weight)||1})).filter(s=>s.title);}
+function impPopShell(inner){return `<div class="pj-imp-pop"><div class="pj-imp-h"><div>ייבוא שלבים מהצעה<span>ניקח רק את השלבים · תמיד אפשר לערוך אחרי</span></div><button class="pj-imp-x" type="button" onclick="closeStageImport()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>${inner}</div>`;}
+window.closeStageImport=()=>{const pop=document.getElementById("pj-stage-import-pop");if(pop)pop.innerHTML="";document.removeEventListener("pointerdown",stageImpOutside,true);};
+function stageImpOutside(e){const pop=document.getElementById("pj-stage-import-pop");const btn=document.getElementById("pj-import-stages");if(pop&&!pop.contains(e.target)&&btn&&!btn.contains(e.target))closeStageImport();}
+window.openStageImport=()=>{
+  if(pjStagesLocked)return;
+  const pop=document.getElementById("pj-stage-import-pop");if(!pop)return;
+  if(pop.innerHTML.trim()){closeStageImport();return;} /* טוגל */
+  const ph=document.getElementById("pj-client").value;
+  if(!ph){toast("בחר קודם לקוח","e");return;}
+  const list=Object.entries(quotes).filter(([id,q])=>q.clientPhone===ph&&quoteStagesArr(q).length)
+    .sort((a,b)=>(b[1].updatedAt||b[1].createdAt||0)-(a[1].updatedAt||a[1].createdAt||0));
+  if(!list.length){pop.innerHTML=impPopShell(`<div class="pj-imp-empty">אין ללקוח זה הצעות מחיר עם שלבים.<br/>אפשר להוסיף שלבים ידנית.</div>`);}
+  else{
+    const docSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5"/></svg>';
+    const rows=list.map(([id,q])=>{
+      const stg=quoteStagesArr(q),st=Q_STAT[quoteEffStatus(q)]||Q_STAT.draft;
+      const chips=stg.slice(0,3).map((s,i)=>`<span class="pj-imp-chip"><span class="n">${i+1}</span>${esc(s.title)}</span>`).join("")+(stg.length>3?`<span class="pj-imp-more">+${stg.length-3}</span>`:"");
+      const title=q.projectName||q.title||"הצעת מחיר";
+      return `<div class="pj-imp-row" onclick="pickStageImport('${id}')"><div class="pj-imp-ic">${docSvg}</div><div class="pj-imp-tx"><div class="pj-imp-head"><span class="m">${esc(title)}</span><span class="pj-imp-badge ${st.c}">${st.t}</span>${q.number?`<span class="num">#${esc(q.number)}</span>`:""}</div><div class="pj-imp-prev">${chips}</div></div><button class="pj-imp-go" type="button" onclick="event.stopPropagation();pickStageImport('${id}')">ייבוא</button></div>`;
+    }).join("");
+    pop.innerHTML=impPopShell(`<div class="pj-imp-list">${rows}</div>`);
+  }
+  setTimeout(()=>document.addEventListener("pointerdown",stageImpOutside,true),0);
+};
+window.pickStageImport=(id)=>{
+  const q=quotes[id];if(!q)return;const stg=quoteStagesArr(q);
+  if(!stg.length){toast("אין שלבים בהצעה","e");return;}
+  pjStageRows=stg.map(s=>({title:s.title,weight:s.weight,done:false,doneAt:null,doneBy:null}));
+  closeStageImport();renderStageEditor();
+  toast(`יובאו ${stg.length} שלבים ✓`,"s");
+};
 document.getElementById("pj-add-pwd")?.addEventListener("click",()=>addPjPwdField());
 
 async function saveProject(){
@@ -5461,11 +5763,33 @@ async function saveProject(){
   const id=editProjectId||`pj_${Date.now()}`;
   const base=editProjectId?projects[id]:{createdAt:Date.now(),createdBy:currentUser?.name||""};
   const rec={...base,name,clientPhone,clientName:clients[clientPhone]?.name||base.clientName||"",type:pjType,status,progressMode:pjMode,
+    delivery:pjDelivery,
     image:document.getElementById("pj-img").value.trim()||"",message:document.getElementById("pj-message").value.trim()||"",
     manualProgress:Math.max(0,Math.min(100,parseInt(document.getElementById("pj-manual").value)||0)),
     stages, sitePasswords:Object.keys(sitePasswords).length?sitePasswords:null};
-  if(pjType==="app"){rec.appLinks={ios:document.getElementById("pj-ios").value.trim(),android:document.getElementById("pj-android").value.trim(),testflight:document.getElementById("pj-testflight").value.trim()};rec.url="";}
-  else{rec.url=document.getElementById("pj-url").value.trim();rec.appLinks=null;}
+  const gv=id2=>document.getElementById(id2).value.trim();
+  if(pjType==="app"&&pjDelivery==="native"){
+    const ios={state:pjPlatState.ios,appStoreUrl:gv("pj-ios-store"),testflightUrl:gv("pj-ios-tf"),testflightCode:gv("pj-ios-code")};
+    const android={state:pjPlatState.android,playStoreUrl:gv("pj-and-store"),testingUrl:gv("pj-and-test")};
+    /* ולידציה: לפחות פלטפורמה אחת גלויה עם קישור שמיש */
+    const iosHas=ios.appStoreUrl||ios.testflightUrl, andHas=android.playStoreUrl||android.testingUrl;
+    if(ios.state==="hidden"&&android.state==="hidden")return toast("לפחות פלטפורמה אחת חייבת להיות זמינה (לא מוסתרת)","e");
+    if((ios.state==="hidden"||!iosHas)&&(android.state==="hidden"||!andHas))return toast("יש להזין לפחות קישור חנות/בדיקה אחד לפלטפורמה זמינה","e");
+    rec.platforms={ios,android};rec.url="";rec.appNote=gv("pj-appnote")||"";
+    /* מראה legacy ל-appLinks — כדי ש-index.html הישן ימשיך לעבוד עד PT-5 */
+    rec.appLinks={ios:ios.appStoreUrl,android:android.playStoreUrl,testflight:ios.testflightUrl};
+  } else {
+    rec.url=gv("pj-url");rec.platforms=null;rec.appLinks=null;
+    rec.appNote=(pjDelivery!=="browser")?(gv("pj-appnote")||""):"";
+  }
+  /* תפקיד + פרויקט אב (PT-3) */
+  rec.role=pjRole;
+  if(pjRole==="panel"){
+    const parentId=document.getElementById("pj-parent").value;
+    if(!parentId)return toast("בחר את הפרויקט הראשי שאליו משויכת מערכת הניהול","e");
+    if(parentId===id)return toast("פרויקט לא יכול להיות מערכת הניהול של עצמו","e");
+    rec.parentId=parentId;
+  } else { rec.parentId=null; }
   rec.progress=pjProgress(rec);
   if(editProjectId&&projects[id]?.notes)rec.notes=projects[id].notes;
   await set(ref(db,`projects/${id}`),rec);
@@ -6292,18 +6616,20 @@ function renderQStages(){
     </div>`).join("")+`
     <div class="stg-r stg-addrow" style="padding-bottom:0"><div class="stg-add-node"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div style="flex:1"></div></div>`;
   applyStageLockState();
-  wireStageDnD();
+  wireStageDnD(host,{readOnly:()=>quoteReadOnly,reorder:o=>{qStages=o.map(i=>qStages[i]);},rerender:()=>{renderQStages();refreshPayAnchors();},commit:scheduleQuoteSave});
 }
 /* ── גרירה לשינוי סדר השלבים — הקובייה מרחפת עם העכבר ──
+   מוכלל (PS-1): עובד גם על עורך שלבי-הפרויקט. opts={readOnly,reorder,rerender,commit}.
    הכרטיס כולו ניתן לגרירה בעכבר (חוץ משדות/כפתורים); במגע — מהידית בלבד.
    בזמן גרירה: הקובייה הופכת ל"רוח" צפה (position:fixed) שעוקבת אחרי הסמן,
    במקומה מוצג חריץ מקווקו, ושאר השלבים מחליקים לפנות מקום (אנימציית FLIP).
    בשחרור הקובייה "נוחתת" בחריץ ורק אז הסדר נשמר. */
-function wireStageDnD(){
-  const host=document.getElementById("q-stages");if(!host)return;
+function wireStageDnD(host,opts){
+  opts=opts||{};if(!host)return;
+  const isRO=()=>typeof opts.readOnly==="function"?opts.readOnly():!!opts.readOnly;
   host.querySelectorAll(".stg-row").forEach(row=>{
     row.addEventListener("pointerdown",e=>{
-      if(quoteReadOnly)return;
+      if(isRO())return;
       if(e.button!==undefined&&e.button!==0)return;                /* עכבר: כפתור שמאלי בלבד */
       if(e.target.closest("input,select,button,textarea,label"))return; /* שדות נשארים שדות */
       if(e.pointerType!=="mouse"&&!e.target.closest(".stg-drag"))return; /* מגע: רק מהידית */
@@ -6387,9 +6713,9 @@ function wireStageDnD(){
           slot.remove();
           row.remove(); /* הרוח יושבת על body — מסירים, והרינדור בונה הכל מחדש */
           host.classList.remove("stg-dnd-active");
-          if(changed)qStages=order.map(idx=>qStages[idx]);
-          renderQStages();refreshPayAnchors();
-          if(changed)scheduleQuoteSave();
+          if(changed&&opts.reorder)opts.reorder(order);
+          if(opts.rerender)opts.rerender();
+          if(changed&&opts.commit)opts.commit();
         },170);
       };
       const onUp=()=>finish(true);

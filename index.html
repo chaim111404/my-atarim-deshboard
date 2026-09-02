@@ -624,6 +624,24 @@ tr:hover td{background:#f8faff}
 .pj-imp-more{font-size:10.5px;font-weight:800;color:var(--pur)}
 .pj-imp-go{align-self:center;background:var(--pur);color:#fff;border:none;border-radius:8px;font-family:'Heebo',sans-serif;font-size:11.5px;font-weight:800;padding:7px 12px;cursor:pointer;flex-shrink:0}
 .pj-imp-empty{padding:22px 16px;text-align:center;color:var(--muted);font-size:12.5px;line-height:1.6}
+/* ── תבניות פעולה מובנות בגיליון המשימה (AC slice 2a) ── */
+.tsh-templates{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:6px}
+.tsh-tpl{display:inline-flex;align-items:center;gap:7px;border:1.5px solid var(--bdr);background:var(--bg);border-radius:20px;padding:7px 11px;font-size:12.5px;font-weight:700;color:var(--txt);cursor:pointer}
+.tsh-tpl .ci{width:22px;height:22px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.tsh-tpl .ci svg{width:13px;height:13px}
+.tsh-tpl-tag{font-size:9px;font-weight:800;padding:1px 6px;border-radius:10px;background:rgba(139,92,246,.14);color:#7c3aed}
+.tsh-action-chip{display:flex;align-items:center;gap:9px;background:rgba(139,92,246,.08);border:1.5px solid rgba(139,92,246,.3);border-radius:12px;padding:10px 13px;margin-bottom:6px}
+.tsh-action-chip .m{flex:1;font-size:13px;font-weight:800;color:#7c3aed}
+.tsh-action-chip .x{border:none;background:none;color:var(--muted);cursor:pointer;padding:2px}
+.tsh-action-chip .x svg{width:16px;height:16px}
+/* תצוגת נציג לפעולות מובנות (AC slice 3) */
+.ac-ans{display:flex;flex-direction:column;gap:6px;margin:4px 0 2px}
+.ac-ans-row{display:flex;gap:8px;font-size:12.5px;line-height:1.5;padding:6px 9px;background:var(--bg);border-radius:8px}
+.ac-ans-row .k{color:var(--muted);font-weight:700;flex-shrink:0;min-width:88px}
+.ac-ans-row .v{color:var(--txt);font-weight:600;word-break:break-word}
+.ac-ans-item{font-size:12.5px;line-height:1.6;padding:7px 10px;background:var(--bg);border-radius:8px}
+.ac-ans-item b{color:var(--pd)}
+.tc-wait-agent{font-size:12px;color:var(--muted);padding:7px 2px}
 
 /* ── קוביות משימה בצ'אט (שלב 4) ── */
 .tc-pins{display:flex;flex-direction:column;gap:8px;padding:8px 12px;max-height:46vh;overflow-y:auto;flex-shrink:0}
@@ -1557,10 +1575,15 @@ tr:hover td{background:#f8faff}
           <label class="tsh-l">פרויקט <span style="color:var(--err)">*</span> <span style="font-weight:600;color:var(--muted)">— לאיזה פרויקט שייכת המשימה</span></label>
           <div class="tsh-projects" id="tsh-projects"></div>
         </div>
-        <label class="tsh-l">קטגוריית המשימה</label>
-        <div class="tsh-cats" id="tsh-cats"></div>
-        <label class="tsh-l">מה הלקוח צריך לעשות</label>
-        <div class="tsh-io" id="tsh-io"></div>
+        <label class="tsh-l">פעולה מובנית <span style="font-weight:600;color:var(--muted)">— טופס / רשימה / שדות מתקדמים (אופציונלי)</span></label>
+        <div class="tsh-action-chip" id="tsh-action-chip" style="display:none"><span class="m" id="tsh-action-name"></span><button type="button" class="x" onclick="clearTaskAction()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+        <div class="tsh-templates" id="tsh-templates"></div>
+        <div id="tsh-basic-wrap">
+          <label class="tsh-l">קטגוריית המשימה</label>
+          <div class="tsh-cats" id="tsh-cats"></div>
+          <label class="tsh-l">מה הלקוח צריך לעשות</label>
+          <div class="tsh-io" id="tsh-io"></div>
+        </div>
         <label class="tsh-l">כותרת המשימה</label>
         <input id="task-title" class="tsh-fi" type="text" placeholder="לדוגמה: תמונות לגלריית האתר"/>
         <label class="tsh-l">פירוט — מה נדרש מהלקוח</label>
@@ -5142,7 +5165,7 @@ function exitProject(){
 window.exitProject=exitProject;
 function renderPjTasks(id,p){
   const tasks=Object.entries(pjDetailTasks).filter(([tid,t])=>!t.projectId||t.projectId===id).sort((a,b)=>(b[1].at||0)-(a[1].at||0));
-  const allFiles=[];tasks.forEach(([tid,t])=>{if(t.files)Object.values(t.files).forEach(f=>{if(f.submitted)allFiles.push(f);});});
+  const allFiles=[];tasks.forEach(([tid,t])=>{if(t.files)Object.values(t.files).forEach(f=>{if(f.submitted)allFiles.push(f);});if(t.response&&t.response.media)Object.values(t.response.media).forEach(m=>allFiles.push({url:m.url,name:m.purpose||m.name||"קובץ",type:m.type||""}));});
   return`<div class="card"><div style="padding:16px">
     <div style="font-weight:800;font-size:15px;margin-bottom:12px">קבצים מהלקוח <span style="font-size:12px;color:var(--muted);font-weight:600">(זרמו מהמשימות)</span></div>
     ${allFiles.length?`<div class="tc-files">${allFiles.map(f=>tcFileThumb(f,"")).join("")}</div>`:`<div class="pj-soon" style="padding:20px">אין עדיין קבצים. פתח משימה בצ'אט כדי לבקש מהלקוח לוגו/תמונות/קבצים.</div>`}
@@ -5860,7 +5883,35 @@ function renderTaskPins(){
     container.insertBefore(el, refNode||null);
   });
 }
+/* ── תצוגת נציג לפעולות מובנות (AC slice 3) ── */
+function acSchema(t){if(t.action&&t.action.fields)return t.action;const map={upload:"media",text:"textarea",ack:"ack"};return {layout:"single",fields:[{id:"main",type:map[t.input]||"media",label:t.title}]};}
+function acSubmitted(t){const r=t.response||{};return !!(r.submitted||(Array.isArray(r.items)&&r.items.length)||(r.media&&Object.keys(r.media).length)||t.status==="done");}
+function acFmtVal(f,v){if(v==null||v==="")return "—";if(f.type==="rating")return (Number(v)||0)+" מתוך 5";return String(v);}
+function acAgentView(t){
+  const a=acSchema(t),r=t.response||{};
+  if(!acSubmitted(t))return `<div class="tc-wait-agent">ממתין למילוי הלקוח…</div>`;
+  if(a.layout==="repeater"){const items=Array.isArray(r.items)?r.items:[];if(!items.length)return `<div class="tc-wait-agent">אין פריטים</div>`;
+    return `<div class="ac-ans">`+items.map((it,i)=>`<div class="ac-ans-item"><b>${i+1}.</b> ${a.fields.map(f=>String(it[f.id]||"").trim()?esc(f.label||f.id)+": "+esc(it[f.id]):"").filter(Boolean).join(" · ")}</div>`).join("")+`</div>`;}
+  if(a.fields[0]&&a.fields[0].type==="media"){const m=r.media?Object.values(r.media):[];if(!m.length)return `<div class="tc-wait-agent">אין קבצים</div>`;
+    return `<div class="tc-files">`+m.map(x=>{const img=/\.(png|jpe?g|gif|webp|bmp|heic)$/i.test(x.name||"")||/image/.test(x.type||"");return `<div class="tc-file">${img?`<img src="${esc(x.url)}" onclick="window.open('${esc(x.url)}','_blank')"/>`:`<div class="tc-file-doc" onclick="window.open('${esc(x.url)}','_blank')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg></div>`}<span class="tc-file-name">${esc(x.purpose||x.name||"")}</span></div>`;}).join("")+`</div>`;}
+  const data=r.data||{};
+  return `<div class="ac-ans">`+a.fields.map(f=>`<div class="ac-ans-row"><span class="k">${esc(f.label||f.id)}</span><span class="v">${esc(acFmtVal(f,data[f.id]))}</span></div>`).join("")+`</div>`;
+}
+function acAgentStatus(t){if(t.status==="done")return `<span class="tc-status tc-st-sub">הושלמה</span>`;return acSubmitted(t)?`<span class="tc-status tc-st-sub">התקבלה תשובה</span>`:`<span class="tc-status tc-st-wait">ממתין ללקוח</span>`;}
+function acAgentCube(id,t){
+  const meta=tcCatMeta(t);const multiPj=projectsForClient(chatPhone).length>1;const pjName=(multiPj&&t.projectId&&projects[t.projectId])?projects[t.projectId].name:"";
+  const layoutLbl={form:"טופס",repeater:"רשימה",single:"פעולה"}[acSchema(t).layout]||"פעולה";
+  let body=t.desc?`<div class="tc-desc">${esc(t.desc)}</div>`:"";
+  body+=acAgentView(t);
+  body+=`<div class="tc-cta"><button class="tc-btn ok" onclick="markTaskDone('${id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>סמן כהושלמה</button><button class="tc-btn ghost" onclick="openTaskModal('${id}')">עריכה</button><button class="tc-btn danger" onclick="confirmDeleteTask('${id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg></button></div>`;
+  return`<div class="tc admin">
+    <div class="tc-head"><div class="tc-ic" style="background:linear-gradient(135deg,${tcCatGrad(t)})"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">${tcCatIconSvg(t)}</svg></div>
+      <div style="flex:1;min-width:0"><div class="tc-who">משימה שפתחת</div><div class="tc-title">${esc(t.title)}</div><div class="tc-cat-l">${meta?esc(meta.l)+" · ":""}${layoutLbl}${pjName?" · "+esc(pjName):""}</div></div>
+      ${acAgentStatus(t)}</div>
+    <div class="tc-body">${body}</div></div>`;
+}
 function adminTaskCube(id,t){
+  if(t.action&&t.openedBy!=="client")return acAgentCube(id,t);
   const isClient=t.openedBy==="client";
   const input=tcInputType(t);
   const meta=tcCatMeta(t);
@@ -5898,6 +5949,42 @@ window.selectTaskCat=(k)=>{
   renderTaskSheetCats();
 };
 window.selectTaskIO=(k)=>{taskIO=k;renderTaskSheetCats();};
+/* ── תבניות פעולה מובנות (AC slice 2a) — מחברות סכמת action למשימה ── */
+let taskAction=null, taskActionLabel="";
+const ACTION_TEMPLATES=[
+  {key:"biz",cat:"contact",tag:"טופס",title:"פרטי העסק",desc:"מלא/י את פרטי העסק",action:{layout:"form",fields:[{id:"name",type:"text",label:"שם העסק",required:true},{id:"legal",type:"text",label:"שם מסחרי"},{id:"phone",type:"phone",label:"טלפון"},{id:"email",type:"email",label:"אימייל"},{id:"site",type:"url",label:"אתר"},{id:"about",type:"textarea",label:"תיאור קצר"}]}},
+  {key:"contact",cat:"contact",tag:"טופס",title:"פרטי קשר",desc:"אמצעי הקשר של העסק",action:{layout:"form",fields:[{id:"phone",type:"phone",label:"טלפון"},{id:"wa",type:"phone",label:"WhatsApp"},{id:"email",type:"email",label:"אימייל"},{id:"site",type:"url",label:"אתר"}]}},
+  {key:"address",cat:"contact",tag:"טופס",title:"כתובת ומיקום",desc:"כתובת מלאה",action:{layout:"form",fields:[{id:"city",type:"text",label:"עיר",required:true},{id:"street",type:"text",label:"רחוב ומספר"},{id:"zip",type:"text",label:"מיקוד"},{id:"maps",type:"url",label:"קישור Google Maps"}]}},
+  {key:"branches",cat:"contact",tag:"רשימה",title:"סניפים",desc:"הוספת הסניפים של העסק",action:{layout:"repeater",repeat:{itemLabel:"סניף"},fields:[{id:"bname",type:"text",label:"שם הסניף",required:true},{id:"bphone",type:"phone",label:"טלפון"},{id:"baddr",type:"text",label:"כתובת"}]}},
+  {key:"services",cat:"content",tag:"רשימה",title:"שירותים",desc:"הוספת שירותים",action:{layout:"repeater",repeat:{itemLabel:"שירות"},fields:[{id:"sname",type:"text",label:"שם השירות",required:true},{id:"sprice",type:"currency",label:"מחיר"},{id:"sdesc",type:"textarea",label:"תיאור"}]}},
+  {key:"products",cat:"content",tag:"רשימה",title:"מוצרים",desc:"הוספת מוצרים",action:{layout:"repeater",repeat:{itemLabel:"מוצר"},fields:[{id:"pname",type:"text",label:"שם המוצר",required:true},{id:"pprice",type:"currency",label:"מחיר"},{id:"pdesc",type:"textarea",label:"תיאור"}]}},
+  {key:"team",cat:"content",tag:"רשימה",title:"צוות",desc:"אנשי הצוות",action:{layout:"repeater",repeat:{itemLabel:"איש צוות"},fields:[{id:"tname",type:"text",label:"שם",required:true},{id:"trole",type:"text",label:"תפקיד"}]}},
+  {key:"faq",cat:"content",tag:"רשימה",title:"שאלות ותשובות",desc:"הוספת שו״ת",action:{layout:"repeater",repeat:{itemLabel:"שאלה"},fields:[{id:"q",type:"text",label:"שאלה",required:true},{id:"a",type:"textarea",label:"תשובה"}]}},
+  {key:"gallery",cat:"photos",tag:"מדיה",title:"תמונות לאתר",desc:"העלאת תמונות + ייעוד לכל אחת",action:{layout:"single",fields:[{id:"main",type:"media",label:"תמונות",required:true,config:{multiple:true,purposes:["ראשית","גלריה","מוצר","צוות","כללי"]}}]}},
+  {key:"brief",cat:"content",tag:"שאלון",title:"שאלון צרכים",desc:"איסוף צרכים ראשוני",action:{layout:"form",fields:[{id:"goal",type:"textarea",label:"מה המטרה של האתר/אפליקציה?",required:true},{id:"audience",type:"text",label:"קהל היעד"},{id:"refs",type:"textarea",label:"אתרים/דוגמאות שאהבת"},{id:"budget",type:"currency",label:"תקציב משוער"}]}},
+  {key:"rating",cat:"other",tag:"דירוג",title:"דירוג",desc:"דירוג בכוכבים",action:{layout:"single",fields:[{id:"main",type:"rating",label:"דירוג",required:true}]}},
+  {key:"meeting",cat:"other",tag:"טופס",title:"תיאום פגישה",desc:"בחירת מועד",action:{layout:"form",fields:[{id:"when",type:"datetime",label:"מועד מבוקש",required:true},{id:"notes",type:"textarea",label:"הערות"}]}},
+];
+function renderTaskTemplates(){
+  const host=document.getElementById("tsh-templates");if(!host)return;
+  host.innerHTML=ACTION_TEMPLATES.map(t=>{const c=TASK_CATS[t.cat]||TASK_CATS.other;return`<div class="tsh-tpl" onclick="pickTaskTemplate('${t.key}')"><span class="ci" style="background:linear-gradient(135deg,${c.g})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">${c.ic}</svg></span>${esc(t.title)}<span class="tsh-tpl-tag">${esc(t.tag)}</span></div>`;}).join("");
+}
+window.pickTaskTemplate=(key)=>{
+  const t=ACTION_TEMPLATES.find(x=>x.key===key);if(!t)return;
+  taskAction=JSON.parse(JSON.stringify(t.action));taskActionLabel=t.title;taskCat=t.cat||"other";
+  const ti=document.getElementById("task-title");if(!ti.value.trim()||ti.dataset.auto==="1"){ti.value=t.title;ti.dataset.auto="1";}
+  const td=document.getElementById("task-desc");if(t.desc&&!td.value.trim())td.value=t.desc;
+  applyTaskActionUI();
+};
+window.clearTaskAction=()=>{taskAction=null;taskActionLabel="";applyTaskActionUI();};
+function applyTaskActionUI(){
+  const on=!!taskAction;
+  const bw=document.getElementById("tsh-basic-wrap"),tpls=document.getElementById("tsh-templates"),chip=document.getElementById("tsh-action-chip");
+  if(bw)bw.style.display=on?"none":"";
+  if(tpls)tpls.style.display=on?"none":"flex";
+  if(chip)chip.style.display=on?"flex":"none";
+  const nm=document.getElementById("tsh-action-name");if(nm)nm.textContent="פעולה מחוברת: "+(taskActionLabel||"מובנית");
+}
 function renderTaskSheetProjects(){
   const wrap=document.getElementById("tsh-project-wrap"),host=document.getElementById("tsh-projects");
   if(!wrap||!host)return;
@@ -5924,16 +6011,17 @@ function openTaskModal(id){
   if(id&&chatTasks[id]){
     const t=chatTasks[id];
     taskCat=t.category||"";taskIO=tcInputType(t);taskProject=t.projectId||"";
+    taskAction=t.action||null;taskActionLabel=t.action?(t.title||"מובנית"):"";
     ti.value=t.title||"";ti.dataset.auto="0";td.value=t.desc||"";
     ht.textContent="עריכת משימה";lbl.textContent="שמירת שינויים";
   }else{
-    taskCat="";taskIO="upload";
+    taskCat="";taskIO="upload";taskAction=null;taskActionLabel="";
     /* פרויקט יחיד → בחירה אוטומטית; יותר מאחד → חובה לבחור ידנית */
     taskProject=list.length===1?list[0][0]:"";
     ti.value="";ti.dataset.auto="1";td.value="";
     ht.textContent="משימה חדשה ללקוח";lbl.textContent="פתיחת המשימה";
   }
-  renderTaskSheetCats();renderTaskSheetProjects();openTaskSheet();
+  renderTaskSheetCats();renderTaskSheetProjects();renderTaskTemplates();applyTaskActionUI();openTaskSheet();
 }
 window.openTaskModal=openTaskModal;
 async function createAdminTask(){
@@ -5946,11 +6034,11 @@ async function createAdminTask(){
   if(list.length>1&&!taskProject)return toast("יש לבחור פרויקט למשימה","e");
   const projectId=taskProject||pjForClient(chatPhone);
   if(editTaskId&&chatTasks[editTaskId]){
-    await update(ref(db,`tasks/${chatPhone}/${editTaskId}`),{title,desc,category:taskCat||null,input:taskIO,projectId});
+    await update(ref(db,`tasks/${chatPhone}/${editTaskId}`),{title,desc,category:taskCat||null,input:taskIO,action:taskAction||null,projectId});
     toast("המשימה עודכנה ✓","s");
   }else{
     const id=`task_${Date.now()}`;
-    await set(ref(db,`tasks/${chatPhone}/${id}`),{title,desc,category:taskCat||null,input:taskIO,openedBy:"admin",openedByName:currentUser?.name||"",status:"open",at:Date.now(),projectId,clientName:clients[chatPhone]?.name||""});
+    await set(ref(db,`tasks/${chatPhone}/${id}`),{title,desc,category:taskCat||null,input:taskIO,action:taskAction||null,openedBy:"admin",openedByName:currentUser?.name||"",status:"open",at:Date.now(),projectId,clientName:clients[chatPhone]?.name||""});
     notifyClient(chatPhone,"task","נפתחה עבורך משימה חדשה בצ'אט: "+title,id);
     toast("המשימה נפתחה ✓","s");
   }

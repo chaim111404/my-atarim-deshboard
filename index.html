@@ -1449,6 +1449,9 @@ tr:hover td{background:#f8faff}
       <button class="chat-img-btn2" id="admin-img-btn" title="שלח תמונה">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
       </button>
+      <button class="chat-img-btn2" id="chat-ai-btn" title="עוזר AI — טיוטת תשובה / סיכום" style="color:#7c3aed" onclick="openAgentAiMenu(event)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4V2M15 10V8M11 6H9M21 6h-2M17.4 4.6l1.4-1.4M17.4 7.4l1.4 1.4"/><path d="M3 21l9-9 2 2-9 9-2-2z"/><path d="M12 8l4 4"/></svg>
+      </button>
       <textarea id="chat-ta" class="chat-ta" placeholder="כתוב תשובה..." rows="1" enterkeyhint="enter"></textarea>
       <button class="chat-sb" id="chat-send-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
     </div>
@@ -3920,6 +3923,59 @@ async function agentSend() {
   } catch(e){toast("שגיאה","e");}finally{btn.disabled=false;}
 }
 
+/* ── §27/§28: קו-פיילוט הנציג בצ'אט — טיוטת תשובה / סיכום. רמה B: טיוטה לנציג, לא נשלח אוטומטית. ── */
+function ensureAapCss(){
+  if(document.getElementById("aap-css"))return;
+  const st=document.createElement("style");st.id="aap-css";
+  st.textContent=`
+  .aap-item{display:flex;gap:10px;align-items:center;width:100%;text-align:right;background:none;border:none;border-radius:10px;padding:10px 11px;cursor:pointer;font-family:'Heebo',sans-serif;color:var(--text)}
+  .aap-item:hover{background:rgba(139,92,246,.08)}
+  .aap-item b{font-size:13.5px}
+  .aap-ic{flex:none;width:34px;height:34px;border-radius:9px;background:rgba(139,92,246,.12);color:#7c3aed;display:flex;align-items:center;justify-content:center}
+  .aap-close{background:var(--bg);border:1.5px solid var(--bdr);border-radius:10px;padding:7px 16px;font-family:'Heebo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;color:var(--text)}`;
+  document.head.appendChild(st);
+}
+window.openAgentAiMenu=function(ev){
+  if(ev)ev.stopPropagation();
+  if(!chatPhone)return;
+  if(!(isAdmin||(currentUser.perms||{}).chat)){showPermDenied("chat");return;}
+  const cur=document.getElementById("agent-ai-pop");
+  if(cur){cur.remove();return;}
+  ensureAiCss();ensureAapCss();
+  const btn=ev&&ev.currentTarget;
+  const pop=document.createElement("div");
+  pop.id="agent-ai-pop";
+  pop.style.cssText="position:fixed;z-index:9900;background:var(--card);border:1px solid var(--bdr);border-radius:14px;box-shadow:0 16px 48px rgba(12,26,46,.28);width:min(330px,92vw)";
+  pop.innerHTML=`<div id="aap-body" style="padding:8px">
+    <button class="aap-item" onclick="agentAiRun('draft_reply')"><span class="aap-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4V2M11 6H9M21 6h-2M17.4 4.6l1.4-1.4"/><path d="M3 21l9-9 2 2-9 9-2-2z"/><path d="M12 8l4 4"/></svg></span><span><b>טיוטת תשובה</b><br><span style="font-size:11.5px;color:var(--muted)">המוח מנסח תשובה מההקשר — לעריכה ושליחה</span></span></button>
+    <button class="aap-item" onclick="agentAiRun('summary')"><span class="aap-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="17" x2="17" y2="17"/></svg></span><span><b>סיכום השיחה</b><br><span style="font-size:11.5px;color:var(--muted)">תקציר של מה שסוכם ומה עדיין פתוח</span></span></button>
+  </div>`;
+  document.body.appendChild(pop);
+  if(btn){const r=btn.getBoundingClientRect();pop.style.left=Math.max(8,Math.min(window.innerWidth-(pop.offsetWidth||330)-8,r.left+r.width/2-165))+"px";pop.style.bottom=(window.innerHeight-r.top+8)+"px";}
+  else{pop.style.left="50%";pop.style.bottom="90px";pop.style.transform="translateX(-50%)";}
+  setTimeout(()=>{const off=e=>{if(!pop.contains(e.target)&&e.target!==btn){pop.remove();document.removeEventListener("mousedown",off);}};document.addEventListener("mousedown",off);},0);
+};
+window.agentAiRun=async function(action){
+  const body=document.getElementById("aap-body");if(!body)return;
+  const verb=action==="summary"?"מסכם את השיחה":"מנסח טיוטה";
+  body.innerHTML=`<div style="padding:16px 8px">${aiThinkingHTML(verb)}</div>`;
+  const res=await authedPost("aiAssist",{task:"agentchat",action,phone:chatPhone});
+  const pop=document.getElementById("agent-ai-pop");const b2=document.getElementById("aap-body");
+  if(res&&res.ok&&res.text){
+    if(action==="draft_reply"){
+      const ta=document.getElementById("chat-ta");
+      if(ta){ta.value=res.text;ta.dispatchEvent(new Event("input"));ta.focus();}
+      if(pop)pop.remove();
+      toast("טיוטה מוכנה — ערוך ושלח","s");
+    }else if(b2){
+      b2.innerHTML=`<div style="padding:12px 12px 10px"><div style="font-size:13px;font-weight:800;margin-bottom:8px">סיכום השיחה</div><div style="font-size:13px;line-height:1.65;white-space:pre-wrap;max-height:260px;overflow:auto;color:var(--text)">${esc(res.text)}</div><button class="aap-close" onclick="document.getElementById('agent-ai-pop').remove()" style="margin-top:12px">סגור</button></div>`;
+    }
+  }else if(b2){
+    const m={"ai-unavailable":"שירות ה-AI לא זמין כרגע (ייתכן שאין אשראי).","cost-cap":"נגמרה מכסת ה-AI היומית של המערכת.","daily-user-cap":"הגעת למכסת השימוש היומית.","skill-off":"הסקיל כבוי בלשונית ניהול המוח.","chat-forbidden":"אין לך הרשאת צ'אט.","no-draft":"לא הצלחתי לנסח. נסה שוב.","refused":"הבקשה נדחתה.","bad-phone":"שגיאת זיהוי לקוח.","network":"תקלת רשת."};
+    b2.innerHTML=`<div style="padding:14px;font-size:13px;color:#dc2626;font-weight:600">${(res&&m[res.error])||"הפעולה נכשלה."}</div>`;
+  }
+};
+
 function setReply(key,msg){
   chatReplyTo={...msg,key};
   document.getElementById("rbar-name").textContent=msg.sender==="agent"?"אתה":clients[chatPhone]?.name||"לקוח";
@@ -4702,98 +4758,159 @@ function ensureAibCss(){
   .aib-code-bar input{width:130px;border:1.5px solid var(--bdr);border-radius:10px;padding:8px 10px;font-size:16px;font-weight:800;text-align:center;letter-spacing:3px;font-family:monospace;background:#fff;color:#0c1a2e}
   .aib-log{width:100%;border-collapse:collapse;font-size:12.5px}
   .aib-log th,.aib-log td{text-align:right;padding:7px 9px;border-bottom:1px solid var(--bdr);white-space:nowrap}
-  .aib-log th{color:var(--muted);font-weight:700;font-size:11.5px}`;
+  .aib-log th{color:var(--muted);font-weight:700;font-size:11.5px}
+  .aib-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+  .aib-head-t{font-size:20px;font-weight:800;color:var(--text)}
+  .aib-head-s{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .aib-chips{display:flex;gap:8px;flex-wrap:wrap}
+  .aib-chip{background:var(--bg);border:1px solid var(--bdr);border-radius:999px;padding:6px 13px;font-size:12px;font-weight:700;color:var(--text)}
+  .aib-chip.p{background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.3);color:#6d28d9}
+  .aib-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;-webkit-overflow-scrolling:touch}
+  .aib-tab{flex:none;background:var(--bg);border:1.5px solid var(--bdr);border-radius:11px;padding:8px 15px;font-family:'Heebo',sans-serif;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;white-space:nowrap;transition:.15s}
+  .aib-tab.on{background:linear-gradient(135deg,#8b5cf6,#6d28d9);border-color:transparent;color:#fff}
+  .aib-pane{display:grid;gap:14px;animation:aibFade .25s ease}
+  @keyframes aibFade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .aib-tog:not(.on){opacity:.6}
+  .aib-save.dirty{box-shadow:0 0 0 3px rgba(139,92,246,.22)}
+  .aib-save.dirty::before{content:"● ";font-size:9px;vertical-align:middle}
+  .aib-empty{text-align:center;padding:48px 20px;background:var(--card);border:1px solid var(--bdr);border-radius:16px}
+  .aib-empty-ic{width:56px;height:56px;border-radius:50%;background:rgba(245,158,11,.12);color:#f59e0b;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+  .aib-empty-t{font-size:16px;font-weight:800;color:var(--text);margin-bottom:6px}
+  .aib-empty-s{font-size:13px;color:var(--muted);line-height:1.6;max-width:440px;margin:0 auto 16px}
+  .aib-shake{animation:aibShake .4s}
+  @keyframes aibShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}`;
   document.head.appendChild(st);
 }
-let aibStatus=null;
+let aibStatus=null, aibTab="overview";
 async function renderAiBrain(){
   ensureAibCss();
   const root=document.getElementById("aibrain-root");if(!root)return;
   root.innerHTML=`<div style="padding:44px 0;display:flex;justify-content:center">${aiThinkingHTML("טוען את מרכז השליטה")}</div>`;
   const res=await authedPost("aiAssist",{task:"aiadmin",action:"status"});
-  if(!res||!res.ok){root.innerHTML=`<div class="aib-sec">טעינת מרכז השליטה נכשלה${res&&res.error==="admin-only"?" — למנהל בלבד":""}.</div>`;return;}
+  if(!res||!res.ok){
+    const adminOnly=res&&res.error==="admin-only";
+    root.innerHTML=`<div class="aib-empty">
+      <div class="aib-empty-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+      <div class="aib-empty-t">${adminOnly?"הלשונית זמינה למנהל בלבד":"טעינת מרכז השליטה נכשלה"}</div>
+      <div class="aib-empty-s">${adminOnly?"רק מנהל ראשי יכול לנהל את המוח.":"ודא חיבור לרשת, ושהדף רץ מהכתובת הפרוסה (לא מקובץ מקומי)."}</div>
+      ${adminOnly?"":'<button class="aib-save" style="margin-top:0" onclick="renderAiBrain()">נסה שוב</button>'}
+    </div>`;return;
+  }
   aibStatus=res;
   const s=res, cap=Number(s.caps.globalUsd)||5, cost=Number(s.usage.costUsd)||0, pct=cap>0?Math.min(100,Math.round(cost/cap*100)):0;
   const callsToday=Object.values(s.usage.byUser||{}).reduce((a,b)=>a+(Number(b)||0),0);
   const con=s.constitution, def=s.defaults;
-  const skillTog=(key,label)=>`<div class="aib-tog${s.skills[key]!==false?" on":""}" data-skill="${key}" onclick="this.classList.toggle('on')"><span class="aib-sw"></span>${esc(label)}</div>`;
   const secLabels={stages:"שלבים",items:"סעיפי תמחור",payments:"תשלומים",materials:"חומרים",bonuses:"בונוסים",upgrades:"שדרוגים",legal:"משפטי"};
+  const skillTog=(key,label)=>`<div class="aib-tog${s.skills[key]!==false?" on":""}" data-skill="${key}" onclick="this.classList.toggle('on');aibMark('sv-skills')"><span class="aib-sw"></span>${esc(label)}</div>`;
+  const allSkillKeys=["chat","quote",...s.sections.map(k=>"quote."+k),"agentchat.draft_reply","agentchat.summary","leads.triage","leads.draft_outreach","explain.task","explain.quote","explain.project"];
+  const onCount=allSkillKeys.filter(k=>s.skills[k]!==false).length;
+  const tab=(k,l)=>`<button class="aib-tab" data-tab="${k}" onclick="aibSetTab('${k}')">${l}</button>`;
   root.innerHTML=`
+  <div class="aib-head">
+    <div><div class="aib-head-t">מרכז השליטה של המוח</div><div class="aib-head-s">ניהול, כיול ומעקב אחר ה-AI של WebDesk</div></div>
+    <div class="aib-chips"><span class="aib-chip p">עלות היום $${cost.toFixed(3)}</span><span class="aib-chip">${onCount}/${allSkillKeys.length} סקילים פעילים</span><span class="aib-chip">${callsToday} קריאות היום</span></div>
+  </div>
   <div class="aib-code-bar">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
     <span style="font-size:13px;font-weight:700;color:#6d28d9">לשמירת שינויים — הזן קוד מאפליקציית האבטחה</span>
     <input id="aib-code" type="text" inputmode="numeric" maxlength="8" placeholder="••••••"/>
   </div>
-  <div class="aib-grid">
-    <div class="aib-sec">
-      <h3>סקירה — היום (${esc(s.usage.date)})</h3>
-      <div class="aib-stat">
-        <div class="box"><div class="n">$${cost.toFixed(3)}</div><div class="l">עלות היום · תקרה $${cap}</div><div class="aib-bar" style="margin-top:8px"><span style="width:${pct}%"></span></div></div>
-        <div class="box"><div class="n">${callsToday}</div><div class="l">קריאות AI היום</div></div>
+  <div class="aib-tabs">${tab("overview","סקירה")}${tab("caps","תקרות")}${tab("skills","סקילים")}${tab("constitution","חוקה")}${tab("legal","ידע משפטי")}${tab("log","יומן")}</div>
+  <div class="aib-panes aib-grid">
+    <div class="aib-pane" data-pane="overview">
+      <div class="aib-sec"><h3>סקירה — היום (${esc(s.usage.date)})</h3>
+        <div class="aib-stat">
+          <div class="box"><div class="n">$${cost.toFixed(3)}</div><div class="l">עלות היום · תקרה $${cap}</div><div class="aib-bar" style="margin-top:8px"><span style="width:${pct}%"></span></div></div>
+          <div class="box"><div class="n">${callsToday}</div><div class="l">קריאות AI היום</div></div>
+          <div class="box"><div class="n">${onCount}/${allSkillKeys.length}</div><div class="l">סקילים פעילים</div></div>
+        </div>
+        <div class="sub" style="margin-top:12px">ניהול מלא בכרטיסיות למעלה. שמירת כל שינוי דורשת קוד אימות מאפליקציית האבטחה.</div>
       </div>
     </div>
-    <div class="aib-sec">
-      <h3>תקרות</h3>
-      <div class="sub">מגבילות ניצול תקציב. תקרה גלובלית ב-$, ותקרת קריאות יומית לכל תפקיד.</div>
-      <div class="aib-row">
-        <label style="font-size:12.5px;font-weight:700;text-align:center">גלובלי ($/יום)<br/><input class="aib-num" id="cap-globalUsd" type="number" min="0" step="0.5" value="${s.caps.globalUsd}"/></label>
-        <label style="font-size:12.5px;font-weight:700;text-align:center">לקוח (קריאות)<br/><input class="aib-num" id="cap-client" type="number" min="0" value="${s.caps.perUser.client}"/></label>
-        <label style="font-size:12.5px;font-weight:700;text-align:center">נציג<br/><input class="aib-num" id="cap-agent" type="number" min="0" value="${s.caps.perUser.agent}"/></label>
-        <label style="font-size:12.5px;font-weight:700;text-align:center">מנהל<br/><input class="aib-num" id="cap-admin" type="number" min="0" value="${s.caps.perUser.admin}"/></label>
+    <div class="aib-pane" data-pane="caps">
+      <div class="aib-sec"><h3>תקרות</h3>
+        <div class="sub">מגבילות ניצול תקציב. תקרה גלובלית ב-$, ותקרת קריאות יומית לכל תפקיד.</div>
+        <div class="aib-row">
+          <label style="font-size:12.5px;font-weight:700;text-align:center">גלובלי ($/יום)<br/><input class="aib-num" id="cap-globalUsd" type="number" min="0" step="0.5" value="${s.caps.globalUsd}" oninput="aibMark('sv-caps')"/></label>
+          <label style="font-size:12.5px;font-weight:700;text-align:center">לקוח (קריאות)<br/><input class="aib-num" id="cap-client" type="number" min="0" value="${s.caps.perUser.client}" oninput="aibMark('sv-caps')"/></label>
+          <label style="font-size:12.5px;font-weight:700;text-align:center">נציג<br/><input class="aib-num" id="cap-agent" type="number" min="0" value="${s.caps.perUser.agent}" oninput="aibMark('sv-caps')"/></label>
+          <label style="font-size:12.5px;font-weight:700;text-align:center">מנהל<br/><input class="aib-num" id="cap-admin" type="number" min="0" value="${s.caps.perUser.admin}" oninput="aibMark('sv-caps')"/></label>
+        </div>
+        <button class="aib-save" id="sv-caps" onclick="aibSaveCaps(this)">שמירת תקרות</button>
       </div>
-      <button class="aib-save" onclick="aibSaveCaps()">שמירת תקרות</button>
     </div>
-    <div class="aib-sec">
-      <h3>סקילים — הפעלה/כיבוי</h3>
-      <div class="sub">כיבוי סקיל מפסיק אותו מיד — הצ'אט/הכפתור מסליק לצוות במקום לפעול.</div>
-      <div class="aib-row" style="gap:8px">${skillTog("chat","עוזר צ'אט ללקוח")}${skillTog("quote","הצעה (ראשי)")}</div>
-      <div class="sub" style="margin:14px 0 6px">סעיפי ההצעה:</div>
-      <div class="aib-row" style="gap:8px">${s.sections.map(k=>skillTog("quote."+k,secLabels[k]||k)).join("")}</div>
-      <button class="aib-save" onclick="aibSaveSkills()">שמירת סקילים</button>
+    <div class="aib-pane" data-pane="skills">
+      <div class="aib-sec"><h3>סקילים — הפעלה/כיבוי</h3>
+        <div class="sub">כיבוי סקיל מפסיק אותו מיד — הצ'אט/הכפתור מסליק לצוות במקום לפעול.</div>
+        <div class="aib-row" style="gap:8px">${skillTog("chat","עוזר צ'אט ללקוח")}${skillTog("quote","הצעה (ראשי)")}</div>
+        <div class="sub" style="margin:14px 0 6px">סעיפי ההצעה:</div>
+        <div class="aib-row" style="gap:8px">${s.sections.map(k=>skillTog("quote."+k,secLabels[k]||k)).join("")}</div>
+        <div class="sub" style="margin:14px 0 6px">קו-פיילוט הנציג בצ'אט:</div>
+        <div class="aib-row" style="gap:8px">${skillTog("agentchat.draft_reply","טיוטת תשובה")}${skillTog("agentchat.summary","סיכום שיחה")}</div>
+        <div class="sub" style="margin:14px 0 6px">לידים:</div>
+        <div class="aib-row" style="gap:8px">${skillTog("leads.triage","טריאז'")}${skillTog("leads.draft_outreach","טיוטת פנייה")}</div>
+        <div class="sub" style="margin:14px 0 6px">עוזר הלקוח בהקשר:</div>
+        <div class="aib-row" style="gap:8px">${skillTog("explain.task","הסבר משימה")}${skillTog("explain.quote","הסבר מונחים בהצעה")}${skillTog("explain.project","סטטוס פרויקט")}</div>
+        <button class="aib-save" id="sv-skills" onclick="aibSaveSkills(this)">שמירת סקילים</button>
+      </div>
     </div>
-    <div class="aib-sec">
-      <h3>חוקה — עוזר הצ'אט (לקוח)</h3>
-      <div class="sub">האישיות והגבולות של המוח בצ'אט הלקוח.</div>
-      <textarea class="aib-ta" id="con-client" rows="8">${esc(con.client||def.constitution.client)}</textarea>
-      <div><button class="aib-save" onclick="aibSaveConstitution('client')">שמירת חוקת לקוח</button><button class="aib-restore" onclick="document.getElementById('con-client').value=aibDefault('client')">שחזר ברירת מחדל</button></div>
+    <div class="aib-pane" data-pane="constitution">
+      <div class="aib-sec"><h3>חוקה — עוזר הצ'אט (לקוח)</h3>
+        <div class="sub">האישיות והגבולות של המוח בצ'אט הלקוח.</div>
+        <textarea class="aib-ta" id="con-client" rows="8" oninput="aibMark('sv-con-client')">${esc(con.client||def.constitution.client)}</textarea>
+        <div><button class="aib-save" id="sv-con-client" onclick="aibSaveConstitution('client',this)">שמירת חוקת לקוח</button><button class="aib-restore" onclick="aibRestore('con-client','client','sv-con-client')">שחזר ברירת מחדל</button></div>
+      </div>
+      <div class="aib-sec"><h3>חוקה — קו-פיילוט ההצעות</h3>
+        <div class="sub">ההנחיות למוח בבניית סעיפי ההצעה.</div>
+        <textarea class="aib-ta" id="con-quote" rows="8" oninput="aibMark('sv-con-quote')">${esc(con.quote||def.constitution.quote)}</textarea>
+        <div><button class="aib-save" id="sv-con-quote" onclick="aibSaveConstitution('quote',this)">שמירת חוקת הצעות</button><button class="aib-restore" onclick="aibRestore('con-quote','quote','sv-con-quote')">שחזר ברירת מחדל</button></div>
+      </div>
     </div>
-    <div class="aib-sec">
-      <h3>חוקה — קו-פיילוט ההצעות</h3>
-      <div class="sub">ההנחיות למוח בבניית סעיפי ההצעה.</div>
-      <textarea class="aib-ta" id="con-quote" rows="8">${esc(con.quote||def.constitution.quote)}</textarea>
-      <div><button class="aib-save" onclick="aibSaveConstitution('quote')">שמירת חוקת הצעות</button><button class="aib-restore" onclick="document.getElementById('con-quote').value=aibDefault('quote')">שחזר ברירת מחדל</button></div>
+    <div class="aib-pane" data-pane="legal">
+      <div class="aib-sec"><h3>ידע משפטי (§26)</h3>
+        <div class="sub">הבסיס שהמוח משתמש בו לניסוח סעיפים. הנחיה, לא ייעוץ משפטי.</div>
+        <textarea class="aib-ta" id="legal-knowledge" rows="12" oninput="aibMark('sv-legal')">${esc(s.legalKnowledge||def.legalKnowledge)}</textarea>
+        <div><button class="aib-save" id="sv-legal" onclick="aibSaveLegal(this)">שמירת ידע משפטי</button><button class="aib-restore" onclick="aibRestore('legal-knowledge','legal','sv-legal')">שחזר ברירת מחדל</button></div>
+      </div>
     </div>
-    <div class="aib-sec">
-      <h3>ידע משפטי (§26)</h3>
-      <div class="sub">הבסיס שהמוח משתמש בו לניסוח סעיפים. הנחיה, לא ייעוץ משפטי.</div>
-      <textarea class="aib-ta" id="legal-knowledge" rows="10">${esc(s.legalKnowledge||def.legalKnowledge)}</textarea>
-      <div><button class="aib-save" onclick="aibSaveLegal()">שמירת ידע משפטי</button><button class="aib-restore" onclick="document.getElementById('legal-knowledge').value=aibDefault('legal')">שחזר ברירת מחדל</button></div>
-    </div>
-    <div class="aib-sec">
-      <h3>יומן פעילות<button class="aib-restore" style="margin:0 auto 0 0" onclick="aibLoadLog()">רענון</button></h3>
-      <div id="aib-log-host" class="sub">טוען...</div>
+    <div class="aib-pane" data-pane="log">
+      <div class="aib-sec"><h3>יומן פעילות<button class="aib-restore" style="margin:0 auto 0 0" onclick="aibLoadLog()">רענון</button></h3>
+        <div id="aib-log-host" class="sub">טוען...</div>
+      </div>
     </div>
   </div>`;
-  aibLoadLog();
+  aibSetTab(aibTab);
 }
+function aibSetTab(key){
+  aibTab=key;
+  const r=document.getElementById("aibrain-root");if(!r)return;
+  r.querySelectorAll(".aib-tab").forEach(b=>b.classList.toggle("on",b.dataset.tab===key));
+  r.querySelectorAll(".aib-pane").forEach(p=>{p.style.display=p.dataset.pane===key?"":"none";});
+  if(key==="log")aibLoadLog();
+}
+function aibMark(id){const b=document.getElementById(id);if(b)b.classList.add("dirty");}
 function aibDefault(which){
   if(!aibStatus)return "";
   if(which==="legal")return aibStatus.defaults.legalKnowledge;
   return aibStatus.defaults.constitution[which]||"";
 }
-async function aibSave(patch){
+function aibRestore(elId,which,saveId){const el=document.getElementById(elId);if(el){el.value=aibDefault(which);aibMark(saveId);}}
+async function aibSave(patch,btn){
   const codeEl=document.getElementById("aib-code");
   const code=(codeEl&&codeEl.value||"").trim();
-  if(!code){toast("הזן קוד אימות מהאפליקציה","e");if(codeEl)codeEl.focus();return false;}
+  if(!code){toast("הזן קוד אימות מהאפליקציה","e");if(codeEl){codeEl.focus();codeEl.classList.add("aib-shake");setTimeout(()=>codeEl.classList.remove("aib-shake"),450);}return false;}
+  let old="";if(btn){old=btn.innerHTML;btn.disabled=true;btn.textContent="שומר…";}
   const res=await authedPost("aiAssist",{task:"aiadmin",action:"save",code,patch});
-  if(res&&res.ok){toast("נשמר ✓","s");return true;}
+  if(btn){btn.disabled=false;btn.innerHTML=old;}
+  if(res&&res.ok){toast("נשמר ✓","s");if(btn)btn.classList.remove("dirty");return true;}
   const m={"totp-required":"נדרש קוד אימות","totp-invalid":"קוד אימות שגוי — נסה קוד עדכני","admin-only":"למנהל בלבד","nothing":"אין שינוי לשמירה"};
   toast((res&&m[res.error])||"השמירה נכשלה","e");return false;
 }
-window.aibSaveCaps=()=>aibSave({caps:{globalUsd:Number(document.getElementById("cap-globalUsd").value)||0,client:Number(document.getElementById("cap-client").value)||0,agent:Number(document.getElementById("cap-agent").value)||0,admin:Number(document.getElementById("cap-admin").value)||0}});
-window.aibSaveSkills=()=>{const skills={};document.querySelectorAll("#aibrain-root .aib-tog[data-skill]").forEach(t=>{skills[t.dataset.skill]=t.classList.contains("on");});return aibSave({skills});};
-window.aibSaveConstitution=(which)=>aibSave({constitution:{[which]:document.getElementById("con-"+which).value}});
-window.aibSaveLegal=()=>aibSave({legalKnowledge:document.getElementById("legal-knowledge").value});
+window.aibSaveCaps=(btn)=>aibSave({caps:{globalUsd:Number(document.getElementById("cap-globalUsd").value)||0,client:Number(document.getElementById("cap-client").value)||0,agent:Number(document.getElementById("cap-agent").value)||0,admin:Number(document.getElementById("cap-admin").value)||0}},btn);
+window.aibSaveSkills=(btn)=>{const skills={};document.querySelectorAll("#aibrain-root .aib-tog[data-skill]").forEach(t=>{skills[t.dataset.skill]=t.classList.contains("on");});return aibSave({skills},btn);};
+window.aibSaveConstitution=(which,btn)=>aibSave({constitution:{[which]:document.getElementById("con-"+which).value}},btn);
+window.aibSaveLegal=(btn)=>aibSave({legalKnowledge:document.getElementById("legal-knowledge").value},btn);
+window.aibSetTab=aibSetTab;window.aibMark=aibMark;window.aibRestore=aibRestore;window.renderAiBrain=renderAiBrain;window.aibLoadLog=aibLoadLog;
 async function aibLoadLog(){
   const host=document.getElementById("aib-log-host");if(!host)return;
   host.textContent="טוען...";
@@ -5079,7 +5196,10 @@ function renderPjLeads(id,p){
     <div style="display:flex;gap:6px;flex-wrap:wrap">${domains.length?domains.map(d=>`<span style="font-size:11.5px;background:var(--bg);border:1px solid var(--bdr);border-radius:20px;padding:3px 10px;color:var(--muted)" dir="ltr">${esc(d)}</span>`).join(""):`<span style="font-size:12px;color:var(--err)">לא הוגדרו דומיינים — פניות ייחסמו</span>`}</div>
   </div></div>
   <div class="card"><div style="padding:16px">
-    <div style="font-weight:800;font-size:15px;margin-bottom:12px">פניות מהאתר <span style="font-size:12px;color:var(--muted);font-weight:600">(${leads.length}${newCount?` · ${newCount} חדשות`:""})</span></div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+      <span style="font-weight:800;font-size:15px">פניות מהאתר <span style="font-size:12px;color:var(--muted);font-weight:600">(${leads.length}${newCount?` · ${newCount} חדשות`:""})</span></span>
+      ${leads.length?`<button class="bsm e" style="background:rgba(139,92,246,.12);color:#7c3aed;border:none;padding:7px 12px;font-size:12px;display:inline-flex;align-items:center;gap:5px;margin-inline-start:auto;border-radius:9px;cursor:pointer" onclick="leadsAiTriage()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4V2M15 10V8M11 6H9M21 6h-2M17.4 4.6l1.4-1.4M17.4 7.4l1.4 1.4"/><path d="M3 21l9-9 2 2-9 9-2-2z"/><path d="M12 8l4 4"/></svg>טריאז' AI</button>`:""}
+    </div>
     ${leads.length?leads.map(([lid,l])=>{
       const isNew=l.status!=="handled";
       const phone=leadDetectPhone(l), email=leadDetectEmail(l);
@@ -5087,6 +5207,7 @@ function renderPjLeads(id,p){
       if(phone){acts.push(`<a class="pjl-act call" href="${leadTel(phone)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>חייג</a>`);
         acts.push(`<a class="pjl-act wa" href="${leadWa(phone)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 004.79 1.22c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm5.8 14.03c-.24.68-1.2 1.26-1.97 1.42-.53.11-1.22.2-3.55-.76-2.98-1.23-4.9-4.26-5.05-4.46-.14-.2-1.2-1.6-1.2-3.05s.76-2.16 1.03-2.46c.27-.3.58-.37.78-.37l.56.01c.18.01.42-.07.66.5.24.58.82 2.02.9 2.17.07.15.12.32.02.52-.1.2-.15.32-.3.5l-.44.5c-.15.15-.3.31-.13.6.17.3.77 1.27 1.65 2.06 1.14 1.01 2.1 1.32 2.4 1.47.3.15.47.12.64-.07.17-.2.73-.85.93-1.14.2-.3.4-.25.66-.15.27.1 1.7.8 2 .95.28.15.47.22.54.34.07.12.07.69-.17 1.36z"/></svg>וואטסאפ</a>`);}
       if(email){acts.push(`<a class="pjl-act mail" href="mailto:${esc(email)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 6L2 7"/></svg>מייל</a>`);}
+      acts.push(`<button class="pjl-act ai" style="color:#7c3aed" onclick="leadsAiDraft('${lid}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4V2M11 6H9M21 6h-2M17.4 4.6l1.4-1.4"/><path d="M3 21l9-9 2 2-9 9-2-2z"/><path d="M12 8l4 4"/></svg>טיוטת פנייה</button>`);
       acts.push(`<button class="pjl-act copy" onclick="copyPjLead('${lid}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>העתק</button>`);
       acts.push(isNew
         ?`<button class="pjl-act done" onclick="pjLeadSetStatus('${esc(p.clientPhone)}','${lid}','handled')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>סמן כטופל</button>`
@@ -5119,6 +5240,51 @@ async function pjLeadsConnect(pid){
   loadPjLeadSite(pid);
 }
 window.pjLeadsConnect=pjLeadsConnect;
+
+/* ── §29: עוזר לידים — טריאז' (מיון לפי דחיפות) + טיוטת פנייה ראשונה. רמה B, לא נשלח אוטומטית. ── */
+const LAI_X='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+function leadsAiOverlay(){
+  ensureAiCss();
+  let ov=document.getElementById("leads-ai-ov");if(ov)ov.remove();
+  ov=document.createElement("div");ov.id="leads-ai-ov";
+  ov.style.cssText="position:fixed;inset:0;background:rgba(12,26,46,.6);backdrop-filter:blur(4px);z-index:9900;display:flex;align-items:center;justify-content:center;padding:22px;animation:fi .2s ease";
+  ov.innerHTML=`<div class="md" style="max-width:460px;width:100%"><div id="leads-ai-body"></div></div>`;
+  ov.onclick=e=>{if(e.target===ov)ov.remove();};
+  document.body.appendChild(ov);
+  return document.getElementById("leads-ai-body");
+}
+function leadsAiErrHtml(res){
+  const m={"ai-unavailable":"שירות ה-AI לא זמין כרגע (ייתכן שאין אשראי).","cost-cap":"נגמרה מכסת ה-AI היומית של המערכת.","daily-user-cap":"הגעת למכסת השימוש היומית.","skill-off":"הסקיל כבוי בלשונית ניהול המוח.","leads-forbidden":"אין לך הרשאה.","no-leads":"אין לידים למיון.","no-lead":"אין נתונים בליד.","no-draft":"לא הצלחתי לנסח. נסה שוב.","refused":"הבקשה נדחתה.","network":"תקלת רשת."};
+  return `<div class="mh"><span class="mt2">שגיאה</span><button class="mc" onclick="document.getElementById('leads-ai-ov').remove()">${LAI_X}</button></div><div class="mb"><div style="font-size:13px;color:#dc2626;font-weight:600;padding:6px 0">${(res&&m[res.error])||"הפעולה נכשלה."}</div></div>`;
+}
+window.leadsAiTriage=async function(){
+  if(!(isAdmin||(currentUser.perms||{}).projects||(currentUser.perms||{}).leads)){showPermDenied("projects");return;}
+  const leads=pjSiteLeads().map(([lid,l])=>({form:leadFormLabel(l.formId),at:l.at,fields:(l.fields||[]).map(f=>({label:f.label,value:f.value}))}));
+  if(!leads.length){toast("אין לידים למיון","e");return;}
+  const body=leadsAiOverlay();
+  body.innerHTML=`<div style="padding:30px 8px">${aiThinkingHTML("ממיין לפי דחיפות")}</div>`;
+  const res=await authedPost("aiAssist",{task:"leads",action:"triage",leads});
+  if(res&&res.ok&&res.text){
+    body.innerHTML=`<div class="mh"><span class="mt2">טריאז' לידים · ${leads.length}</span><button class="mc" onclick="document.getElementById('leads-ai-ov').remove()">${LAI_X}</button></div>
+      <div class="mb"><div style="font-size:13.5px;line-height:1.75;white-space:pre-wrap;max-height:62vh;overflow:auto;color:var(--txt)">${esc(res.text)}</div></div>`;
+  }else body.innerHTML=leadsAiErrHtml(res);
+};
+window.leadsAiDraft=async function(lid){
+  if(!(isAdmin||(currentUser.perms||{}).projects||(currentUser.perms||{}).leads)){showPermDenied("projects");return;}
+  const l=pjDetailLeads[lid];if(!l)return;
+  const lead={form:leadFormLabel(l.formId),fields:(l.fields||[]).map(f=>({label:f.label,value:f.value}))};
+  const business=(projects[curProjectId]&&projects[curProjectId].name)||"";
+  const body=leadsAiOverlay();
+  body.innerHTML=`<div style="padding:30px 8px">${aiThinkingHTML("מנסח פנייה")}</div>`;
+  const res=await authedPost("aiAssist",{task:"leads",action:"draft_outreach",lead,business});
+  if(res&&res.ok&&res.text){
+    const lp=leadDetectPhone(l), wa=lp?leadWa(lp):null;
+    body.innerHTML=`<div class="mh"><span class="mt2">טיוטת פנייה ראשונה</span><button class="mc" onclick="document.getElementById('leads-ai-ov').remove()">${LAI_X}</button></div>
+      <div class="mb"><div id="leads-ai-draft" style="font-size:13.5px;line-height:1.75;white-space:pre-wrap;background:var(--bg);border:1px solid var(--bdr);border-radius:12px;padding:12px 14px;max-height:46vh;overflow:auto;color:var(--txt)">${esc(res.text)}</div></div>
+      <div class="mf"><button class="bp" style="width:auto;padding:9px 20px;margin-top:0" onclick="leadsAiCopyDraft()">העתק</button>${wa?`<a class="btn-cancel" href="${wa}" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center">פתח בוואטסאפ</a>`:""}</div>`;
+  }else body.innerHTML=leadsAiErrHtml(res);
+};
+window.leadsAiCopyDraft=async()=>{const el=document.getElementById("leads-ai-draft");if(!el)return;try{await navigator.clipboard.writeText(el.textContent);toast("הטיוטה הועתקה ✓","s");}catch(e){toast("ההעתקה נכשלה","e");}};
 async function pjLeadsBind(pid){
   if(!isAdmin)return;
   const r=await authedPost("leadAdmin",{action:"update",siteId:pjDetailSite.siteId,projectId:pid});

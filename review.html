@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>סבב סקירה — WebDesk</title>
+<style>
+  :root{
+    --navy:#0c1a2e; --navy2:#12263f; --accent:#2f6df6; --accent-d:#1d4fd0;
+    --bg:#eef1f7; --card:#ffffff; --ink:#16202e; --muted:#67748a; --line:#e3e8f0;
+    --ok:#129a6b; --warn:#c9820a; --extra:#8b5cf6;
+    --shadow:0 1px 2px rgba(12,26,46,.05), 0 10px 30px -14px rgba(12,26,46,.28);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:"Heebo",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;line-height:1.5;-webkit-tap-highlight-color:transparent}
+  .wrap{max-width:680px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+  /* header */
+  .top{background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;padding:14px 16px calc(14px + env(safe-area-inset-bottom,0)) 16px;position:sticky;top:0;z-index:20}
+  .top-row{display:flex;align-items:center;gap:10px}
+  .logo{width:34px;height:34px;border-radius:9px;background:#fff2;display:flex;align-items:center;justify-content:center;flex:none}
+  .brand-t{font-weight:800;font-size:15px;letter-spacing:.2px}
+  .brand-s{font-size:11.5px;color:#ffffffb0;margin-top:1px}
+  .rnd{margin-inline-start:auto;text-align:end}
+  .rnd .p{font-weight:700;font-size:13px}
+  .rnd .r{font-size:11px;color:#ffffffb0}
+  /* intro */
+  .intro{padding:14px 16px 4px}
+  .intro h1{font-size:18px;margin:0 0 4px;font-weight:800}
+  .intro p{margin:0;color:var(--muted);font-size:13.5px}
+  /* canvas */
+  .stagewrap{padding:14px 16px 120px}
+  .stage{position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);touch-action:manipulation}
+  .stage img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none}
+  .hint{position:absolute;inset-inline:0;bottom:0;background:linear-gradient(0deg,#0c1a2ecc,transparent);color:#fff;font-size:12.5px;padding:22px 12px 10px;text-align:center;pointer-events:none}
+  /* pins */
+  .pin{position:absolute;transform:translate(50%,-50%);width:28px;height:28px;border-radius:50% 50% 50% 2px;background:var(--accent);border:2px solid #fff;box-shadow:0 2px 6px rgba(12,26,46,.4);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;cursor:pointer;z-index:3}
+  .pin.done{background:var(--ok)}
+  .pin.extra{background:var(--extra)}
+  .pin.mine{background:var(--accent)}
+  /* my items list */
+  .items{padding:0 16px}
+  .items h2{font-size:13px;color:var(--muted);text-transform:none;margin:2px 0 10px;font-weight:700}
+  .item{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin-bottom:8px;box-shadow:var(--shadow)}
+  .item .num{width:22px;height:22px;border-radius:6px;background:#eef2fb;color:var(--accent-d);font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;flex:none}
+  .item .body{flex:1;min-width:0}
+  .item .kind{font-weight:700;font-size:13.5px}
+  .item .note{color:var(--muted);font-size:13px;margin-top:2px;word-break:break-word}
+  .item .del{background:none;border:none;color:#b23;cursor:pointer;padding:4px;flex:none}
+  .tag{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:999px;margin-inline-start:6px;vertical-align:middle}
+  .tag.extra{background:#f3ecff;color:#6b3fd4}
+  .tag.st{background:#eef2fb;color:#3a5}
+  /* bottom bar */
+  .bar{position:fixed;inset-inline:0;bottom:0;z-index:30;background:#fffffff2;backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0));display:flex;gap:10px;align-items:center;max-width:680px;margin:0 auto}
+  .bar .cnt{font-size:12.5px;color:var(--muted)}
+  .btn{flex:1;border:none;border-radius:12px;padding:13px 16px;font-family:inherit;font-weight:800;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+  .btn.primary{background:var(--accent);color:#fff}
+  .btn.primary:active{background:var(--accent-d)}
+  .btn.ghost{background:#eef2fb;color:var(--accent-d);flex:none;padding:13px 14px}
+  .btn:disabled{opacity:.5}
+  /* sheet */
+  .sheet-bg{position:fixed;inset:0;background:#0c1a2e88;z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
+  .sheet-bg.show{opacity:1;pointer-events:auto}
+  .sheet{position:fixed;inset-inline:0;bottom:0;z-index:41;background:var(--card);border-radius:20px 20px 0 0;padding:8px 16px calc(18px + env(safe-area-inset-bottom,0));max-width:680px;margin:0 auto;transform:translateY(100%);transition:transform .24s cubic-bezier(.2,.7,.3,1);max-height:86vh;overflow:auto}
+  .sheet.show{transform:translateY(0)}
+  .grab{width:40px;height:4px;background:var(--line);border-radius:2px;margin:6px auto 12px}
+  .sheet h3{margin:0 0 3px;font-size:16px;font-weight:800}
+  .sheet .sub{margin:0 0 14px;color:var(--muted);font-size:13px}
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .opt{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff;cursor:pointer;font-weight:700;font-size:14px;text-align:start}
+  .opt:active{background:#f4f7fd}
+  .opt.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent) inset}
+  .opt .ic{width:34px;height:34px;border-radius:9px;background:#eef2fb;color:var(--accent-d);display:flex;align-items:center;justify-content:center;flex:none}
+  .opt.warnc .ic{background:#f3ecff;color:#6b3fd4}
+  .notebox{margin-top:14px}
+  .notebox label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+  .notebox textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;font-family:inherit;font-size:15px;resize:vertical;min-height:74px}
+  .sheet-actions{display:flex;gap:10px;margin-top:14px}
+  /* generic states */
+  .center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px;gap:10px}
+  .center .ic{width:60px;height:60px;border-radius:16px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--muted);box-shadow:var(--shadow)}
+  .center h2{margin:6px 0 0;font-size:18px}
+  .center p{margin:0;color:var(--muted);max-width:34ch}
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:88px;background:var(--navy);color:#fff;padding:10px 16px;border-radius:10px;font-size:13.5px;z-index:60;box-shadow:var(--shadow)}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap">
+  <div class="center"><div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div><p>טוען…</p></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+const app = initializeApp({
+  apiKey:"AIzaSyB9jeWAKY2UEz70V77SCPnSJ18IfwnsVV0",
+  authDomain:"deshbord-atarim-sheli.firebaseapp.com",
+  databaseURL:"https://deshbord-atarim-sheli-default-rtdb.firebaseio.com",
+  projectId:"deshbord-atarim-sheli",
+  storageBucket:"deshbord-atarim-sheli.firebasestorage.app",
+  messagingSenderId:"893227581235",
+  appId:"1:893227581235:web:3254c85705dfe5fe894846"
+});
+const db = getDatabase(app);
+const REVIEW_FN = "https://us-central1-deshbord-atarim-sheli.cloudfunctions.net/reviewAction";
+
+const params = new URLSearchParams(location.search);
+const rid = params.get("id");
+const DEMO = params.get("demo")==="1" || !rid;
+const wrap = document.getElementById("wrap");
+
+/* סוגי הבקשה — התפריט המודרך שפותר את "הלקוח לא יודע לנסח" */
+const KINDS = {
+  color:  {label:"החלפת צבע",       ic:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 22a10 10 0 110-20 8 8 0 018 8c0 3-3 3-4 4s0 3-1 4a3 3 0 01-3 0"/></svg>'},
+  text:   {label:"שינוי טקסט",       ic:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V5h16v2M9 19h6M12 5v14"/></svg>'},
+  image:  {label:"החלפת תמונה",      ic:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 16l-5-5L4 20"/></svg>'},
+  move:   {label:"הזזה",             ic:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3M2 12h20M12 2v20"/></svg>'},
+  remove: {label:"הסרה",             ic:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>'},
+  add:    {label:"חסר לי / להוסיף",  ic:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>', extra:true},
+  dislike:{label:"לא אוהב / לא בטוח",ic:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 10h.01M15 10h.01M9 16c1-1 5-1 6 0"/></svg>'},
+};
+
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2600);}
+function uid(p){return p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+async function reviewFn(payload){
+  const r=await fetch(REVIEW_FN,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+  return r.json();
+}
+
+const LOGO_SVG='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>';
+
+function centerView(icon,title,sub){
+  wrap.innerHTML=`<div class="center"><div class="ic">${icon}</div><h2>${esc(title)}</h2><p>${esc(sub)}</p></div>`;
+}
+
+/* ── מצב ראשי ── */
+let review=null;       // האובייקט מהשרת
+let myPins=[];         // סיכות חדשות שהלקוח מוסיף בסבב הזה (טרם נשלחו)
+let pending={};        // הסיכה שבבנייה כרגע (מיקום + סוג + טקסט)
+
+function render(){
+  const proj = review.projectName || "האתר שלך";
+  const roundNo = review.round || 1;
+  const submitted = review.pins ? Object.values(review.pins) : [];
+  wrap.innerHTML = `
+    <div class="top">
+      <div class="top-row">
+        <div class="logo">${LOGO_SVG}</div>
+        <div><div class="brand-t">WebDesk</div><div class="brand-s">סבב סקירה</div></div>
+        <div class="rnd"><div class="p">${esc(proj)}</div><div class="r">סבב ${roundNo}</div></div>
+      </div>
+    </div>
+    <div class="intro">
+      <h1>מה תרצו לשנות?</h1>
+      <p>לחצו על כל מקום במסך שתרצו לשנות, ובחרו מה בדיוק. אפשר להוסיף כמה סימונים שרוצים.</p>
+    </div>
+    <div class="stagewrap">
+      <div class="stage" id="stage">
+        <img id="shot" alt="" src="${review.image || SAMPLE_IMG}">
+        <div class="hint" id="hint">לחצו על המקום שתרצו לשנות</div>
+      </div>
+    </div>
+    <div class="items" id="items"></div>
+    <div class="bar">
+      <span class="cnt" id="cnt"></span>
+      <button class="btn ghost" id="approveBtn" title="מאשר סופית"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg></button>
+      <button class="btn primary" id="sendBtn">שליחה לבונה</button>
+    </div>`;
+  const stage=document.getElementById("stage");
+  stage.addEventListener("click",onStageTap);
+  document.getElementById("sendBtn").addEventListener("click",submitPins);
+  document.getElementById("approveBtn").addEventListener("click",approveRound);
+  drawPins(submitted);
+  renderItems();
+}
+
+function drawPins(submitted){
+  const stage=document.getElementById("stage");
+  stage.querySelectorAll(".pin").forEach(e=>e.remove());
+  submitted.forEach((p,i)=>addPinDot(p.x,p.y,(p.status==="done"?"done":(p.scope==="extra"?"extra":"")), String(i+1)));
+  myPins.forEach((p,i)=>addPinDot(p.x,p.y,"mine", String(submitted.length+i+1)));
+}
+function addPinDot(x,y,cls,label){
+  const stage=document.getElementById("stage");
+  const d=document.createElement("div");
+  d.className="pin "+(cls||"");
+  d.style.left=(x*100)+"%"; d.style.top=(y*100)+"%";
+  d.textContent=label||"";
+  stage.appendChild(d);
+}
+
+function onStageTap(e){
+  if(e.target.closest(".pin")) return;
+  const img=document.getElementById("shot");
+  const r=img.getBoundingClientRect();
+  const x=Math.min(1,Math.max(0,(e.clientX-r.left)/r.width));
+  const y=Math.min(1,Math.max(0,(e.clientY-r.top)/r.height));
+  const hint=document.getElementById("hint"); if(hint) hint.style.display="none";
+  pending={x,y,kind:null,note:""};
+  openSheet();
+}
+
+/* ── בוטום-שיט: התפריט המודרך ── */
+function openSheet(){
+  const opts=Object.entries(KINDS).map(([k,v])=>
+    `<button class="opt ${v.extra?"warnc":""}" data-k="${k}"><span class="ic">${v.ic}</span><span>${v.label}</span></button>`).join("");
+  const bg=document.createElement("div"); bg.className="sheet-bg"; bg.id="sheetBg";
+  const sh=document.createElement("div"); sh.className="sheet"; sh.id="sheet";
+  sh.innerHTML=`<div class="grab"></div>
+    <h3>מה לשנות כאן?</h3>
+    <p class="sub">בחרו את סוג השינוי, ואם תרצו הוסיפו הסבר קצר.</p>
+    <div class="opts">${opts}</div>
+    <div class="notebox">
+      <label>הסבר קצר (לא חובה)</label>
+      <textarea id="noteInput" placeholder="למשל: הכותרת פה קטנה מדי, תגדילו ותבליטו"></textarea>
+    </div>
+    <div class="sheet-actions">
+      <button class="btn ghost" id="cancelPin" style="flex:1">ביטול</button>
+      <button class="btn primary" id="savePin" disabled>הוספת סימון</button>
+    </div>`;
+  document.body.appendChild(bg); document.body.appendChild(sh);
+  requestAnimationFrame(()=>{bg.classList.add("show");sh.classList.add("show");});
+  sh.querySelectorAll(".opt").forEach(b=>b.addEventListener("click",()=>{
+    sh.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel"));
+    b.classList.add("sel"); pending.kind=b.dataset.k;
+    document.getElementById("savePin").disabled=false;
+  }));
+  document.getElementById("noteInput").addEventListener("input",e=>pending.note=e.target.value);
+  document.getElementById("cancelPin").addEventListener("click",closeSheet);
+  bg.addEventListener("click",closeSheet);
+  document.getElementById("savePin").addEventListener("click",()=>{
+    if(!pending.kind)return;
+    myPins.push({id:uid("pin_"),x:pending.x,y:pending.y,kind:pending.kind,note:(pending.note||"").trim(),
+                 scope:KINDS[pending.kind].extra?"extra":"fix"});
+    closeSheet(); drawPins(review.pins?Object.values(review.pins):[]); renderItems();
+  });
+}
+function closeSheet(){
+  const bg=document.getElementById("sheetBg"),sh=document.getElementById("sheet");
+  if(!sh)return; sh.classList.remove("show"); bg.classList.remove("show");
+  setTimeout(()=>{sh.remove();bg.remove();},240);
+}
+
+function renderItems(){
+  const box=document.getElementById("items"); if(!box)return;
+  const submitted = review.pins ? Object.values(review.pins) : [];
+  const cnt=document.getElementById("cnt");
+  if(cnt) cnt.textContent = myPins.length ? (myPins.length+" סימונים חדשים") : (submitted.length? submitted.length+" סימונים נשלחו":"");
+  document.getElementById("sendBtn").disabled = myPins.length===0;
+  let html="";
+  if(submitted.length){
+    html+=`<h2>כבר נשלח (${submitted.length})</h2>`;
+    submitted.forEach((p,i)=>{
+      const k=KINDS[p.kind]||{label:p.kind};
+      html+=`<div class="item"><div class="num">${i+1}</div><div class="body">
+        <div class="kind">${esc(k.label)}${p.scope==="extra"?'<span class="tag extra">תוספת</span>':''}${p.status?`<span class="tag st">${esc(p.status==="done"?"בוצע":p.status==="in_progress"?"בעבודה":"התקבל")}</span>`:''}</div>
+        ${p.note?`<div class="note">${esc(p.note)}</div>`:''}</div></div>`;
+    });
+  }
+  if(myPins.length){
+    html+=`<h2>סימונים חדשים שלכם (${myPins.length})</h2>`;
+    myPins.forEach((p,i)=>{
+      const k=KINDS[p.kind]||{label:p.kind};
+      html+=`<div class="item"><div class="num">${submitted.length+i+1}</div><div class="body">
+        <div class="kind">${esc(k.label)}${p.scope==="extra"?'<span class="tag extra">תוספת</span>':''}</div>
+        ${p.note?`<div class="note">${esc(p.note)}</div>`:''}</div>
+        <button class="del" data-id="${p.id}" title="מחיקה"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button></div>`;
+    });
+  }
+  if(!submitted.length && !myPins.length){
+    html=`<h2 style="text-align:center;color:var(--muted);padding:8px 0">עדיין אין סימונים. לחצו על המסך למעלה כדי להתחיל.</h2>`;
+  }
+  box.innerHTML=html;
+  box.querySelectorAll(".del").forEach(b=>b.addEventListener("click",()=>{
+    myPins=myPins.filter(p=>p.id!==b.dataset.id);
+    drawPins(review.pins?Object.values(review.pins):[]); renderItems();
+  }));
+}
+
+async function submitPins(){
+  if(!myPins.length)return;
+  const btn=document.getElementById("sendBtn"); btn.disabled=true; btn.textContent="שולח…";
+  const payload={action:"submit",id:rid,pins:myPins.map(p=>({x:p.x,y:p.y,kind:p.kind,note:p.note,scope:p.scope}))};
+  if(DEMO){ setTimeout(()=>{ toast("נשלח לבונה (מצב הדגמה)"); myPins=[]; renderItems(); btn.textContent="שליחה לבונה"; },600); return; }
+  try{
+    const res=await reviewFn(payload);
+    if(res && res.ok){ toast("נשלח לבונה. תודה!"); myPins=[]; renderItems(); }
+    else toast("שגיאה בשליחה, נסו שוב");
+  }catch(e){ toast("שגיאת תקשורת, נסו שוב"); }
+  btn.disabled=false; btn.textContent="שליחה לבונה";
+}
+
+async function approveRound(){
+  if(myPins.length){ toast("יש לכם סימונים שלא נשלחו — שלחו קודם"); return; }
+  if(!confirm("לאשר סופית שהאתר מוכן לעלייה לאוויר? מכאן שינויים נוספים ייחשבו לסבב חדש.")) return;
+  if(DEMO){ centerView('<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#129a6b" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>',"אושר סופית","תודה! הסבב נסגר (מצב הדגמה)."); return; }
+  try{
+    const res=await reviewFn({action:"approve",id:rid});
+    if(res && res.ok){ centerView('<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#129a6b" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>',"אושר סופית","תודה! העברנו לבונה שהאתר מאושר לעלייה לאוויר."); }
+    else toast("שגיאה, נסו שוב");
+  }catch(e){ toast("שגיאת תקשורת, נסו שוב"); }
+}
+
+/* תמונת הדגמה (אתר לדוגמה) — SVG מוטמע, עובד גם בלי אינטרנט */
+const SAMPLE_IMG='data:image/svg+xml,'+encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1400" viewBox="0 0 800 1400">
+   <rect width="800" height="1400" fill="#f7f9fc"/>
+   <rect width="800" height="70" fill="#0c1a2e"/>
+   <circle cx="60" cy="35" r="16" fill="#2f6df6"/><rect x="90" y="27" width="120" height="16" rx="8" fill="#ffffff"/>
+   <rect x="560" y="24" width="70" height="22" rx="11" fill="#2f6df6"/><rect x="650" y="24" width="90" height="22" rx="11" fill="#ffffff22"/>
+   <rect x="60" y="150" width="420" height="46" rx="8" fill="#0c1a2e"/>
+   <rect x="60" y="212" width="520" height="46" rx="8" fill="#0c1a2e"/>
+   <rect x="60" y="300" width="360" height="18" rx="9" fill="#8a99ad"/>
+   <rect x="60" y="330" width="300" height="18" rx="9" fill="#8a99ad"/>
+   <rect x="60" y="392" width="180" height="52" rx="12" fill="#2f6df6"/>
+   <rect x="600" y="150" width="150" height="150" rx="20" fill="#dfe7f5"/>
+   <rect x="60" y="520" width="680" height="300" rx="18" fill="#e8eef7"/>
+   <rect x="90" y="560" width="200" height="220" rx="12" fill="#ffffff"/>
+   <rect x="300" y="560" width="200" height="220" rx="12" fill="#ffffff"/>
+   <rect x="510" y="560" width="200" height="220" rx="12" fill="#ffffff"/>
+   <rect x="60" y="880" width="680" height="120" rx="16" fill="#0c1a2e"/>
+   <rect x="120" y="920" width="240" height="20" rx="10" fill="#ffffff"/>
+   <rect x="120" y="952" width="360" height="14" rx="7" fill="#ffffff88"/>
+   <rect x="560" y="915" width="130" height="44" rx="12" fill="#2f6df6"/>
+   <rect x="0" y="1300" width="800" height="100" fill="#0c1a2e"/>
+   </svg>`);
+
+/* ── טעינה ── */
+if(DEMO){
+  review={projectName:"האתר של דני — הדגמה", round:1, image:"", status:"open",
+          pins:{a:{x:.33,y:.12,kind:"color",note:"הכחול פה כהה מדי",status:"received",scope:"fix"}}};
+  render();
+}else{
+  onValue(ref(db,`reviews/${rid}`),snap=>{
+    const r=snap.val();
+    if(!r){ centerView('<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',"הקישור לא נמצא","ייתכן שהקישור שגוי או שהסבב כבר אינו זמין."); return; }
+    review=r; myPins=[];
+    if(r.status==="closed" || r.status==="approved"){
+      centerView('<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#129a6b" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>',"הסבב נסגר","הסבב הזה כבר אושר. לפרטים נוספים פנו לבונה.");
+      return;
+    }
+    render();
+  },err=>{ centerView('<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>',"שגיאת טעינה","נסו לרענן את הדף."); });
+}
+</script>
+</body>
+</html>
